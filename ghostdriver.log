@@ -1,0 +1,12 @@
+[INFO  - 2022-08-01T19:29:45.083Z] GhostDriver - Main - running on port 32981
+[INFO  - 2022-08-01T19:29:45.769Z] Session [4ccb3910-11d0-11ed-84f2-25c9c6169456] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2022-08-01T19:29:45.770Z] Session [4ccb3910-11d0-11ed-84f2-25c9c6169456] - page.customHeaders:  - {}
+[INFO  - 2022-08-01T19:29:45.770Z] Session [4ccb3910-11d0-11ed-84f2-25c9c6169456] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2022-08-01T19:29:45.771Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 4ccb3910-11d0-11ed-84f2-25c9c6169456
+[ERROR - 2022-08-01T19:29:46.882Z] Session [4ccb3910-11d0-11ed-84f2-25c9c6169456] - page.onError - msg: ReferenceError: Can't find variable: appComParams
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2022-08-01T19:29:46.883Z] Session [4ccb3910-11d0-11ed-84f2-25c9c6169456] - page.onError - stack:
+  global code (https://api-shein.shein.com/h5/sharejump/appsharejump?lan=ru&share_type=goods&site=iosshother&localcountry=other&currency=RUB&id=10357731&url_from=GM7266541214465818624:168)
+
+  phantomjs://platform/console++.js:263 in error
