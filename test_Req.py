@@ -173,6 +173,7 @@ def get_productDetail_dict(url_us):
 	driver.get(url_us)
 	red_url = driver.current_url
 	print(red_url)
+	print('\n',BeautifulSoup(driver.page_source, 'html.parser'),'\n')
 	#driver.implicitly_wait(5)
 	#html = driver.page_source
 	#soup = BeautifulSoup(html, 'html.parser')
