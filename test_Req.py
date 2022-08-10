@@ -128,7 +128,7 @@ def getRedirectedUrl(url,param_country = 'US'):
 	url_param = driver.execute_script(code)
 	soup = BeautifulSoup(html, 'html.parser')
 	script_tags = soup.findAll("script")
-	print(soup)
+	#print(soup)
 	
 	driver.close()
 	driver.quit()
@@ -139,9 +139,14 @@ def getRedirectedUrl(url,param_country = 'US'):
 			shareInfo_dict = json.loads(shareInfo_re.group(1))
 			url_from_var_rfind = shareInfo_dict['originalUrl'].rfind('url_from=')
 			url_from_var = shareInfo_dict['originalUrl'][len('url_from=')+url_from_var_rfind:]
-			shareInfo_url_us = os.path.join("https://ru.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
-					'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
-					'?share_from='+url_param+'&url_from='+url_from_var)
+			if url_param == 'iosshru':
+				shareInfo_url_us = os.path.join("https://ru.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
+						'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
+						'?share_from='+url_param+'&url_from='+url_from_var)
+			else:
+				shareInfo_url_us = os.path.join("https://www.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
+						'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
+						'?share_from='+url_param+'&url_from='+url_from_var)
 					#'&localcountry=other'+'&url_from='+url_from_var)
 			#shareInfo_url_ru = os.path.join("https://ru.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
 			#		'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+'?lan=ru')
