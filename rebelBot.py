@@ -18,7 +18,7 @@ import math
 
 #logging.basicConfig()
 
-bot = Bot(token='5553373715:AAFoC00-DyHfHZV23EXeTosQdoedb20AHL8')
+bot = Bot(token='5415272308:AAFlMEbYITbzEqrOGDYDBhSfuJ0zE_2lCdQ')
 dp = Dispatcher(bot)
 
 def getProDet_dict(url):

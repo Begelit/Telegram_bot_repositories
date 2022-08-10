@@ -96,7 +96,7 @@ import logging
 #################################################################################
 """
 
-def getRedirectedUrl(url):
+def getRedirectedUrl(url,param_country = 'US'):
 	print('\n\n''orig_url:','\n\n',url,'\n')
 	"""
 	req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -115,7 +115,7 @@ def getRedirectedUrl(url):
 	#options.set_headless(headless=True)
 	options.add_argument("--headless")
 	options.binary_location = '/bin/google-chrome'
-	chrome_driver_binary = '/home/ubuntu/HEIN/drivers/chromedriver'
+	chrome_driver_binary = '/home/dmitry/shein_bot/drivers/chromedriver'
 	#driver = webdriver.Chrome(options=options, executable_path='/home/koza/Reps/HEIN/drivers/chromedriver')
 	driver = webdriver.Chrome(chrome_driver_binary, chrome_options=options)
 	driver.get(url)
@@ -165,7 +165,7 @@ def get_productDetail_dict(url_us):
 	options = webdriver.ChromeOptions()
 	options.add_argument("--headless")
 	options.binary_location = '/bin/google-chrome'
-	chrome_driver_binary = '/home/ubuntu/HEIN/drivers/chromedriver'
+	chrome_driver_binary = '/home/dmitry/shein_bot/drivers/chromedriver'
 	
 	driver = webdriver.Chrome(chrome_driver_binary, chrome_options=options)
 	#driver.get(main_url)
@@ -234,54 +234,55 @@ def orderStreaMess(message):
 	return orders_dict
 	
 def createResponse(message):
-	try:
-		messages_dict = orderStreaMess(message)
-		responseDict = dict()
-		totalAmount = 0
-		print(messages_dict)
-		for index in messages_dict:
-			shareInfo_url_us = getRedirectedUrl(messages_dict[index]['url'])
-			proDetDict_full,redUrl = get_productDetail_dict(shareInfo_url_us)
-			mainInfo = get_mainInfo(proDetDict_full)
-			responseDict[index] = dict()
-			responseDict[index]['url'] = shareInfo_url_us #redUrl#messages_dict[index]['url']
-			responseDict[index]['name'] = mainInfo['name']
-			print(mainInfo)
-			#print(messages_dict[index])
-			if len(mainInfo['params']) == 1:
-				if list(mainInfo['params'].keys())[0] == 'one-size':
-					params_key = 'one-size'
-					responseDict[index]['size'] = 'Универсальный размер'
-				elif list(mainInfo['params'].keys())[0] == 'uni_size':
-					params_key = 'uni_size'
-					responseDict[index]['size'] = 'Универсальный размер'#'Unisize'
-				else:
-					print(mainInfo)
-					messages_dict_copy = messages_dict.copy()
-					#messages_dict[index]['size'].upper() in mainInfo['params'].keys():
-					#params_key = messages_dict[index]['size'].upper()
-					#responseDict[index]['size'] = messages_dict[index]['size'].upper()
-					if messages_dict_copy[index]['size'].upper() in [x.replace(' ','').upper() for x in list(mainInfo['params'].keys())]:
-						params_key = [size for size in mainInfo['params'] if copy.deepcopy(size).replace(' ','') == messages_dict[index]['size']][0]
-						#responseDict[index]['size'] = messages_dict[index]['size']
-						responseDict[index]['size'] = params_key
-			elif len(mainInfo['params']) > 1:
-				#print(mainInfo)
+	#try:
+	messages_dict = orderStreaMess(message)
+	responseDict = dict()
+	totalAmount = 0
+	print(messages_dict)
+	for index in messages_dict:
+		shareInfo_url_us = getRedirectedUrl(messages_dict[index]['url'])
+		proDetDict_full,redUrl = get_productDetail_dict(shareInfo_url_us)
+		mainInfo = get_mainInfo(proDetDict_full)
+		responseDict[index] = dict()
+		responseDict[index]['url'] = shareInfo_url_us #redUrl#messages_dict[index]['url']
+		responseDict[index]['name'] = mainInfo['name']
+		print(mainInfo)
+		#print(messages_dict[index])
+		if len(mainInfo['params']) == 1:
+			if list(mainInfo['params'].keys())[0] == 'one-size':
+				params_key = 'one-size'
+				responseDict[index]['size'] = 'Универсальный размер'
+			elif list(mainInfo['params'].keys())[0] == 'uni_size':
+				params_key = 'uni_size'
+				responseDict[index]['size'] = 'Универсальный размер'#'Unisize'
+			else:
+				print(mainInfo)
 				messages_dict_copy = messages_dict.copy()
+				#messages_dict[index]['size'].upper() in mainInfo['params'].keys():
+				#params_key = messages_dict[index]['size'].upper()
+				#responseDict[index]['size'] = messages_dict[index]['size'].upper()
 				if messages_dict_copy[index]['size'].upper() in [x.replace(' ','').upper() for x in list(mainInfo['params'].keys())]:
 					params_key = [size for size in mainInfo['params'] if copy.deepcopy(size).replace(' ','') == messages_dict[index]['size']][0]
-					responseDict[index]['size'] = messages_dict[index]['size']
+					#responseDict[index]['size'] = messages_dict[index]['size']
 					responseDict[index]['size'] = params_key
-			#print(params_key)
+		elif len(mainInfo['params']) > 1:
 			#print(mainInfo)
-			responseDict[index]['amount'] = mainInfo['params'][params_key]['amount']
-			responseDict[index]['stock'] = mainInfo['params'][params_key]['stock']
-			#responseDict[index]['need'] = messages_dict[index]['value']
-			#totalAmount+=float(responseDict[index]['amount'])*int(responseDict[index]['need'])
-			totalAmount+=float(responseDict[index]['amount'])
-			#print(index,responseDict[index])
-		#print(responseDict)
-		return totalAmount, responseDict
+			messages_dict_copy = messages_dict.copy()
+			if messages_dict_copy[index]['size'].upper() in [x.replace(' ','').upper() for x in list(mainInfo['params'].keys())]:
+				params_key = [size for size in mainInfo['params'] if copy.deepcopy(size).replace(' ','') == messages_dict[index]['size']][0]
+				responseDict[index]['size'] = messages_dict[index]['size']
+				responseDict[index]['size'] = params_key
+		#print(params_key)
+		#print(mainInfo)
+		responseDict[index]['amount'] = mainInfo['params'][params_key]['amount']
+		responseDict[index]['stock'] = mainInfo['params'][params_key]['stock']
+		#responseDict[index]['need'] = messages_dict[index]['value']
+		#totalAmount+=float(responseDict[index]['amount'])*int(responseDict[index]['need'])
+		totalAmount+=float(responseDict[index]['amount'])
+		#print(index,responseDict[index])
+	#print(responseDict)
+	return totalAmount, responseDict
+	"""
 	except Exception as exc:
 		logging.basicConfig(filename='/home/ubuntu/HEIN/rebeLog.log',
                     filemode='a',
@@ -290,6 +291,7 @@ def createResponse(message):
                     level=logging.DEBUG)
 		logging.info(str(exc)+'\n\n'+str(messages_dict['url']))
 		logger = logging.getLogger()
+	"""
 
 def get_ValuteVal():
 	
