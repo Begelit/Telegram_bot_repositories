@@ -143,7 +143,7 @@ def getRedirectedUrl(url,param_country = 'US'):
 			if aft_shareInfo_amperc_index == -1:
 				url_param = aft_shareInfo
 			else:
-				url_param = aft_shareInfo[:aft_shareInfo_amperc_index].replace(aft_shareInfo,'')
+				url_param = aft_shareInfo[:aft_shareInfo_amperc_index].replace('share_from=','')
 	else:
 		for tag in script_tags:
 			if ('var shareInfo' in str(tag)) == True:
