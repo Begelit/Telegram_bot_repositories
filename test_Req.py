@@ -215,12 +215,12 @@ def get_mainInfo(productDetail_dict,url_param):
 	if url_param == 'iosshru':
 		index_val = 1
 	else:
-		inddex_val = 64
+		index_val = 64
 	for index in range(len(sku_list)):
 		if len(sku_list[index]['sku_sale_attr']) > 0:
-			new_proDet_dict['params'][sku_list[index]['sku_sale_attr'][0]['attr_value_name']] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*inddex_val*1.224}
+			new_proDet_dict['params'][sku_list[index]['sku_sale_attr'][0]['attr_value_name']] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*index_val*1.224}
 		else:
-			new_proDet_dict['params']['uni_size'] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*inddex_val*1.224}
+			new_proDet_dict['params']['uni_size'] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*index_val*1.224}
 	new_proDet_dict['name'] = productDetail_dict['productIntroData']['metaInfo']['meta_title']
 	#print('\n',new_proDet_dict,'\n')
 	return new_proDet_dict
