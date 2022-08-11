@@ -147,10 +147,7 @@ def getRedirectedUrl(url,param_country = 'US'):
 				shareInfo_url_us = os.path.join("https://www.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
 						'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
 						'?share_from='+url_param+'&url_from='+url_from_var)
-					#'&localcountry=other'+'&url_from='+url_from_var)
-			#shareInfo_url_ru = os.path.join("https://ru.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
-			#		'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+'?lan=ru')
-					#'?share_from='+url_param+'&localcountry=other'+'&url_from='+url_from_var)
+						#'&localcountry=other'+'&url_from='+url_from_var)
 	print('\nredirected_to: \n\n',shareInfo_url_us,'\n\n')
 	return shareInfo_url_us #,shareInfo_url_ru
 
@@ -262,6 +259,9 @@ def createResponse(message):
 			elif list(mainInfo['params'].keys())[0] == 'uni_size':
 				params_key = 'uni_size'
 				responseDict[index]['size'] = 'Универсальный размер'#'Unisize'
+			elif list(mainInfo['params'].keys())[0] == 'универсальный размер':
+				params_key = 'универсальный размер'
+				responseDict[index]['size'] = 'Универсальный размер'
 			else:
 				print(mainInfo)
 				messages_dict_copy = messages_dict.copy()
