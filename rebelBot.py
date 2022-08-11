@@ -19,7 +19,7 @@ from urllib.parse import unquote
 
 #logging.basicConfig()
 
-bot = Bot(token='5415272308:AAFlMEbYITbzEqrOGDYDBhSfuJ0zE_2lCdQ')
+bot = Bot(token='5415272308:AAE1oS_iVePrBmodkCmtkccryisqt3jZaEw')
 dp = Dispatcher(bot)
 
 def getProDet_dict(url):
