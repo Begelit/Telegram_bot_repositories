@@ -42,9 +42,9 @@ async def echo(message: types.Message):
 			stock = response[str(index)]['stock']
 		#need = response[str(index)]['need']
 		#await message.answer('1) '+name+'\n\n'+url+'\n\n\tSize: '+size+'\n\tPrice: '+str(round(amount))+'\n\tStock: '+str(stock)+'\n\tNeed for quantity: '+str(need))
-		await message.answer(str(index+1)+') '+name+'\n\n\tРазмер: '+size+'\n\tЦена: '+str(round(amount))+'\n\tНа складе: '+str(stock)+'\n\n'+url)
+		await message.answer(str(index+1)+') '+name+'\n\n\tРазмер: '+size+'\n\tЦена: '+str(round(amount))+' руб.\n\tНа складе: '+str(stock)+'\n\n'+url)
 		#await message.answer(f"<a href = '"+url+"'></a>")
-	await message.answer('\n\n\tОбщая сумма: '+str(math.floor(totalAmount)))
+	await message.answer('\n\n\tОбщая сумма: '+str(math.floor(totalAmount))+' руб.')
 	"""
 	prodVar = getProDet_dict(message.text)
 	print('\nfirst_url','\n',message.text,'\n')
