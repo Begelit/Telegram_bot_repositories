@@ -134,6 +134,16 @@ def getRedirectedUrl(url,param_country = 'US'):
 	driver.quit()
 	if ('api-shein.shein.com' in url) == False:
 		shareInfo_url_us = url
+		aft_shareInfo_index = url.rfind('share_from=')
+		if aft_shareInfo_index == -1:
+			url_param = 'iosshother'
+		else:
+			aft_shareInfo = url[aft_shareInfo_index:]
+			aft_shareInfo_amperc_index = aft_shareInfo.rfind('&')
+			if aft_shareInfo_amperc_index == -1:
+				url_param = aft_shareInfo
+			else:
+				url_param = aft_shareInfo[:aft_shareInfo_amperc_index]
 	else:
 		for tag in script_tags:
 			if ('var shareInfo' in str(tag)) == True:
