@@ -132,22 +132,27 @@ def getRedirectedUrl(url,param_country = 'US'):
 	
 	driver.close()
 	driver.quit()
-	
-	for tag in script_tags:
-		if ('var shareInfo' in str(tag)) == True:
-			shareInfo_re = re.search(r'var shareInfo = (.*?);', tag.string)
-			shareInfo_dict = json.loads(shareInfo_re.group(1))
-			url_from_var_rfind = shareInfo_dict['originalUrl'].rfind('url_from=')
-			url_from_var = shareInfo_dict['originalUrl'][len('url_from=')+url_from_var_rfind:]
-			if url_param == 'iosshru':
-				shareInfo_url_us = os.path.join("https://ru.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
-						'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
-						'?share_from='+url_param+'&url_from='+url_from_var)
-			else:
-				shareInfo_url_us = os.path.join("https://www.shein.com",quote(shareInfo_dict['title'].replace(' ','-'))+
-						'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
-						'?share_from='+url_param+'&url_from='+url_from_var)
-						#'&localcountry=other'+'&url_from='+url_from_var)
+	if ('api-shein.shein.com' in url) == False:
+		shareInfo_url_us = url
+	else:
+		for tag in script_tags:
+			if ('var shareInfo' in str(tag)) == True:
+				shareInfo_re = re.search(r'var shareInfo = (.*?);', tag.string)
+				shareInfo_dict = json.loads(shareInfo_re.group(1))
+				url_from_var_rfind = shareInfo_dict['originalUrl'].rfind('url_from=')
+				url_from_var = shareInfo_dict['originalUrl'][len('url_from=')+url_from_var_rfind:]
+				if url_param == 'iosshru':
+					shareInfo_url_us = os.path.join("https://ru.shein.com",
+							quote(shareInfo_dict['title'].replace(' ','-'))+
+							'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
+							'?share_from='+url_param+'&url_from='+url_from_var)
+				else:
+					shareInfo_url_us = os.path.join("https://www.shein.com",
+							quote(shareInfo_dict['title'].replace(' ','-'))+
+							'-p-'+shareInfo_dict['id']+'-cat-'+shareInfo_dict['cat_id']+'.html'+
+							'?share_from='+url_param+'&url_from='+url_from_var)
+							#'&localcountry=other'+'&url_from='+url_from_var)
+	print('\n',url_param,'\n')
 	print('\nredirected_to: \n\n',shareInfo_url_us,'\n\n')
 	return shareInfo_url_us,url_param #,shareInfo_url_ru
 
