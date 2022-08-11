@@ -149,7 +149,7 @@ def getRedirectedUrl(url,param_country = 'US'):
 						'?share_from='+url_param+'&url_from='+url_from_var)
 						#'&localcountry=other'+'&url_from='+url_from_var)
 	print('\nredirected_to: \n\n',shareInfo_url_us,'\n\n')
-	return shareInfo_url_us #,shareInfo_url_ru
+	return shareInfo_url_us,url_param #,shareInfo_url_ru
 
 
 def get_productDetail_dict(url_us):
@@ -206,17 +206,21 @@ def get_productDetail_dict(url_us):
 	
 	return productDetail_Dict, red_url
 
-def get_mainInfo(productDetail_dict):
+def get_mainInfo(productDetail_dict,url_param):
 	#print(productDetail_dict)
 	sale_attr_list = productDetail_dict['productIntroData']['attrSizeList']['sale_attr_list']
 	sku_list = productDetail_dict['productIntroData']['attrSizeList']['sale_attr_list'][list(sale_attr_list.keys())[0]]['sku_list']
 	new_proDet_dict = dict()
 	new_proDet_dict['params'] = dict()
+	if url_param == 'iosshru':
+		index_val = 1
+	else:
+		inddex_val = 64
 	for index in range(len(sku_list)):
 		if len(sku_list[index]['sku_sale_attr']) > 0:
-			new_proDet_dict['params'][sku_list[index]['sku_sale_attr'][0]['attr_value_name']] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*64*1.224}
+			new_proDet_dict['params'][sku_list[index]['sku_sale_attr'][0]['attr_value_name']] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*inddex_val*1.224}
 		else:
-			new_proDet_dict['params']['uni_size'] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*64*1.224}
+			new_proDet_dict['params']['uni_size'] = {'stock':sku_list[index]['mall_stock'][0]['stock'],'amount':float(sku_list[index]['mall_price'][0]['salePrice']['amount'])*inddex_val*1.224}
 	new_proDet_dict['name'] = productDetail_dict['productIntroData']['metaInfo']['meta_title']
 	#print('\n',new_proDet_dict,'\n')
 	return new_proDet_dict
@@ -244,9 +248,9 @@ def createResponse(message):
 	totalAmount = 0
 	print(messages_dict)
 	for index in messages_dict:
-		shareInfo_url_us = getRedirectedUrl(messages_dict[index]['url'])
+		shareInfo_url_us,url_param = getRedirectedUrl(messages_dict[index]['url'])
 		proDetDict_full,redUrl = get_productDetail_dict(shareInfo_url_us)
-		mainInfo = get_mainInfo(proDetDict_full)
+		mainInfo = get_mainInfo(proDetDict_full,url_param)
 		responseDict[index] = dict()
 		responseDict[index]['url'] = shareInfo_url_us #redUrl#messages_dict[index]['url']
 		responseDict[index]['name'] = mainInfo['name']
