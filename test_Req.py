@@ -102,8 +102,8 @@ import random
 def getRedirectedUrl(url,param_country = 'US'):
 	print('\n\n''orig_url:','\n\n',url,'\n')
 	
-	ua = UserAgnet()
-	useragent = us.random
+	ua = UserAgent.UserAgnet()
+	useragent = ua.random
 	#options = webdriver.ChromeOptions()
 	options = webdriver.Options()
 
