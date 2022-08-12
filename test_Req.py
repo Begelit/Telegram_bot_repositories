@@ -11,6 +11,9 @@ import copy
 import requests
 from datetime import datetime, timedelta
 import logging
+from fake_useragent import UserAgent
+import time
+import random
 
 """
 #################################################################################
@@ -98,22 +101,15 @@ import logging
 
 def getRedirectedUrl(url,param_country = 'US'):
 	print('\n\n''orig_url:','\n\n',url,'\n')
-	"""
-	req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-	webpage = urlopen(req)
-	main_url = webpage.geturl()
 	
-	req_main_url = requests.get(main_url)
-	html = req_main_url.text
-	soup = BeautifulSoup(html, 'html.parser')
-	#soup = BeautifulSoup(html, 'lxml')
-	"""
-	#driver = webdriver.PhantomJS()
-	options = webdriver.ChromeOptions()
-	#'/bin/google-chrome'
+	ua = UserAgnet()
+	useragent = us.random
+	#options = webdriver.ChromeOptions()
+	options = webdriver.Options()
 
 	#options.set_headless(headless=True)
-	options.add_argument("--headless")
+	options.add_argument('--headless')
+	options.add_argument(f'user-agent={useragent}')
 	options.binary_location = '/bin/google-chrome'
 	chrome_driver_binary = '/home/dmitry/shein_bot/drivers/chromedriver'
 	#driver = webdriver.Chrome(options=options, executable_path='/home/koza/Reps/HEIN/drivers/chromedriver')
@@ -122,13 +118,14 @@ def getRedirectedUrl(url,param_country = 'US'):
 	html = driver.page_source
 	
 	driver.implicitly_wait(0.6)
+	time.sleep(random.randint(1,5))
 	
 	code =  'var reg = new RegExp("(^|&)" + "site" + "=([^&]*)(&|$)");console.log(reg);var r = 				window.location.search.substr(1).match(reg);if (r != null) return unescape(r[2]); return null;'
 	
 	url_param = driver.execute_script(code)
 	soup = BeautifulSoup(html, 'html.parser')
 	script_tags = soup.findAll("script")
-	#print(soup)
+	print(soup)
 	
 	driver.close()
 	driver.quit()
@@ -164,10 +161,10 @@ def getRedirectedUrl(url,param_country = 'US'):
 							#'&localcountry=other'+'&url_from='+url_from_var)
 	print('\n',url_param,'\n')
 	print('\nredirected_to: \n\n',shareInfo_url_us,'\n\n')
-	return shareInfo_url_us,url_param #,shareInfo_url_ru
+	return shareInfo_url_us,url_param,useragent #,shareInfo_url_ru
 
 
-def get_productDetail_dict(url_us):
+def get_productDetail_dict(url_us,useragent):
 	
 	#req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
 	#req = Request(url, headers={'User-Agent': 'PhantomJS'})
@@ -180,13 +177,15 @@ def get_productDetail_dict(url_us):
 	#options = Options()
 	#url_us = url[0]
 	#url_ru = url[1]
-	options = webdriver.ChromeOptions()
+	options = webdriver.Options()
 	options.add_argument("--headless")
 	options.binary_location = '/bin/google-chrome'
+	options.add_argument(f'user-agent={useragent}')
 	chrome_driver_binary = '/home/dmitry/shein_bot/drivers/chromedriver'
 	
 	driver = webdriver.Chrome(chrome_driver_binary, chrome_options=options)
 	#driver.get(main_url)
+	time.sleep(random.randint(1,5))
 	driver.get(url_us)
 	red_url = driver.current_url
 	print(red_url)
@@ -263,8 +262,8 @@ def createResponse(message):
 	totalAmount = 0
 	print(messages_dict)
 	for index in messages_dict:
-		shareInfo_url_us,url_param = getRedirectedUrl(messages_dict[index]['url'])
-		proDetDict_full,redUrl = get_productDetail_dict(shareInfo_url_us)
+		shareInfo_url_us,url_param,useragent = getRedirectedUrl(messages_dict[index]['url'])
+		proDetDict_full,redUrl = get_productDetail_dict(shareInfo_url_us,useragent)
 		mainInfo = get_mainInfo(proDetDict_full,url_param)
 		responseDict[index] = dict()
 		responseDict[index]['url'] = shareInfo_url_us #redUrl#messages_dict[index]['url']
