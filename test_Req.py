@@ -105,7 +105,8 @@ def getRedirectedUrl(url,param_country = 'US'):
 	ua = UserAgent()
 	useragent = ua.random
 	#options = webdriver.ChromeOptions()
-	options = webdriver.Options()
+	#options = webdriver.Options()
+	options = Options()
 
 	#options.set_headless(headless=True)
 	options.add_argument('--headless')
