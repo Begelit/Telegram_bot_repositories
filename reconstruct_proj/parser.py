@@ -84,7 +84,7 @@ def get_product_info(driver):
 		print(traceback.format_exc())
 		driver.close()
 		driver.quit()
-
+"""
 if __name__ == "__main__":
 	print('!!!!!!!!!!!!!!!!!!!!!!!!!')
 	driver_path = '/home/koza/Reps/HEIN_FROMgit/shein_bot/drivers/chromedriver'
@@ -97,9 +97,7 @@ if __name__ == "__main__":
 	time.sleep(random.randint(1,10))
 	#sizes_list = get_product_info(driver_getSource)
 	product_info = get_product_info(driver_getSource)
-	for keys in product_info:
-		print(keys)
 	#print(sizes_list)
 	#driver.close()
 	#driver.quit()
-	
+"""
