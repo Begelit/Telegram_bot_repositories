@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 from urllib.parse import quote
+import asyncio
 
 def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
@@ -47,8 +48,8 @@ def get_product_info(driver):
 				
 				color_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(li.find_element(By.CSS_SELECTOR,'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1)))))
 				color_button.click()
-				driver.implicitly_wait(10)
-				time.sleep(random.randint(2,5))
+				driver.implicitly_wait(5)
+				#time.sleep(random.randint(2,5))
 				
 				color = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-color-selector__selected-color-name"]')))
 				color = color.text.split('|')[0].replace(' ','')
@@ -95,7 +96,9 @@ if __name__ == "__main__":
 	
 	time.sleep(random.randint(1,10))
 	#sizes_list = get_product_info(driver_getSource)
-	get_product_info(driver_getSource)
+	product_info = get_product_info(driver_getSource)
+	for keys in product_info:
+		print(keys)
 	#print(sizes_list)
 	#driver.close()
 	#driver.quit()
