@@ -71,7 +71,11 @@ async def size_order(message: types.Message, state: FSMContext):
 	keyboard.add('Отменить')
 	
 	await OrderClothes.waiting_for_confirm.set()
-	await message.answer("Почти готово! Пожалуйста, подтвердите заказ:", reply_markup=keyboard)
+	await message.answer("Почти готово! Пожалуйста, подтвердите заказ:"+
+				"\n\n  {order_data['productDetail']['name']}"+
+				"\n    Цвет: {order_data['received_color']}"+
+				"\n    Размер: {order_data['received_size']}"+
+				"\n    Цена: {order_data['productDetail']['color']['price']}",reply_markup=keyboard)
 	
 async def confirm_order(message: types.Message, state: FSMContext):
 	if message.text not in ['Подтвердить','Отменить']:
