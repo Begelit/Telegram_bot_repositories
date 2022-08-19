@@ -35,7 +35,7 @@ def get_product_info(driver):
 		color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
 		product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
 		productInfo_dict = dict()
-		
+		productInfo_dict['name'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
 		if color_selector_element_class_name in product_detail_info_elem_innerHTML:
 		
 			colors_list_path = '//div[@id = "app-root"]//div[@class="product-detail-color-selector__color-selector-container"]//ul[@class = "product-detail-color-selector__colors"]'
@@ -84,20 +84,20 @@ def get_product_info(driver):
 		print(traceback.format_exc())
 		driver.close()
 		driver.quit()
-"""
+
 if __name__ == "__main__":
 	print('!!!!!!!!!!!!!!!!!!!!!!!!!')
-	driver_path = '/home/koza/Reps/HEIN_FROMgit/shein_bot/drivers/chromedriver'
+	driver_path = '/home/koza/Reps/drivers/chromedriver'
 	url = 'https://www.zara.com/ru/ru/%D0%BE%D0%B1%D1%8A%D0%B5%D0%BC%D0%BD%D1%8B%D0%B8-%D0%B4%D0%B2%D1%83%D0%B1%D0%BE%D1%80%D1%82%D0%BD%D1%8B%D0%B8-%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA-p02753032.html?v1=206087228'
 	#url = 'https://www.zara.com/ru/ru/%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA-%D0%B8%D0%B7-%D1%81%D1%82%D1%80%D1%83%D1%8F%D1%89%D0%B5%D0%B8%D1%81%D1%8F-%D1%82%D0%BA%D0%B0%D0%BD%D0%B8-p01255709.html?v1=179012832'
 	driver = start_driverSession(driver_path=driver_path)
 	driver_getSource = get_page_source(driver,url)
 	#print(driver_getSource.page_source)
 	
-	time.sleep(random.randint(1,10))
+	#time.sleep(random.randint(1,10))
 	#sizes_list = get_product_info(driver_getSource)
 	product_info = get_product_info(driver_getSource)
 	#print(sizes_list)
 	#driver.close()
 	#driver.quit()
-"""
+
