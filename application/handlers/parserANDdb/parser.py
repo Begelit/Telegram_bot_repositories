@@ -35,6 +35,7 @@ def get_product_info(driver):
 		color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
 		product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
 		productInfo_dict = dict()
+		productInfo_dict['color'] = dict()
 		productInfo_dict['name'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
 		if color_selector_element_class_name in product_detail_info_elem_innerHTML:
 		
@@ -54,16 +55,16 @@ def get_product_info(driver):
 				color = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-color-selector__selected-color-name"]')))
 				color = color.text.split('|')[0].replace(' ','')
 				
-				productInfo_dict[color] = dict()
+				productInfo_dict['color'][color] = dict()
 				
 				#productInfo_dict[color]['size'] = list()
 				
-				productInfo_dict[color]['price'] =  WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
+				productInfo_dict['color'][color]['price'] =  WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
 				
 				UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
-				productInfo_dict[color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
-			print(productInfo_dict)
+				productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
+			#print(productInfo_dict)
 			return productInfo_dict
 		else:
 		
@@ -72,13 +73,13 @@ def get_product_info(driver):
 			color = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-info__color"]')))
 			color = color.text.split('|')[0].replace(' ','')
 			
-			productInfo_dict[color] = dict()
+			productInfo_dict['color'][color] = dict()
 			
-			productInfo_dict[color]['price'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price"]//div[@class="money-amount price-formatted__price-amount"]//span[@class="money-amount__main"]'))).text
+			productInfo_dict['color'][color]['price'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price"]//div[@class="money-amount price-formatted__price-amount"]//span[@class="money-amount__main"]'))).text
 			UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 			LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
-			productInfo_dict[color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
-			print(productInfo_dict)
+			productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
+			#print(productInfo_dict)
 			return productInfo_dict
 	except Exception as e:
 		print(traceback.format_exc())

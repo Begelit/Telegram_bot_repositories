@@ -32,12 +32,16 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 		driver_getSource = parser.get_page_source(driver,url)
 		await asyncio.sleep(3)
 	product_info = parser.get_product_info(driver_getSource)
+	#print(product_info)
 	
-	await state.update_data(productDetail=product_info)
+	#await state.update_data(productDetail=product_info)
 	driver.close()
 	
+	async with state.proxy() as data:
+		data['productDetail'] = product_info
+		
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-	for color in product_info:
+	for color in product_info['color']:
 		keyboard.add(color)
 		
 	await OrderClothes.waiting_for_clothes_color.set()
@@ -45,15 +49,20 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 async def color_chosen(message: types.Message, state: FSMContext):
 
-	order_data = await state.get_data()
-	colors_list = [color for color in order_data['productDetail']]
+	async with state.proxy() as data:
+		order_data = data
+	#print(order_data)
+	colors_list = [color for color in order_data['productDetail']['color']]
 	if message.text not in colors_list:
 		await message.answer('Пожалуйста, введите нужный цвет, используя клавиатуру ниже:')
 		return
-	await state.update_data(received_color=message.text)
+	async with state.proxy() as data:
+		data['received_color'] = message.text
+	#await state.update_data(received_color=message.text)
 	
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-	for size in order_data['productDetail'][message.text]['size']:
+	#print(order_data)
+	for size in order_data['productDetail']['color'][message.text]['size']:
 		keyboard.add(size)
 	
 	await OrderClothes.waiting_for_clothes_size.set()
@@ -61,24 +70,30 @@ async def color_chosen(message: types.Message, state: FSMContext):
 	
 async def size_order(message: types.Message, state: FSMContext):
 
-	order_data = await state.get_data()
+	async with state.proxy() as data:
+		order_data = data
+	#order_data = await state.get_data()
 	color = order_data['received_color']
-	size = order_data['productDetail'][color]['size']
+	size = order_data['productDetail']['color'][color]['size']
 	if message.text not in size:
 		await message.answer('Пожалуйста, введите нужный размер, используя клавиатуру ниже:')
 		return
-	await state.update_data(received_size=message.text)
+	async with state.proxy() as data:
+		data['received_size'] = message.text
+		order_data = data
+	print(order_data)
+	#await state.update_data(received_size=message.text)
 	
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	keyboard.add('Подтвердить')
 	keyboard.add('Отменить')
 	
 	await OrderClothes.waiting_for_confirm.set()
-	await message.answer("Почти готово! Пожалуйста, подтвердите заказ:"+
-				"\n\n  {order_data['productDetail']['name']}"+
-				"\n    Цвет: {order_data['received_color']}"+
-				"\n    Размер: {order_data['received_size']}"+
-				"\n    Цена: {order_data['productDetail']['color']['price']}",reply_markup=keyboard)
+	await message.answer("Почти готово! Пожалуйста, подтвердите заказ:"
+				f"\n\n  {order_data['productDetail']['name']}"
+				f"\n    Цвет: {order_data['received_color']}"
+				f"\n    Размер: {order_data['received_size']}"
+				f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}",reply_markup=keyboard)
 	
 async def confirm_order(message: types.Message, state: FSMContext):
 	if message.text not in ['Подтвердить','Отменить']:
