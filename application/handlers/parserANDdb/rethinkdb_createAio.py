@@ -15,5 +15,23 @@ def pyAiRethinkDB_Create(name = str(),user_password = str()):
 			r.db(name).table_create(name).run(conn)
 		else:
 			print('\n '+name+' database is already created\n')
+def deleteDB():
+	r = RethinkDB()
+	#with r.connect(host='localhost',port=28015,user='aiogram',password='aiogram_secret').repl() as conn:
+	with r.connect(host='localhost',port=28015,user='admin',db='rethinkdb').repl() as conn:
+		#r.db_create('aiogram').run()
+		#r.db('aiogram').grant('aiogram', {'read': True, 'write': True}).run()
+		#r.db('aiogram').table_create('aiogram').run()
+		db_list = r.db('aiogram').table_list().run()
+		print(db_list)
+	"""
+	with r.connect(host='localhost',port=28015,user='admin',db='rethinkdb').repl() as conn:
+		#db_table_user = r.db('rethinkdb').table('users').run()
+		#r.db_drop('aiogram').run()
+		#db_list = r.db_list().run()
+		table_list = r.table_list().run()
+		print(table_list)
+	"""
 if __name__ == "__main__":
-	pyAiRethinkDB_Create(name = 'aiogram',user_password = 'aiogram_secret')
+	#pyAiRethinkDB_Create(name = 'aiogram',user_password = 'aiogram_secret')
+	deleteDB()

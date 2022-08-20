@@ -8,6 +8,8 @@ from aiogram.contrib.fsm_storage.rethinkdb import RethinkDBStorage
 from handlers.order import register_handlers_order
 from handlers.common import register_handlers_common
 
+logger = logging.getLogger(__name__)
+
 async def set_commands(bot: Bot):
 
 	commands = [
@@ -24,7 +26,7 @@ async def main():
 	)
 	logger.error("Starting bot")
 		
-	bot = Bot(token=config.tg_bot.token)
+	bot = Bot(token='5503862888:AAE4i04YESiyI49I9PCzsWpy2SWNvGDFixA')
 	
 	dp = Dispatcher(bot, storage=RethinkDBStorage(
 					db='aiogram', 

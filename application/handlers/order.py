@@ -2,7 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
-from parserAnddb import parser 
+from handlers.parserANDdb import parser 
 import asyncio
 
 lock = asyncio.Lock()
@@ -24,8 +24,8 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	await message.answer("Пожалуйста, подождите.")
 
 	url = message.text
-	
-	driver_path = '/home/koza/Reps/HEIN_FROMgit/shein_bot/drivers/chromedriver'
+
+	driver_path = '/home/koza/Reps/drivers/chromedriver'
 	driver = parser.start_driverSession(driver_path=driver_path)
 	
 	async with lock:
@@ -91,7 +91,7 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		await state.finish()
 		
 def register_handlers_order(dp: Dispatcher):
-	dp.register_message_handler(order_start, commands='/order', state="*")
+	dp.register_message_handler(order_start, commands="order", state="*")
 	dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
 	dp.register_message_handler(clothes_chosen, state=OrderClothes.waiting_for_clothes_url)
 	dp.register_message_handler(color_chosen, state=OrderClothes.waiting_for_clothes_color)
