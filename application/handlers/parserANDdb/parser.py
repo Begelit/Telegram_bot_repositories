@@ -93,13 +93,15 @@ if __name__ == "__main__":
 	#url = 'https://www.zara.com/ru/ru/%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA-%D0%B8%D0%B7-%D1%81%D1%82%D1%80%D1%83%D1%8F%D1%89%D0%B5%D0%B8%D1%81%D1%8F-%D1%82%D0%BA%D0%B0%D0%BD%D0%B8-p01255709.html?v1=179012832'
 	driver = start_driverSession(driver_path=driver_path)
 	driver_getSource = get_page_source(driver,url)
+	print(driver_getSource)
+	print(type(driver_getSource))
 	#print(driver_getSource.page_source)
 	
 	#time.sleep(random.randint(1,10))
 	#sizes_list = get_product_info(driver_getSource)
 	product_info = get_product_info(driver_getSource)
+	print(product_info)
 	#print(sizes_list)
-	#driver.close()
-	#driver.quit()
+	driver.close()
+	driver.quit()
 """
-
