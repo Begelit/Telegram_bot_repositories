@@ -2,8 +2,9 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
-import parser
+from parserAnddb import parser 
 import asyncio
+
 lock = asyncio.Lock()
 
 class OrderClothes(StatesGroup):
@@ -33,6 +34,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	product_info = parser.get_product_info(driver_getSource)
 	
 	await state.update_data(productDetail=product_info)
+	driver.close()
 	
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	for color in product_info:

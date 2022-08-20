@@ -84,7 +84,7 @@ def get_product_info(driver):
 		print(traceback.format_exc())
 		driver.close()
 		driver.quit()
-
+"""
 if __name__ == "__main__":
 	print('!!!!!!!!!!!!!!!!!!!!!!!!!')
 	driver_path = '/home/koza/Reps/drivers/chromedriver'
@@ -100,4 +100,5 @@ if __name__ == "__main__":
 	#print(sizes_list)
 	#driver.close()
 	#driver.quit()
+"""
 
