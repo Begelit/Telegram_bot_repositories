@@ -38,7 +38,9 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	#print(product_info)
 	
 	#await state.update_data(productDetail=product_info)
-	#driver.close()
+	driver.close()
+	await asyncio.sleep(1)
+	driver.quit()
 	
 	async with state.proxy() as data:
 		data['productDetail'] = product_info
@@ -108,6 +110,7 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		data['confirm_status'] = message.text
 		#driver_url = data['driver_url']
 		#driver_session_id = data['driver_session_id']
+		order_data = data
 		print(data)
 	#time.sleep(4)
 	#new_driver = webdriver.Remote(command_executor = driver_url, desired_capabilities={})
@@ -115,6 +118,22 @@ async def confirm_order(message: types.Message, state: FSMContext):
 	#new_driver.session_id = driver_session_id
 	#await state.update_data(confirm_status=message.text)
 	if message.text == 'Подтвердить':
+	
+		url = order_data['received_url']
+		driver_path = '/home/koza/Reps/drivers/chromedriver'
+		driver = parser.start_driverSession(driver_path=driver_path)
+		
+		async with lock:
+			driver = parser.get_page_source(driver,url)
+			await asyncio.sleep(3)
+			
+		parser.create_basket(order_data,driver)
+		
+		print('\nmay be done...')
+		driver.close()
+		await asyncio.sleep(1)
+		driver.quit()
+		
 		await state.finish()
 	elif message.text == 'Отменить':
 		await state.finish()

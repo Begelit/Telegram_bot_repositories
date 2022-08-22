@@ -64,7 +64,9 @@ def get_product_info(driver):
 				
 				#productInfo_dict[color]['size'] = list()
 				
-				productInfo_dict['color'][color]['color_button_path'] = 'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1))
+				productInfo_dict['color'][color]['color_button_path'] = dict()
+				productInfo_dict['color'][color]['color_button_path']['path'] = 'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1))
+				productInfo_dict['color'][color]['color_button_path']['index'] = i+1
 				
 				productInfo_dict['color'][color]['price'] =  WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
 				
@@ -103,7 +105,47 @@ def get_product_info(driver):
 		print(traceback.format_exc())
 		driver.close()
 		driver.quit()
+		
+def create_basket(data,driver):
 
+	productDetail = data['productDetail']
+	
+	color = data['received_color']
+	
+	if  productDetail['type_choice_color'] == 'multi_color':
+	
+		colors_list_path = '//div[@id = "app-root"]//div[@class="product-detail-color-selector__color-selector-container"]//ul[@class = "product-detail-color-selector__colors"]'
+		sizes_list_path = '//div[@id = "app-root"]//div[@id = "theme-app"]//div[@class = "product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded"]//div[@class= "product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open"]//ul[@class = "product-detail-size-selector__size-list"]'
+		
+		UL_element_color = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', colors_list_path)))
+		LI_elements_color = UL_element_color.find_elements(By.XPATH,'//li[@class="product-detail-color-selector__color"]')
+		
+		for i,li in enumerate(LI_elements_color):
+		
+			if int(productDetail['color'][color]['color_button_path']['index']) == i+1:
+			
+				color_button = WebDriverWait(driver,30).until(EC.element_to_be_clickable(li.find_element(By.CSS_SELECTOR,'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1)))))
+				color_button.click()
+				
+				li_size_xpath = productDetail['color'][color]['size'][data['received_size']]
+				
+				li_size = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH,li_size_xpath)))
+				li_size.click()
+				
+				driver.implicitly_wait(5)
+				
+				product_detail_info_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+				
+				product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
+				
+				size_selector_div = 'class="product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--expanded"'
+				
+				print('\n@@@@@@@@2',size_selector_div in product_detail_info_elem_innerHTML)
+				
+				
+				
+				
+				
 '''
 if __name__ == "__main__":
 	print('!!!!!!!!!!!!!!!!!!!!!!!!!')
