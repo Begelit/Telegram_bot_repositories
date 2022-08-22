@@ -1,0 +1,5 @@
+2022/08/23-02:12:12.843 a436 Creating DB /home/koza/Reps/HEIN_FROMgit/shein_bot/application/./User/Default/Local Storage/leveldb since it was missing.
+2022/08/23-02:12:12.860 a436 Reusing MANIFEST /home/koza/Reps/HEIN_FROMgit/shein_bot/application/./User/Default/Local Storage/leveldb/MANIFEST-000001
+2022/08/23-02:12:18.104 a44a Level-0 table #5: started
+2022/08/23-02:12:18.114 a44a Level-0 table #5: 117841 bytes OK
+2022/08/23-02:12:18.118 a44a Delete type=0 #3

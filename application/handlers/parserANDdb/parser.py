@@ -20,10 +20,16 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	options.add_argument('--headless')
+	#options.add_argument('--headless')
 	options.add_argument(f'user-agent={useragent}')
 	options.binary_location = '/bin/google-chrome'
-	options.add_argument('--disable-blink-features=AutomationControlled')
+	#options.add_argument('--disable-blink-features=AutomationControlled')
+	options.add_argument('--allow-profiles-outside-user-dir')
+	options.add_argument('--enable-profile-shortcut-manager')
+	options.add_argument(r'user-data-dir=./User')
+	options.add_argument('--profile-directory=Profile_1')
+	options.add_argument('--profiling-flush=10')
+	options.add_argument('--enable-aggressive-domstorage-flushing')
 	return webdriver.Chrome(driver_path, chrome_options=options)
 	
 def get_page_source(driver,url):
@@ -140,8 +146,23 @@ def create_basket(data,driver):
 				
 				size_selector_div = 'class="product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--expanded"'
 				
-				print('\n@@@@@@@@2',size_selector_div in product_detail_info_elem_innerHTML)
+				#print('\n@@@@@@@@2',size_selector_div in product_detail_info_elem_innerHTML)
+				if size_selector_div in product_detail_info_elem_innerHTML:
 				
+					basket_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH,'//button[@class="button product-cart-buttons__button product-cart-buttons__add-to-cart"]')))
+					basket_button.click()
+					
+					#driver.implicitly_wait(10)
+					
+					drawer_conteiner = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@id="theme-modal-container"]//div[@class = "drawer__container"]')))
+					theme_modal_container = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@id="theme-modal-container"]')))
+					
+					#time.sleep(5)
+					theme_modal_container_innerHTML = theme_modal_container.get_attribute('innerHTML')
+					print(theme_modal_container_innerHTML)
+					
+					button_docked = 'class="button-docked container-docked container-docked--s container-docked---parent-fixed"'
+					print('\nbutton_docked --->>>>----->>>>',button_docked in theme_modal_container_innerHTML)
 				
 				
 				
