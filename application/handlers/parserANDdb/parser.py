@@ -104,7 +104,7 @@ def get_product_info(driver):
 		driver.close()
 		driver.quit()
 
-
+'''
 if __name__ == "__main__":
 	print('!!!!!!!!!!!!!!!!!!!!!!!!!')
 	driver_path = '/home/koza/Reps/drivers/chromedriver'
@@ -129,5 +129,5 @@ if __name__ == "__main__":
 
 	driver.close()
 	driver.quit()
-
+'''
 
