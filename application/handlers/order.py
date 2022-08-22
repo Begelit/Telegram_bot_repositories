@@ -4,7 +4,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from handlers.parserANDdb import parser 
 import asyncio
-
+from selenium import webdriver
+import time
 lock = asyncio.Lock()
 
 class OrderClothes(StatesGroup):
@@ -18,8 +19,10 @@ async def order_start(message: types.Message):
 	await OrderClothes.waiting_for_clothes_url.set()
 
 async def clothes_chosen(message: types.Message, state: FSMContext):
-	
-	await state.update_data(received_url=message.text)
+
+	async with state.proxy() as data:
+		data['received_url'] = message.text
+	#await state.update_data(received_url=message.text)
 
 	await message.answer("Пожалуйста, подождите.")
 
@@ -29,16 +32,18 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	driver = parser.start_driverSession(driver_path=driver_path)
 	
 	async with lock:
-		driver_getSource = parser.get_page_source(driver,url)
+		driver = parser.get_page_source(driver,url)
 		await asyncio.sleep(3)
-	product_info = parser.get_product_info(driver_getSource)
+	product_info = parser.get_product_info(driver)
 	#print(product_info)
 	
 	#await state.update_data(productDetail=product_info)
-	driver.close()
+	#driver.close()
 	
 	async with state.proxy() as data:
 		data['productDetail'] = product_info
+		#data['driver_url'] = driver.command_executor._url
+		#data['driver_session_id'] = driver.session_id
 		
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	for color in product_info['color']:
@@ -81,7 +86,7 @@ async def size_order(message: types.Message, state: FSMContext):
 	async with state.proxy() as data:
 		data['received_size'] = message.text
 		order_data = data
-	print(order_data)
+	#print(order_data)
 	#await state.update_data(received_size=message.text)
 	
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -94,12 +99,21 @@ async def size_order(message: types.Message, state: FSMContext):
 				f"\n    Цвет: {order_data['received_color']}"
 				f"\n    Размер: {order_data['received_size']}"
 				f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}",reply_markup=keyboard)
-	
+
 async def confirm_order(message: types.Message, state: FSMContext):
 	if message.text not in ['Подтвердить','Отменить']:
 		await message.answer('Пожалуйста, подтведите или отмените заказ, используя клавиатуру ниже:')
 		return
-	await state.update_data(confirm_status=message.text)
+	async with state.proxy() as data:
+		data['confirm_status'] = message.text
+		#driver_url = data['driver_url']
+		#driver_session_id = data['driver_session_id']
+		print(data)
+	#time.sleep(4)
+	#new_driver = webdriver.Remote(command_executor = driver_url, desired_capabilities={})
+	#new_driver.close()
+	#new_driver.session_id = driver_session_id
+	#await state.update_data(confirm_status=message.text)
 	if message.text == 'Подтвердить':
 		await state.finish()
 	elif message.text == 'Отменить':
