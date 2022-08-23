@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote
 import asyncio 
 import pickle
+import configparser
 
 def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
@@ -48,7 +49,15 @@ def get_login_link(driver):
 			if 'logon' in elem.get_attribute('href'):
 				return elem.get_attribute('href'), driver
 			#print(elem.get_attribute('href'))
-		#return elem_with_a_href.inn#elem_with_a_href.get_attribute('href')
+			
+def login_user(driver):
+	config = configparser.ConfigParser()
+	config.read('/home/koza/Reps/HEIN_FROMgit/shein_bot/application/handlers/parserANDdb/zara_log.ini')#, encoding = 'utf-8-sig')
+	usr = config.get('zaraUsr', 'usr')
+	pswd = config.get('zaraUsr', 'pswd')
+	
+	#print(usr,pswd)
+
 def get_product_info(driver):
 	try:
 		

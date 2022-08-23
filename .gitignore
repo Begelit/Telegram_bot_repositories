@@ -1,0 +1,3 @@
+application/User/*
+application/handlers/parserANDdb/zara_log.ini
+application/handlers/parserANDdb/create_config.py

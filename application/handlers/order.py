@@ -111,7 +111,7 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		#driver_url = data['driver_url']
 		#driver_session_id = data['driver_session_id']
 		order_data = data
-		print(data)
+		#print(data)
 	#time.sleep(4)
 	#new_driver = webdriver.Remote(command_executor = driver_url, desired_capabilities={})
 	#new_driver.close()
@@ -128,11 +128,12 @@ async def confirm_order(message: types.Message, state: FSMContext):
 			await asyncio.sleep(3)
 			
 		login_link,driver = parser.get_login_link(driver)
-		
+		print(login_link)
 		if login_link != True:
 			async with lock:
 				driver = parser.get_page_source(driver,login_link)
 				await asyncio.sleep(3)
+			parser.login_user(driver)
 		
 		#parser.create_basket(order_data,driver)
 		
