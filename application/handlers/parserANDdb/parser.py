@@ -20,7 +20,7 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	#options.add_argument('--headless')
+	options.add_argument('--headless')
 	options.add_argument(f'user-agent={useragent}')
 	options.binary_location = '/bin/google-chrome'
 	#options.add_argument('--disable-blink-features=AutomationControlled')
@@ -35,7 +35,20 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 def get_page_source(driver,url):
 	driver.get(url)
 	return driver#print(driver.page_source)
-
+	
+def get_login_link(driver):
+	layout_header_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class = "layout-header__links"]')))
+	layout_header_elem_innerHTML = layout_header_elem.get_attribute('innerHTML')
+	loggined_user_attrib = 'class="layout-header-link layout-header-links__desktop-link layout-header-links__user-name link"'
+	if loggined_user_attrib in layout_header_elem_innerHTML:
+		return True, driver
+	else:
+		elem_with_a_href = layout_header_elem.find_elements(By.XPATH,'//a[@class="layout-header-link layout-header-links__desktop-link link"]')
+		for elem in elem_with_a_href:
+			if 'logon' in elem.get_attribute('href'):
+				return elem.get_attribute('href'), driver
+			#print(elem.get_attribute('href'))
+		#return elem_with_a_href.inn#elem_with_a_href.get_attribute('href')
 def get_product_info(driver):
 	try:
 		

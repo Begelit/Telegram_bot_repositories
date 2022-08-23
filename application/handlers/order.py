@@ -127,7 +127,14 @@ async def confirm_order(message: types.Message, state: FSMContext):
 			driver = parser.get_page_source(driver,url)
 			await asyncio.sleep(3)
 			
-		parser.create_basket(order_data,driver)
+		login_link,driver = parser.get_login_link(driver)
+		
+		if login_link != True:
+			async with lock:
+				driver = parser.get_page_source(driver,login_link)
+				await asyncio.sleep(3)
+		
+		#parser.create_basket(order_data,driver)
 		
 		print('\nmay be done...')
 		driver.close()

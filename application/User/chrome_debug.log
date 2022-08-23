@@ -1,18 +1,20 @@
-[42985:42985:0823/021840.736836:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.738536:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.739080:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.741309:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42942:42942:0823/021840.762547:WARNING:bluez_dbus_manager.cc(247)] Floss manager not present, cannot set Floss enable/disable.
-[42985:42985:0823/021840.763247:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.765862:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.770583:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.779479:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.790345:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.790831:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.796600:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.797766:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.798081:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.798294:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42985:42985:0823/021840.799468:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
-[42942:42942:0823/021849.790178:INFO:CONSOLE(7)] "Error in fetch URL : https://cdn.cookielaw.org/consent/cadb9218-57dc-4d9d-88e2-9f60895ffd8e/af33443c-93a5-4bfd-afd3-dc38a7b8d6b6/ru-ru.json Exception :TypeError: Failed to fetch", source: https://cdn.cookielaw.org/scripttemplates/6.28.0/otBannerSdk.js (7)
-[42942:42942:0823/021916.957791:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
+[9705:9705:0823/151833.840548:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.840828:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.840964:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.841100:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.841227:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.841351:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.841480:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.841606:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.842477:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.842756:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.842981:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.843205:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.843406:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.843624:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9705:9705:0823/151833.843830:ERROR:gbm_wrapper.cc(292)] Failed to export buffer to dma_buf: Нет такого файла или каталога (2)
+[9652:9652:0823/151833.939454:WARNING:bluez_dbus_manager.cc(247)] Floss manager not present, cannot set Floss enable/disable.
+[9652:9652:0823/151840.387073:INFO:CONSOLE(1)] "Catalogo ready", source:  (1)
+[9706:9718:0823/151841.113656:ERROR:ssl_client_socket_impl.cc(996)] handshake failed; returned -1, SSL error code 1, net_error -101
+[9706:9718:0823/151841.227102:ERROR:ssl_client_socket_impl.cc(996)] handshake failed; returned -1, SSL error code 1, net_error -101
+[9652:9652:0823/151856.510747:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
