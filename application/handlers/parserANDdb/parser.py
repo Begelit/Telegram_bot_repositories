@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 from urllib.parse import quote
@@ -21,20 +22,30 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	options.add_argument('--headless')
+	#options.add_argument('--headless')
 	options.add_argument(f'user-agent={useragent}')
-	options.binary_location = '/bin/google-chrome'
-	#options.add_argument('--disable-blink-features=AutomationControlled')
 	options.add_argument('--allow-profiles-outside-user-dir')
 	options.add_argument('--enable-profile-shortcut-manager')
-	options.add_argument(r'user-data-dir=./User')
-	options.add_argument('--profile-directory=Profile_1')
-	options.add_argument('--profiling-flush=10')
-	options.add_argument('--enable-aggressive-domstorage-flushing')
+	options.add_argument(f'--user-data-dir=/home/koza/.config/google-chrome')
+	options.add_argument('--profile-directory=Profile 1')
+	options.binary_location = '/bin/google-chrome'
+	options.add_argument('--disable-blink-features=AutomationControlled')
 	return webdriver.Chrome(driver_path, chrome_options=options)
+#0 0x55d58c6abcd3 <unknown>
+#1 0x55d58c4b3968 <unknown>
+#2 0x55d58c4eafd7 <unknown>
+#3 0x55d58c4eb1a1 <unknown>
+#4 0x55d58c51e154 <unknown>
+
+
 	
 def get_page_source(driver,url):
 	driver.get(url)
+	#with open('cookies.pkl','rb') as r:
+	#	cookies = pickle.load(r)
+	cookies = pickle.load(open('cookies.pkl','rb'))
+	#for cookie in cookies:
+	#	driver.add_cookie(cookie)
 	return driver#print(driver.page_source)
 	
 def get_login_link(driver):
@@ -51,11 +62,104 @@ def get_login_link(driver):
 			#print(elem.get_attribute('href'))
 			
 def login_user(driver):
+	driver.maximize_window()
+	#print(driver.page_source)
 	config = configparser.ConfigParser()
-	config.read('/home/koza/Reps/HEIN_FROMgit/shein_bot/application/handlers/parserANDdb/zara_log.ini')#, encoding = 'utf-8-sig')
+	config.read('/home/koza/Reps/HEIN_FROMgit/shein_bot/zara/application/handlers/parserANDdb/zara_log.ini')#, encoding = 'utf-8-sig')
 	usr = config.get('zaraUsr', 'usr')
 	pswd = config.get('zaraUsr', 'pswd')
 	
+	input_usr = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-text__input"]')))
+	input_usr.send_keys(usr)
+	input_pswd = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-password__input"]')))
+	input_pswd.send_keys(pswd)
+	#time.sleep(600)
+	
+	#print(driver.page_source)
+	
+	action = ActionChains(driver)
+	
+	try:
+		session_button = WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
+		#session_button.click()
+		action.move_to_element(session_button).click().perform()
+		time.sleep(5)
+	except: #selenium.common.exceptions.TimeoutException:
+		cookies_close_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="onetrust-close-btn-handler banner-close-button ot-close-icon"]')))
+		action.move_to_element(cookies_close_button).click().perform()
+
+		#cookies_close_button.click()
+		
+		session_button = WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
+		action.move_to_element(session_button).click().perform()
+		
+		#cookies = driver.get_cookies()
+		#with open('cookies.pkl','wb') as w:
+		#	pickle.dump(cookies,w)	
+		#print(cookies)
+			
+
+		#session_button.click()
+
+	while True:
+		time.sleep(3)
+		#print(driver.page_source)
+		try:
+			img_title_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="media-image__wrapper"]')))
+			#cookies = driver.get_cookies()
+			#with open('cookies.pkl','wb') as w:
+			#	pickle.dump(cookies,w)	
+			#print(cookies)
+			#print(driver.page_source)
+			#pickle.dump(drivers.get_cookies(), open('cookies.pkl','wb'))
+		
+			return driver
+		#except Exception as e:
+		except: #selenium.common.exceptions.TimeoutException:
+			session_elem = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//div[@class="layout-error__button-wrapper"]//a[@class="button"]')))
+			action.move_to_element(session_elem).click().perform()
+			#session_elem.click()
+			time.sleep(3)
+			
+			input_usr = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-text__input"]')))
+			input_usr.send_keys(usr)
+			input_pswd = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-password__input"]')))
+			input_pswd.send_keys(pswd)
+			
+			try:
+				session_button = WebDriverWait(driver,30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
+				action.move_to_element(session_button).click().perform()
+				#session_button.click()
+				time.sleep(3)
+				#try:
+				#	img_title_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="media-image__wrapper"]')))
+				#	return driver
+				#except Exception as e:
+				#	print(driver.page_source)
+				#	print(traceback.format_exc())
+			except: 
+				#selenium.common.exceptions.TimeoutException:
+				cookies_close_button =  WebDriverWait(driver,30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="onetrust-close-btn-handler banner-close-button ot-close-icon"]')))
+				action.move_to_element(cookies_close_button).click().perform()
+				#cookies_close_button.click()
+				
+				session_button = WebDriverWait(driver,30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
+				action.move_to_element(session_button).click().perform()
+				#session_button.click()
+				time.sleep(3)
+				
+				#try:
+				#	img_title_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="media-image__wrapper"]')))
+				#	#print(driver.page_source)
+				#	return driver
+				#except Exception as e:
+				#	print(traceback.format_exc())
+
+		
+	
+	#print(img_title_elem)
+	
+	#print(driver.page_source)
 	#print(usr,pswd)
 
 def get_product_info(driver):

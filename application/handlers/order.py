@@ -34,8 +34,10 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	async with lock:
 		driver = parser.get_page_source(driver,url)
 		await asyncio.sleep(3)
+		
 	product_info = parser.get_product_info(driver)
 	#print(product_info)
+	login_link,driver = parser.get_login_link(driver)
 	
 	#await state.update_data(productDetail=product_info)
 	driver.close()
@@ -44,6 +46,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 	async with state.proxy() as data:
 		data['productDetail'] = product_info
+		data['login_link'] = login_link
 		#data['driver_url'] = driver.command_executor._url
 		#data['driver_session_id'] = driver.session_id
 		
@@ -122,20 +125,29 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		url = order_data['received_url']
 		driver_path = '/home/koza/Reps/drivers/chromedriver'
 		driver = parser.start_driverSession(driver_path=driver_path)
+		login_link = order_data['login_link']
 		
-		async with lock:
-			driver = parser.get_page_source(driver,url)
-			await asyncio.sleep(3)
-			
-		login_link,driver = parser.get_login_link(driver)
+		#async with lock:
+		#	driver = parser.get_page_source(driver,url)
+		#	await asyncio.sleep(3)
+		
+		#login_link,driver = parser.get_login_link(driver)
 		print(login_link)
 		if login_link != True:
 			async with lock:
 				driver = parser.get_page_source(driver,login_link)
 				await asyncio.sleep(3)
-			parser.login_user(driver)
-		
-		#parser.create_basket(order_data,driver)
+			async with lock:
+				driver = parser.login_user(driver)
+				await asyncio.sleep(3)
+			async with lock:
+				driver = parser.get_page_source(driver,url)
+				await asyncio.sleep(3)
+		else:
+			async with lock:
+				driver = parser.get_page_source(driver,url)
+				await asyncio.sleep(3)
+		parser.create_basket(order_data,driver)
 		
 		print('\nmay be done...')
 		driver.close()
