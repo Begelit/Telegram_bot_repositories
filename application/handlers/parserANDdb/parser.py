@@ -24,10 +24,10 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	options = Options()
 	#options.add_argument('--headless')
 	options.add_argument(f'user-agent={useragent}')
-	options.add_argument('--allow-profiles-outside-user-dir')
-	options.add_argument('--enable-profile-shortcut-manager')
-	options.add_argument(f'--user-data-dir=/home/koza/.config/google-chrome')
-	options.add_argument('--profile-directory=Profile 1')
+	#options.add_argument('--allow-profiles-outside-user-dir')
+	#options.add_argument('--enable-profile-shortcut-manager')
+	#options.add_argument(f'--user-data-dir=/home/koza/.config/google-chrome')
+	#options.add_argument('--profile-directory=Profile 1')
 	options.binary_location = '/bin/google-chrome'
 	options.add_argument('--disable-blink-features=AutomationControlled')
 	return webdriver.Chrome(driver_path, chrome_options=options)
@@ -66,6 +66,7 @@ def login_user(driver):
 	#print(driver.page_source)
 	config = configparser.ConfigParser()
 	config.read('/home/koza/Reps/HEIN_FROMgit/shein_bot/zara/application/handlers/parserANDdb/zara_log.ini')#, encoding = 'utf-8-sig')
+	
 	usr = config.get('zaraUsr', 'usr')
 	pswd = config.get('zaraUsr', 'pswd')
 	
@@ -171,6 +172,17 @@ def get_product_info(driver):
 		productInfo_dict = dict()
 		productInfo_dict['color'] = dict()
 		productInfo_dict['name'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+		'''
+		try:
+			WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
+			geo_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.CSS_SELECTOR,'#theme-modal-container > div.modal > div > div > div > div.modal__body > section.geolocation-modal__actions > button:nth-child(1)')))
+			geo_button.click()
+			time.sleep(5)
+			geo_button.click()
+		except Exception as e:
+			print('well........................................./n................................/n................')
+			print(traceback.format_exc())
+		'''
 		if color_selector_element_class_name in product_detail_info_elem_innerHTML:
 		
 			productInfo_dict['type_choice_color'] = 'multi_color'
@@ -180,7 +192,7 @@ def get_product_info(driver):
 			
 			UL_element_color = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', colors_list_path)))
 			LI_elements_color = UL_element_color.find_elements(By.XPATH,'//li[@class="product-detail-color-selector__color"]')
-
+			
 			for i,li in enumerate(LI_elements_color):
 				#color_button_path
 				color_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(li.find_element(By.CSS_SELECTOR,'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1)))))
@@ -235,6 +247,7 @@ def get_product_info(driver):
 			return productInfo_dict
 	except Exception as e:
 		print(traceback.format_exc())
+		time.sleep(600)
 		driver.close()
 		driver.quit()
 		

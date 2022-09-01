@@ -6,6 +6,7 @@ from handlers.parserANDdb import parser
 import asyncio
 from selenium import webdriver
 import time
+import json
 lock = asyncio.Lock()
 
 class OrderClothes(StatesGroup):
@@ -114,6 +115,14 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		#driver_url = data['driver_url']
 		#driver_session_id = data['driver_session_id']
 		order_data = data
+		json_dict = dict()
+		for key in data:
+			json_dict[key] = data[key]
+		print(json_dict)
+		print(type(json_dict))
+		json_file = open('clothe_data.json','w')
+		json.dump(json_dict,json_file,indent=6)
+		json_file.close()
 		#print(data)
 	#time.sleep(4)
 	#new_driver = webdriver.Remote(command_executor = driver_url, desired_capabilities={})
@@ -123,14 +132,12 @@ async def confirm_order(message: types.Message, state: FSMContext):
 	if message.text == 'Подтвердить':
 	
 		url = order_data['received_url']
-		driver_path = '/home/koza/Reps/drivers/chromedriver'
-		driver = parser.start_driverSession(driver_path=driver_path)
+		#driver_path = '/home/koza/Reps/drivers/chromedriver'
+		#driver = parser.start_driverSession(driver_path=driver_path)
 		login_link = order_data['login_link']
-		
-		#async with lock:
-		#	driver = parser.get_page_source(driver,url)
-		#	await asyncio.sleep(3)
-		
+		print(order_data)
+		####<<<<ТИПА ФОРМИРУЕМ КОРЗИНУ########################################
+		'''
 		#login_link,driver = parser.get_login_link(driver)
 		print(login_link)
 		if login_link != True:
@@ -148,6 +155,8 @@ async def confirm_order(message: types.Message, state: FSMContext):
 				driver = parser.get_page_source(driver,url)
 				await asyncio.sleep(3)
 		parser.create_basket(order_data,driver)
+		'''
+		####ТИПА ФОРМИРУЕМ КОРЗИНУ>>>>########################################
 		
 		print('\nmay be done...')
 		driver.close()
