@@ -7,6 +7,7 @@ import asyncio
 from selenium import webdriver
 import time
 import json
+from datetime import datetime
 lock = asyncio.Lock()
 
 class OrderClothes(StatesGroup):
@@ -21,35 +22,57 @@ async def order_start(message: types.Message):
 
 async def clothes_chosen(message: types.Message, state: FSMContext):
 
-	async with state.proxy() as data:
-		data['received_url'] = message.text
-	#await state.update_data(received_url=message.text)
+	#await message.answer("Пожалуйста, подождите.")
 
-	await message.answer("Пожалуйста, подождите.")
+	#url = message.text
 
-	url = message.text
-
-	driver_path = '/home/koza/Reps/drivers/chromedriver'
-	driver = parser.start_driverSession(driver_path=driver_path)
+	#driver_path = '/home/koza/Reps/drivers/chromedriver'
+	#driver = parser.start_driverSession(driver_path=driver_path)
 	
 	async with lock:
-		driver = parser.get_page_source(driver,url)
-		await asyncio.sleep(3)
-		
-	product_info = parser.get_product_info(driver)
-	#print(product_info)
-	login_link,driver = parser.get_login_link(driver)
 	
-	#await state.update_data(productDetail=product_info)
+		await message.answer("Пожалуйста, подождите.")
+
+		url = message.text
+
+		driver_path = '/home/koza/Reps/drivers/chromedriver'
+		driver = parser.start_driverSession(driver_path=driver_path)
+		
+		status,driver = parser.get_page_source(driver,url)
+		#await asyncio.sleep(3)
+		
+	if status == False:
+		driver.close()
+		await asyncio.sleep(1)
+		driver.quit()
+		await asyncio.sleep(3)
+		await message.answer("Ссылка некорректна. Попробуйте ещё раз")
+		return
+		
+	status,product_info = parser.get_product_info(driver)
+	
+	if status == 'have not clothes':
+		driver.close()
+		await asyncio.sleep(1)
+		driver.quit()
+		await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова.")
+		return
+	elif status == 'False':
+		driver.close()
+		await asyncio.sleep(1)
+		driver.quit()
+		await asyncio.sleep(3)
+		await message.answer("Что-то пошло не так... Попробуйте ещё раз")
+		return
+		
 	driver.close()
 	await asyncio.sleep(1)
 	driver.quit()
 	
 	async with state.proxy() as data:
 		data['productDetail'] = product_info
-		data['login_link'] = login_link
-		#data['driver_url'] = driver.command_executor._url
-		#data['driver_session_id'] = driver.session_id
+		#data['login_link'] = login_link
+		data['received_url'] = message.text
 		
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	for color in product_info['color']:
@@ -112,30 +135,34 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		return
 	async with state.proxy() as data:
 		data['confirm_status'] = message.text
+		data['username'] = message.from_user.username
+		data['datetime'] = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 		#driver_url = data['driver_url']
 		#driver_session_id = data['driver_session_id']
 		order_data = data
 		json_dict = dict()
 		for key in data:
 			json_dict[key] = data[key]
-		print(json_dict)
-		print(type(json_dict))
-		json_file = open('clothe_data.json','w')
-		json.dump(json_dict,json_file,indent=6)
-		json_file.close()
-		#print(data)
+		#print(json_dict)
+		#json_file = open('clothe_data.json','w')
+		#json.dump(json_dict,json_file,indent=6)
+		#json_file.close()
+
 	#time.sleep(4)
 	#new_driver = webdriver.Remote(command_executor = driver_url, desired_capabilities={})
 	#new_driver.close()
 	#new_driver.session_id = driver_session_id
 	#await state.update_data(confirm_status=message.text)
 	if message.text == 'Подтвердить':
-	
-		url = order_data['received_url']
+		print(json_dict)
+		json_file = open('clothe_data.json','w')
+		json.dump(json_dict,json_file,indent=6)
+		json_file.close()
+		#url = order_data['received_url']
 		#driver_path = '/home/koza/Reps/drivers/chromedriver'
 		#driver = parser.start_driverSession(driver_path=driver_path)
-		login_link = order_data['login_link']
-		print(order_data)
+		#login_link = order_data['login_link']
+		#print(order_data)
 		####<<<<ТИПА ФОРМИРУЕМ КОРЗИНУ########################################
 		'''
 		#login_link,driver = parser.get_login_link(driver)
@@ -159,9 +186,9 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		####ТИПА ФОРМИРУЕМ КОРЗИНУ>>>>########################################
 		
 		print('\nmay be done...')
-		driver.close()
-		await asyncio.sleep(1)
-		driver.quit()
+		#driver.close()
+		#await asyncio.sleep(1)
+		#driver.quit()
 		
 		await state.finish()
 	elif message.text == 'Отменить':

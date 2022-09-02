@@ -22,7 +22,7 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	#options.add_argument('--headless')
+	options.add_argument('--headless')
 	options.add_argument(f'user-agent={useragent}')
 	#options.add_argument('--allow-profiles-outside-user-dir')
 	#options.add_argument('--enable-profile-shortcut-manager')
@@ -40,13 +40,17 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 
 	
 def get_page_source(driver,url):
-	driver.get(url)
-	#with open('cookies.pkl','rb') as r:
-	#	cookies = pickle.load(r)
-	cookies = pickle.load(open('cookies.pkl','rb'))
-	#for cookie in cookies:
-	#	driver.add_cookie(cookie)
-	return driver#print(driver.page_source)
+	try:
+		driver.get(url)
+		#with open('cookies.pkl','rb') as r:
+		#	cookies = pickle.load(r)
+		cookies = pickle.load(open('cookies.pkl','rb'))
+		#for cookie in cookies:
+		#	driver.add_cookie(cookie)
+		return True, driver#print(driver.page_source)
+	except Exception as e:
+		return False,driver
+		
 	
 def get_login_link(driver):
 	layout_header_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class = "layout-header__links"]')))
@@ -84,7 +88,7 @@ def login_user(driver):
 		session_button = WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
 		#session_button.click()
 		action.move_to_element(session_button).click().perform()
-		time.sleep(5)
+		#time.sleep(5)
 	except: #selenium.common.exceptions.TimeoutException:
 		cookies_close_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="onetrust-close-btn-handler banner-close-button ot-close-icon"]')))
 		action.move_to_element(cookies_close_button).click().perform()
@@ -165,13 +169,18 @@ def login_user(driver):
 
 def get_product_info(driver):
 	try:
+		try:
 		
-		product_detail_info_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+			product_detail_info_elem = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+		except Exception as e:
+			print("___________________wtf____________________")
+			print(traceback.format_exc())
+			return 'have not clothes',driver
 		color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
 		product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
 		productInfo_dict = dict()
 		productInfo_dict['color'] = dict()
-		productInfo_dict['name'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+		productInfo_dict['name'] = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
 		'''
 		try:
 			WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
@@ -190,7 +199,7 @@ def get_product_info(driver):
 			colors_list_path = '//div[@id = "app-root"]//div[@class="product-detail-color-selector__color-selector-container"]//ul[@class = "product-detail-color-selector__colors"]'
 			sizes_list_path = '//div[@id = "app-root"]//div[@id = "theme-app"]//div[@class = "product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded"]//div[@class= "product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open"]//ul[@class = "product-detail-size-selector__size-list"]'
 			
-			UL_element_color = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', colors_list_path)))
+			UL_element_color = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', colors_list_path)))
 			LI_elements_color = UL_element_color.find_elements(By.XPATH,'//li[@class="product-detail-color-selector__color"]')
 			
 			for i,li in enumerate(LI_elements_color):
@@ -201,7 +210,7 @@ def get_product_info(driver):
 				driver.implicitly_wait(5)
 				#time.sleep(random.randint(2,5))
 				
-				color = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-color-selector__selected-color-name"]')))
+				color = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-color-selector__selected-color-name"]')))
 				color = color.text.split('|')[0].replace(' ','')
 				
 				productInfo_dict['color'][color] = dict()
@@ -214,7 +223,7 @@ def get_product_info(driver):
 				
 				productInfo_dict['color'][color]['price'] =  WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
 				
-				UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
+				UL_element_size = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
 				#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
 				productInfo_dict['color'][color]['size'] = dict()
@@ -223,14 +232,13 @@ def get_product_info(driver):
 					productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
 				
 			#print(productInfo_dict)
-			return productInfo_dict
-		else:
-			
+			return True,productInfo_dict
+		else:	
 			productInfo_dict['type_choice_color'] = 'single_color'
 		
 			sizes_list_path = '//div[@class="product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open"]//ul[@class="product-detail-size-selector__size-list"]'
 			
-			color = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-info__color"]')))
+			color = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-info__color"]')))
 			color = color.text.split('|')[0].replace(' ','')
 			
 			productInfo_dict['color'][color] = dict()
@@ -244,12 +252,13 @@ def get_product_info(driver):
 				size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text
 				productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
 			#print(productInfo_dict)
-			return productInfo_dict
+			return True,productInfo_dict
 	except Exception as e:
 		print(traceback.format_exc())
-		time.sleep(600)
-		driver.close()
-		driver.quit()
+		return False,None
+		#time.sleep(600)
+		#driver.close()
+		#driver.quit()
 		
 def create_basket(data,driver):
 
