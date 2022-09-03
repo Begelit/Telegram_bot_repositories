@@ -11,7 +11,7 @@ from datetime import datetime
 
 lock = asyncio.Lock()
 
-bot = Bot(token='5503862888:AAE4i04YESiyI49I9PCzsWpy2SWNvGDFixA')
+bot = Bot(token='5687809554:AAEMnikAnpF5FfHb6dX78Uw-cSshOf1BD0s')
 
 class OrderClothes(StatesGroup):
 	waiting_for_clothes_url = State()
@@ -153,6 +153,7 @@ async def color_chosen(message: types.Message, state: FSMContext):
 		keyboard.add(size)
 		
 	await bot.delete_message(message.chat.id,color_buttons_msg_id)
+	await bot.delete_message(message.chat.id,message['message_id'])
 	
 	size_button_msg = await message.answer("Теперь выберите размер:", reply_markup=keyboard)
 	
@@ -194,6 +195,7 @@ async def size_order(message: types.Message, state: FSMContext):
 	#await OrderClothes.waiting_for_confirm.set()
 	
 	await bot.delete_message(message.chat.id,size_button_msg_id)
+	await bot.delete_message(message.chat.id,message['message_id'])
 	
 	order_data_msg = await message.answer("Почти готово! Ваш заказ:"
 				f"\n\n  {order_data['productDetail']['name']}"
@@ -201,7 +203,7 @@ async def size_order(message: types.Message, state: FSMContext):
 				f"\n    Размер: {order_data['received_size']}"
 				f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}")
 				
-	confirm_msg = order_data_msg = await message.answer('Подтвердить?',reply_markup=keyboard)
+	confirm_msg = await message.answer('Подтвердить?',reply_markup=keyboard)
 	
 	async with state.proxy() as data:
 		data['msgs_id']['order_data_msg_id'] = order_data_msg['message_id']

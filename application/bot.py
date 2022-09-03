@@ -26,7 +26,7 @@ async def main():
 	)
 	logger.error("Starting bot")
 		
-	bot = Bot(token='5503862888:AAE4i04YESiyI49I9PCzsWpy2SWNvGDFixA')
+	bot = Bot(token='5687809554:AAEMnikAnpF5FfHb6dX78Uw-cSshOf1BD0s')
 	
 	dp = Dispatcher(bot, storage=RethinkDBStorage(
 					db='aiogram', 
