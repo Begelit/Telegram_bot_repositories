@@ -165,32 +165,63 @@ async def size_order(message: types.Message, state: FSMContext):
 
 	async with state.proxy() as data:
 		order_data = data
+		size_button_msg_id = data['msgs_id']['size_button_msg_id']
+		
 	#order_data = await state.get_data()
+	
 	color = order_data['received_color']
 	size = order_data['productDetail']['color'][color]['size']
+	
 	if message.text not in size:
-		await message.answer('Пожалуйста, введите нужный размер, используя клавиатуру ниже:')
+	
+		await bot.delete_message(message.chat.id,size_button_msg_id)
+		
+		size_button_msg = await message.answer('Пожалуйста, введите нужный размер, используя клавиатуру ниже:')
+		
+		async with state.proxy() as data:
+			data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
+			
 		return
+		
 	async with state.proxy() as data:
 		data['received_size'] = message.text
 		order_data = data
-	#print(order_data)
-	#await state.update_data(received_size=message.text)
 	
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	keyboard.add('Подтвердить')
 	keyboard.add('Отменить')
 	
-	await OrderClothes.waiting_for_confirm.set()
-	await message.answer("Почти готово! Пожалуйста, подтвердите заказ:"
+	#await OrderClothes.waiting_for_confirm.set()
+	
+	await bot.delete_message(message.chat.id,size_button_msg_id)
+	
+	order_data_msg = await message.answer("Почти готово! Ваш заказ:"
 				f"\n\n  {order_data['productDetail']['name']}"
 				f"\n    Цвет: {order_data['received_color']}"
 				f"\n    Размер: {order_data['received_size']}"
-				f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}",reply_markup=keyboard)
+				f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}")
+				
+	confirm_msg = order_data_msg = await message.answer('Подтвердить?',reply_markup=keyboard)
+	
+	async with state.proxy() as data:
+		data['msgs_id']['order_data_msg_id'] = order_data_msg['message_id']
+		data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
+		
+	await OrderClothes.waiting_for_confirm.set()
 
 async def confirm_order(message: types.Message, state: FSMContext):
+
+	async with state.proxy() as data:
+		order_data_msg_id = data['msgs_id']['order_data_msg_id']
+		confirm_msg_id = data['msgs_id']['confirm_msg_id']
+		url_msg_id = data['msgs_id']['url_msg_id']
+		
 	if message.text not in ['Подтвердить','Отменить']:
-		await message.answer('Пожалуйста, подтведите или отмените заказ, используя клавиатуру ниже и в выпадающем меню справа:')
+		await bot.delete_message(message.chat.id,confirm_msg_id)
+		await bot.delete_message(message.chat.id,message['message_id'])
+		confirm_msg = await message.answer('Пожалуйста, подтведите или отмените заказ, используя клавиатуру ниже и в выпадающем меню справа:')
+		async with state.proxy() as data:
+			data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
 		return
 	async with state.proxy() as data:
 		data['confirm_status'] = message.text
@@ -217,7 +248,10 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		json_file = open('clothe_data.json','w')
 		json.dump(json_dict,json_file,indent=6)
 		json_file.close()
-		print(message.entities)
+		await bot.delete_message(message.chat.id,confirm_msg_id)
+		await bot.delete_message(message.chat.id,order_data_msg_id)
+		await bot.delete_message(message.chat.id,url_msg_id)
+		await bot.delete_message(message.chat.id,message['message_id'])
 		#url = order_data['received_url']
 		#driver_path = '/home/koza/Reps/drivers/chromedriver'
 		#driver = parser.start_driverSession(driver_path=driver_path)
@@ -252,6 +286,10 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		
 		await state.finish()
 	elif message.text == 'Отменить':
+		await bot.delete_message(message.chat.id,confirm_msg_id)
+		await bot.delete_message(message.chat.id,order_data_msg_id)
+		await bot.delete_message(message.chat.id,url_msg_id)
+		await bot.delete_message(message.chat.id,message['message_id'])
 		await state.finish()
 		
 def register_handlers_order(dp: Dispatcher):
