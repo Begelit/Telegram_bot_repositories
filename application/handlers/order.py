@@ -18,6 +18,7 @@ class OrderClothes(StatesGroup):
 	waiting_for_clothes_color = State()
 	waiting_for_clothes_size = State()
 	waiting_for_confirm = State()
+	ignore_msg = State()
 
 async def order_start(message: types.Message, state: FSMContext):
 	#print(message['message_id'])
@@ -30,17 +31,20 @@ async def order_start(message: types.Message, state: FSMContext):
 	await OrderClothes.waiting_for_clothes_url.set()
 
 async def clothes_chosen(message: types.Message, state: FSMContext):
-
-	async with state.proxy() as data:
-		send_url_msg_id = data['msgs_id']['send_url_msg_id']
-	#await message.answer("Пожалуйста, подождите.")
-
-	#url = message.text
-
-	#driver_path = '/home/koza/Reps/drivers/chromedriver'
-	#driver = parser.start_driverSession(driver_path=driver_path)
 	
 	async with lock:
+		
+		await OrderClothes.ignore_msg.set()
+	
+		async with state.proxy() as data:
+			send_url_msg_id = data['msgs_id']['send_url_msg_id']
+		#await message.answer("Пожалуйста, подождите.")
+
+		#url = message.text
+
+		#driver_path = '/home/koza/Reps/drivers/chromedriver'
+		#driver = parser.start_driverSession(driver_path=driver_path)
+	
 	
 		await bot.delete_message(message.chat.id,send_url_msg_id)
 		
@@ -54,74 +58,79 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 		status,driver = parser.get_page_source(driver,url)
 		#await asyncio.sleep(3)
 		
-	if status == False:
-		driver.close()
-		await asyncio.sleep(1)
-		driver.quit()
-		await asyncio.sleep(3)
-		await bot.delete_message(message.chat.id,wait_msg['message_id'])
-		await bot.delete_message(message.chat.id,message['message_id'])
-		uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз")
-		async with state.proxy() as data:
-			data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
-		return
-		
-	status,product_info = parser.get_product_info(driver)
-	
-	if status == 'have not clothes':
-		driver.close()
-		await asyncio.sleep(1)
-		driver.quit()
-		await asyncio.sleep(3)
-		
-		await bot.delete_message(message.chat.id,wait_msg['message_id'])
-		await bot.delete_message(message.chat.id,message['message_id'])
-		
-		uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова.")
-		
-		async with state.proxy() as data:
-			data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+		if status == False:
+			driver.close()
+			await asyncio.sleep(1)
+			driver.quit()
+			await asyncio.sleep(3)
+			await bot.delete_message(message.chat.id,wait_msg['message_id'])
+			await bot.delete_message(message.chat.id,message['message_id'])
+			uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз")
+			await OrderClothes.waiting_for_clothes_url.set()
+			async with state.proxy() as data:
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+			return
 			
-		return
-	elif status == 'False':
+		status,product_info = parser.get_product_info(driver)
+		
+		if status == 'have not clothes':
+			driver.close()
+			await asyncio.sleep(1)
+			driver.quit()
+			await asyncio.sleep(3)
+			
+			await bot.delete_message(message.chat.id,wait_msg['message_id'])
+			await bot.delete_message(message.chat.id,message['message_id'])
+			
+			uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова.")
+			await OrderClothes.waiting_for_clothes_url.set()
+			async with state.proxy() as data:
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+			
+			return
+		elif status == 'False':
+			driver.close()
+			await asyncio.sleep(1)
+			driver.quit()
+			await asyncio.sleep(3)
+			
+			await bot.delete_message(message.chat.id,wait_msg['message_id'])
+			await bot.delete_message(message.chat.id,message['message_id'])
+			
+			uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз")
+			await OrderClothes.waiting_for_clothes_url.set()
+			async with state.proxy() as data:
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+				
+			return
+			
 		driver.close()
 		await asyncio.sleep(1)
 		driver.quit()
-		await asyncio.sleep(3)
-		
-		await bot.delete_message(message.chat.id,wait_msg['message_id'])
-		await bot.delete_message(message.chat.id,message['message_id'])
-		
-		uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз")
 		
 		async with state.proxy() as data:
-			data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+			data['productDetail'] = product_info
+			#data['login_link'] = login_link
+			data['received_url'] = message.text
 			
-		return
+		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+		for color in product_info['color']:
+			keyboard.add(color)
+			
+		await bot.delete_message(message.chat.id,wait_msg['message_id'])
+		#await bot.delete_message(message.chat.id,message['message_id'])
 		
-	driver.close()
-	await asyncio.sleep(1)
-	driver.quit()
+		color_buttons_msg = await message.answer("Укажите нужный цвет:", reply_markup=keyboard)
+		
+		async with state.proxy() as data:
+			data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
+			data['msgs_id']['url_msg_id'] = message['message_id']
+			
+		await OrderClothes.waiting_for_clothes_color.set()
 	
-	async with state.proxy() as data:
-		data['productDetail'] = product_info
-		#data['login_link'] = login_link
-		data['received_url'] = message.text
-		
-	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-	for color in product_info['color']:
-		keyboard.add(color)
-		
-	await bot.delete_message(message.chat.id,wait_msg['message_id'])
-	#await bot.delete_message(message.chat.id,message['message_id'])
+async def ignoreMsg_whileScrap(message: types.Message, state: FSMContext):
+	await bot.delete_message(message.chat.id,message['message_id'])
 	
-	color_buttons_msg = await message.answer("Укажите нужный цвет:", reply_markup=keyboard)
-	
-	async with state.proxy() as data:
-		data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
-		data['msgs_id']['url_msg_id'] = message['message_id']
-		
-	await OrderClothes.waiting_for_clothes_color.set()
 	
 async def color_chosen(message: types.Message, state: FSMContext):
 
@@ -301,3 +310,4 @@ def register_handlers_order(dp: Dispatcher):
 	dp.register_message_handler(color_chosen, state=OrderClothes.waiting_for_clothes_color)
 	dp.register_message_handler(size_order, state=OrderClothes.waiting_for_clothes_size)
 	dp.register_message_handler(confirm_order, state=OrderClothes.waiting_for_confirm)
+	dp.register_message_handler(ignoreMsg_whileScrap, state=OrderClothes.ignore_msg)
