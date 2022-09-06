@@ -349,6 +349,7 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		await bot.delete_message(message.chat.id,url_msg_id)
 		await bot.delete_message(message.chat.id,message['message_id'])
 		await bot.delete_message(message.chat.id,data['start_msgs_id'])
+		await bot.delete_message(message.chat.id,confirm_msg_id)
 		#async with state.proxy() as data:
 		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
