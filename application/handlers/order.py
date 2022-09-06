@@ -63,7 +63,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
 			except:
 				pass
 		await state.finish()
-		msg = await message.answer('Комманда неккоректна, отправьте /start_order для продолжения.')
+		msg = await message.answer('Комманда неккоректна, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await state.finish()
@@ -88,7 +88,7 @@ async def order_start(message: types.Message, state: FSMContext):
 	'''
 	if message.text == '/order' or message.text == 'Оформить заказ':		
 		await bot.delete_message(message.chat.id,message['message_id'])
-		msg = await message.answer("Пожалуйста, отправьте ссылку, ведущую на товар.")
+		msg = await message.answer("Пожалуйста, отправьте ссылку, ведущую на товар.",reply_markup=types.ReplyKeyboardRemove())
 		async with state.proxy() as data:
 			data['msgs_id'] = dict()
 			data['msgs_id']['send_url_msg_id'] = msg['message_id']
@@ -98,7 +98,7 @@ async def order_start(message: types.Message, state: FSMContext):
 			await bot.delete_message(message.chat.id,message['message_id'])
 			await bot.delete_message(message.chat.id,data['start_msgs_id'])
 		await state.finish()
-		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.')
+		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
@@ -107,7 +107,7 @@ async def order_start(message: types.Message, state: FSMContext):
 			await bot.delete_message(message.chat.id,message['message_id'])
 			await bot.delete_message(message.chat.id,data['start_msgs_id'])
 		await state.finish()
-		msg = await message.answer('Комманда неккоректна, отправьте /start_order для продолжения.')
+		msg = await message.answer('Комманда неккоректна, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
@@ -121,7 +121,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 				await bot.delete_message(message.chat.id,data['start_msgs_id'])
 			await state.finish()
-			msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.')
+			msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 			async with state.proxy() as data:
 				data['post_start_msgs_id'] = msg['message_id']
 			await OrderClothes.start_st.set()
@@ -140,7 +140,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 		
 			await bot.delete_message(message.chat.id,send_url_msg_id)
 			
-			wait_msg = await message.answer("Пожалуйста, подождите.")
+			wait_msg = await message.answer("Пожалуйста, подождите.",reply_markup=types.ReplyKeyboardRemove())
 
 			url = message.text
 
@@ -157,7 +157,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await asyncio.sleep(3)
 				await bot.delete_message(message.chat.id,wait_msg['message_id'])
 				await bot.delete_message(message.chat.id,message['message_id'])
-				uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз")
+				uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз отправить ссылку",reply_markup=types.ReplyKeyboardRemove())
 				await OrderClothes.waiting_for_clothes_url.set()
 				async with state.proxy() as data:
 					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
@@ -174,7 +174,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await bot.delete_message(message.chat.id,wait_msg['message_id'])
 				await bot.delete_message(message.chat.id,message['message_id'])
 				
-				uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова.")
+				uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова отправить ссылку.",reply_markup=types.ReplyKeyboardRemove())
 				await OrderClothes.waiting_for_clothes_url.set()
 				async with state.proxy() as data:
 					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
@@ -189,7 +189,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await bot.delete_message(message.chat.id,wait_msg['message_id'])
 				await bot.delete_message(message.chat.id,message['message_id'])
 				
-				uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз")
+				uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз отправить ссылку",reply_markup=types.ReplyKeyboardRemove())
 				await OrderClothes.waiting_for_clothes_url.set()
 				async with state.proxy() as data:
 					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
@@ -239,7 +239,7 @@ async def color_chosen(message: types.Message, state: FSMContext):
 		#async with state.proxy() as data:
 		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
-		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.')
+		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
@@ -250,7 +250,11 @@ async def color_chosen(message: types.Message, state: FSMContext):
 			await bot.delete_message(message.chat.id,color_buttons_msg_id)
 			await bot.delete_message(message.chat.id,message['message_id'])
 			
-			color_buttons_msg = await message.answer('Пожалуйста, введите нужный цвет, используя клавиатуру ниже:')
+			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+			async with state.proxy() as data:
+				for color in data['productDetail']['color']:
+					keyboard.add(color)
+			color_buttons_msg = await message.answer('Пожалуйста, введите нужный цвет, используя клавиатуру ниже:',reply_markup=keyboard)
 			
 			async with state.proxy() as data:
 				data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
@@ -290,7 +294,7 @@ async def size_order(message: types.Message, state: FSMContext):
 		#async with state.proxy() as data:
 		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
-		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.')
+		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
@@ -304,8 +308,14 @@ async def size_order(message: types.Message, state: FSMContext):
 		if message.text not in size:
 		
 			await bot.delete_message(message.chat.id,size_button_msg_id)
+			await bot.delete_message(message.chat.id,message['message_id'])
 			
-			size_button_msg = await message.answer('Пожалуйста, введите нужный размер, используя клавиатуру ниже:')
+			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+			async with state.proxy() as data:
+				for size in data['productDetail']['color'][data['received_color']]['size']:
+					keyboard.add(size)
+			
+			size_button_msg = await message.answer('Пожалуйста, введите нужный размер, используя встроенную клавиатуру:',reply_markup=keyboard)
 			
 			async with state.proxy() as data:
 				data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
@@ -329,7 +339,7 @@ async def size_order(message: types.Message, state: FSMContext):
 					f"\n\n  {order_data['productDetail']['name']}"
 					f"\n    Цвет: {order_data['received_color']}"
 					f"\n    Размер: {order_data['received_size']}"
-					f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}")
+					f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}",reply_markup=types.ReplyKeyboardRemove())
 					
 		confirm_msg = await message.answer('Подтвердить?',reply_markup=keyboard)
 		
@@ -353,7 +363,7 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		#async with state.proxy() as data:
 		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
-		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.')
+		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
@@ -362,7 +372,11 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		if message.text not in ['Подтвердить','Отменить']:
 			await bot.delete_message(message.chat.id,confirm_msg_id)
 			await bot.delete_message(message.chat.id,message['message_id'])
-			confirm_msg = await message.answer('Пожалуйста, подтведите или отмените заказ, используя клавиатуру ниже и в выпадающем меню справа:')
+			
+			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+			keyboard.add('Подтвердить')
+			keyboard.add('Отменить')
+			confirm_msg = await message.answer('Пожалуйста, подтведите или отмените заказ, используя встроенную клавиатуру:',reply_markup=keyboard)
 			
 			async with state.proxy() as data:
 				data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
@@ -401,7 +415,7 @@ async def confirm_order(message: types.Message, state: FSMContext):
 			await bot.delete_message(message.chat.id,data['start_msgs_id'])
 			
 			await state.finish()
-			msg = await message.answer('Заявка принята! Отправьте /start_order для продолжения.')
+			msg = await message.answer('Заявка принята! Отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 			async with state.proxy() as data:
 				data['post_start_msgs_id'] = msg['message_id']
 			await OrderClothes.start_st.set()

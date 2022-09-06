@@ -1,0 +1,49 @@
+{
+      "msgs_id": {
+            "color_buttons_msg_id": 1072,
+            "confirm_msg_id": 1077,
+            "order_data_msg_id": 1076,
+            "send_url_msg_id": 1069,
+            "size_button_msg_id": 1074,
+            "url_msg_id": 1070
+      },
+      "productDetail": {
+            "color": {
+                  "\u0425\u0410\u041a\u0418": {
+                        "color_button_path": {
+                              "index": 1,
+                              "path": "li.product-detail-color-selector__color:nth-child(1) > button:nth-child(1)"
+                        },
+                        "price": "4 999 \u0420\u0423\u0411.",
+                        "size": {
+                              "M": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-2\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-1\"]",
+                              "XS": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-0\"]"
+                        }
+                  },
+                  "\u0427\u0415\u0420\u041d\u042b\u0419": {
+                        "color_button_path": {
+                              "index": 2,
+                              "path": "li.product-detail-color-selector__color:nth-child(2) > button:nth-child(1)"
+                        },
+                        "price": "4 999 \u0420\u0423\u0411.",
+                        "size": {
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-3\"]",
+                              "M": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-2\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-1\"]",
+                              "XL": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-4\"]",
+                              "XS": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-0\"]"
+                        }
+                  }
+            },
+            "name": "\u041e\u0411\u042a\u0415\u041c\u041d\u042b\u0419 \u0414\u0412\u0423\u0411\u041e\u0420\u0422\u041d\u042b\u0419 \u041f\u0418\u0414\u0416\u0410\u041a",
+            "type_choice_color": "multi_color"
+      },
+      "received_color": "\u0425\u0410\u041a\u0418",
+      "received_size": "M",
+      "received_url": "https://www.zara.com/ru/ru/%D0%BE%D0%B1%D1%8A%D0%B5%D0%BC%D0%BD%D1%8B%D0%B8-%D0%B4%D0%B2%D1%83%D0%B1%D0%BE%D1%80%D1%82%D0%BD%D1%8B%D0%B8-%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA-p02753032.html?v1=206087228",
+      "start_msgs_id": 1067,
+      "confirm_status": "\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c",
+      "username": "dimchxn",
+      "datetime": "07/09/2022 00:33:43"
+}
