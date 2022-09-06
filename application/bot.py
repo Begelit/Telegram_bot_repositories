@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 async def set_commands(bot: Bot):
 
 	commands = [
-		BotCommand(command="/order", description="Оформить заказ"),
+		BotCommand(command="/start", description="Начало работы"),
 		BotCommand(command="/cancel", description="Отменить текущее действие")
 	]
 	await bot.set_my_commands(commands)

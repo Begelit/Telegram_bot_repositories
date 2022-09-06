@@ -27,7 +27,7 @@ async def start(message: types.Message, state: FSMContext):
 	await state.finish()
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	keyboard.add('Начать!')
-	await message.answer('Привет! Добро пожаловать в менеджер заказов предметов одежды. Чтобы приступить к работе введи команду /start_order или нажми в предложенной клавиатуре "Начать!".',reply_markup=keyboard)
+	await message.answer('Привет! Добро пожаловать в менеджер заказов предметов одежды. Чтобы приступить к работе введи команду /start_order или нажми в предложенной клавиатуре "Начать!". Для отмены какого либо действия отправь /cancel.',reply_markup=keyboard)
 	await OrderClothes.start_st.set()
 	
 async def cmd_start(message: types.Message, state: FSMContext):
