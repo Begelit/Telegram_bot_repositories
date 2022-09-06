@@ -44,11 +44,12 @@ def get_page_source(driver,url):
 		driver.get(url)
 		#with open('cookies.pkl','rb') as r:
 		#	cookies = pickle.load(r)
-		cookies = pickle.load(open('cookies.pkl','rb'))
+		#cookies = pickle.load(open('cookies.pkl','rb'))
 		#for cookie in cookies:
 		#	driver.add_cookie(cookie)
 		return True, driver#print(driver.page_source)
 	except Exception as e:
+		print(traceback.format_exc())
 		return False,driver
 		
 	
