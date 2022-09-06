@@ -19,23 +19,34 @@ class OrderClothes(StatesGroup):
 	waiting_for_clothes_size = State()
 	waiting_for_confirm = State()
 	ignore_msg = State()
-	start_st = State()
+	#start_st = State()
+	#order_start_state = State()
 	
 async def cmd_start(message: types.Message, state: FSMContext):
+	'''
+	async with state.proxy() as data:
+		if 'post_start_msgs_id' in data:
+			await bot.delete_message(message.chat.id,data['post_start_msgs_id'])
+	'''
 	await state.finish()
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	keyboard.add('Оформить заказ')
-	await bot.delete_message(message.chat.id,message['message_id'])
+	#await bot.delete_message(message.chat.id,message['message_id'])
 	msg = await message.answer('Привет! Отправь /order или нажми "Оформить заказ".',reply_markup=keyboard)#+
 				#'\n\n Чтобы отменить действие отправь /cancel.',reply_markup=keyboard)#+
 				#'\n\n Чтобы получить список команд отправь /help.',reply_markup=keyboard)
+	'''
 	async with state.proxy() as data:
 		#data['msgs_id'] = dict()
 		data['start_msgs_id'] = msg['message_id']
+	await OrderClothes.order_start_state.set()
+	'''
 
 async def order_start(message: types.Message, state: FSMContext):
 	#print(message['message_id'])
 	#print(message.chat.id)
+	
+	'''
 	if message.text == '/cancel':
 		await bot.delete_message(message.chat.id,message['message_id'])
 		async with state.proxy() as data:
@@ -48,12 +59,13 @@ async def order_start(message: types.Message, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	else:
-		await bot.delete_message(message.chat.id,message['message_id'])
-		msg = await message.answer("Пожалуйста, отправьте ссылку, ведущую на товар.")
-		async with state.proxy() as data:
-			data['msgs_id'] = dict()
-			data['msgs_id']['send_url_msg_id'] = msg['message_id']
-		await OrderClothes.waiting_for_clothes_url.set()
+	'''
+	await bot.delete_message(message.chat.id,message['message_id'])
+	msg = await message.answer("Пожалуйста, отправьте ссылку, ведущую на товар.")
+	async with state.proxy() as data:
+		data['msgs_id'] = dict()
+		data['msgs_id']['send_url_msg_id'] = msg['message_id']
+	await OrderClothes.waiting_for_clothes_url.set()
 
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
@@ -340,8 +352,8 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		await state.finish()
 		
 def register_handlers_order(dp: Dispatcher):
-	dp.register_message_handler(cmd_start, state=OrderClothes.start_st)
-	dp.register_message_handler(cmd_start, state='*')
+	#dp.register_message_handler(cmd_start, state=OrderClothes.start_st)
+	#dp.register_message_handler(cmd_start, state='*')
 	dp.register_message_handler(order_start, commands="order", state="*")
 	dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
 	dp.register_message_handler(clothes_chosen, state=OrderClothes.waiting_for_clothes_url)

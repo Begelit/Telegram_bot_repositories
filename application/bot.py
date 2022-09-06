@@ -6,7 +6,7 @@ from aiogram.types import BotCommand
 from aiogram.contrib.fsm_storage.rethinkdb import RethinkDBStorage
 
 from handlers.order import register_handlers_order
-from handlers.common import register_handlers_common
+#from handlers.common import register_handlers_common
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ async def main():
 					)
 					
 	register_handlers_order(dp)
-	register_handlers_common(dp)
+	#register_handlers_common(dp)
 	
 	await set_commands(bot)
 	
