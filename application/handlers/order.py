@@ -19,19 +19,19 @@ class OrderClothes(StatesGroup):
 	waiting_for_clothes_size = State()
 	waiting_for_confirm = State()
 	ignore_msg = State()
-	#start_st = State()
+	start_st = State()
 	#order_start_state = State()
 	
 async def cmd_start(message: types.Message, state: FSMContext):
-	'''
+	
 	async with state.proxy() as data:
 		if 'post_start_msgs_id' in data:
 			await bot.delete_message(message.chat.id,data['post_start_msgs_id'])
-	'''
+	
 	await state.finish()
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	keyboard.add('Оформить заказ')
-	#await bot.delete_message(message.chat.id,message['message_id'])
+	await bot.delete_message(message.chat.id,message['message_id'])
 	msg = await message.answer('Привет! Отправь /order или нажми "Оформить заказ".',reply_markup=keyboard)#+
 				#'\n\n Чтобы отменить действие отправь /cancel.',reply_markup=keyboard)#+
 				#'\n\n Чтобы получить список команд отправь /help.',reply_markup=keyboard)
@@ -75,9 +75,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 			async with state.proxy() as data:
 				await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 			await state.finish()
-			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			keyboard.add('Оформить заказ')
-			msg = await message.answer('Отправьте /start для продолжения.',reply_markup=keyboard)
+			msg = await message.answer('Действие отменено, отправьте /start для продолжения.')
 			async with state.proxy() as data:
 				data['post_start_msgs_id'] = msg['message_id']
 			await OrderClothes.start_st.set()
@@ -184,41 +182,53 @@ async def color_chosen(message: types.Message, state: FSMContext):
 
 	async with state.proxy() as data:
 		color_buttons_msg_id = data['msgs_id']['color_buttons_msg_id']
+		url_id = data['msgs_id']['url_msg_id']
 		order_data = data
 	#print(order_data)
-	
-	colors_list = [color for color in order_data['productDetail']['color']]
-	if message.text not in colors_list:
-	
+	if message.text == '/cancel':
+		await bot.delete_message(message.chat.id,color_buttons_msg_id)
+		await bot.delete_message(message.chat.id,url_id)
+		await bot.delete_message(message.chat.id,message['message_id'])
+		#async with state.proxy() as data:
+		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
+		await state.finish()
+		msg = await message.answer('Действие отменено, отправьте /start для продолжения.')
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	else:		
+		colors_list = [color for color in order_data['productDetail']['color']]
+		if message.text not in colors_list:
+		
+			await bot.delete_message(message.chat.id,color_buttons_msg_id)
+			await bot.delete_message(message.chat.id,message['message_id'])
+			
+			color_buttons_msg = await message.answer('Пожалуйста, введите нужный цвет, используя клавиатуру ниже:')
+			
+			async with state.proxy() as data:
+				data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
+				
+			return
+			
+		async with state.proxy() as data:
+			data['received_color'] = message.text
+		#await state.update_data(received_color=message.text)
+		
+		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+		#print(order_data)
+		for size in order_data['productDetail']['color'][message.text]['size']:
+			keyboard.add(size)
+			
 		await bot.delete_message(message.chat.id,color_buttons_msg_id)
 		await bot.delete_message(message.chat.id,message['message_id'])
 		
-		color_buttons_msg = await message.answer('Пожалуйста, введите нужный цвет, используя клавиатуру ниже:')
+		size_button_msg = await message.answer("Теперь выберите размер:", reply_markup=keyboard)
 		
 		async with state.proxy() as data:
-			data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
+			data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
 			
-		return
+		await OrderClothes.waiting_for_clothes_size.set()
 		
-	async with state.proxy() as data:
-		data['received_color'] = message.text
-	#await state.update_data(received_color=message.text)
-	
-	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-	#print(order_data)
-	for size in order_data['productDetail']['color'][message.text]['size']:
-		keyboard.add(size)
-		
-	await bot.delete_message(message.chat.id,color_buttons_msg_id)
-	await bot.delete_message(message.chat.id,message['message_id'])
-	
-	size_button_msg = await message.answer("Теперь выберите размер:", reply_markup=keyboard)
-	
-	async with state.proxy() as data:
-		data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
-		
-	await OrderClothes.waiting_for_clothes_size.set()
-	
 async def size_order(message: types.Message, state: FSMContext):
 
 	async with state.proxy() as data:
@@ -352,8 +362,8 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		await state.finish()
 		
 def register_handlers_order(dp: Dispatcher):
-	#dp.register_message_handler(cmd_start, state=OrderClothes.start_st)
-	#dp.register_message_handler(cmd_start, state='*')
+	dp.register_message_handler(cmd_start, commands="start", state=OrderClothes.start_st)
+	dp.register_message_handler(cmd_start, commands="start", state='*')
 	dp.register_message_handler(order_start, commands="order", state="*")
 	dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
 	dp.register_message_handler(clothes_chosen, state=OrderClothes.waiting_for_clothes_url)
