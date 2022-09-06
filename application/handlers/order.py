@@ -26,8 +26,11 @@ async def cmd_start(message: types.Message, state: FSMContext):
 	
 	async with state.proxy() as data:
 		if 'post_start_msgs_id' in data:
-			await bot.delete_message(message.chat.id,data['post_start_msgs_id'])
-	
+			try:
+			
+				await bot.delete_message(message.chat.id,data['post_start_msgs_id'])
+			except Exception as e:
+				print('hee')
 	await state.finish()
 	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	keyboard.add('Оформить заказ')
@@ -345,6 +348,12 @@ async def confirm_order(message: types.Message, state: FSMContext):
 			await bot.delete_message(message.chat.id,order_data_msg_id)
 			await bot.delete_message(message.chat.id,url_msg_id)
 			await bot.delete_message(message.chat.id,message['message_id'])
+			
+			await state.finish()
+			msg = await message.answer('Заявка принята! Отправьте /start для продолжения.')
+			async with state.proxy() as data:
+				data['post_start_msgs_id'] = msg['message_id']
+			await OrderClothes.start_st.set()
 			#url = order_data['received_url']
 			#driver_path = '/home/koza/Reps/drivers/chromedriver'
 			#driver = parser.start_driverSession(driver_path=driver_path)
@@ -372,18 +381,22 @@ async def confirm_order(message: types.Message, state: FSMContext):
 			'''
 			####ТИПА ФОРМИРУЕМ КОРЗИНУ>>>>########################################
 			
-			print('\nmay be done...')
+			#print('\nmay be done...')
 			#driver.close()
 			#await asyncio.sleep(1)
 			#driver.quit()
 			
-			await state.finish()
+			
 		elif message.text == 'Отменить':
 			await bot.delete_message(message.chat.id,confirm_msg_id)
 			await bot.delete_message(message.chat.id,order_data_msg_id)
 			await bot.delete_message(message.chat.id,url_msg_id)
 			await bot.delete_message(message.chat.id,message['message_id'])
 			await state.finish()
+			msg = await message.answer('Заявка отменена! Отправьте /start для продолжения.')
+			async with state.proxy() as data:
+				data['post_start_msgs_id'] = msg['message_id']
+			await OrderClothes.start_st.set()
 		
 def register_handlers_order(dp: Dispatcher):
 	dp.register_message_handler(cmd_start, commands="start", state=OrderClothes.start_st)
