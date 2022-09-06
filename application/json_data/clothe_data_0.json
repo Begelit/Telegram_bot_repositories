@@ -1,0 +1,30 @@
+{
+      "msgs_id": {
+            "color_buttons_msg_id": 430,
+            "confirm_msg_id": 435,
+            "order_data_msg_id": 434,
+            "send_url_msg_id": 427,
+            "size_button_msg_id": 432,
+            "url_msg_id": 428
+      },
+      "productDetail": {
+            "color": {
+                  "\u0423\u0422\u0418\u041d\u041e-\u0421\u0418\u041d\u0418\u0419": {
+                        "price": "13 990,00 KZT",
+                        "size": {
+                              "L": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-200060808-item-2\"]",
+                              "M": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-200060808-item-1\"]",
+                              "S": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-200060808-item-0\"]"
+                        }
+                  }
+            },
+            "name": "\u0422\u041e\u041f \u0421\u041e \u0412\u0421\u0422\u0410\u0412\u041a\u0410\u041c\u0418 \u0418\u0417 \u041e\u0420\u0413\u0410\u041d\u0417\u042b",
+            "type_choice_color": "single_color"
+      },
+      "received_color": "\u0423\u0422\u0418\u041d\u041e-\u0421\u0418\u041d\u0418\u0419",
+      "received_size": "M",
+      "received_url": "https://www.zara.com/KZ/ru/0-p0.html?v1=200060808&utm_campaign=productShare&utm_medium=mobile_sharing_Android&utm_source=red_social_movil",
+      "confirm_status": "\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c",
+      "username": "dimchxn",
+      "datetime": "06/09/2022 19:24:36"
+}

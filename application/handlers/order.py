@@ -8,6 +8,7 @@ from selenium import webdriver
 import time
 import json
 from datetime import datetime
+import os
 
 lock = asyncio.Lock()
 
@@ -341,7 +342,8 @@ async def confirm_order(message: types.Message, state: FSMContext):
 		#await state.update_data(confirm_status=message.text)
 		if message.text == 'Подтвердить':
 			print(json_dict)
-			json_file = open('clothe_data.json','w')
+			index_json = len(os.listdir('./json_data'))
+			json_file = open('./json_data/clothe_data_{}.json'.format(str(index_json)),'w')
 			json.dump(json_dict,json_file,indent=6)
 			json_file.close()
 			await bot.delete_message(message.chat.id,confirm_msg_id)
