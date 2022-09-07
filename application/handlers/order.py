@@ -193,7 +193,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await asyncio.sleep(3)
 				await bot.delete_message(message.chat.id,wait_msg['message_id'])
 				await bot.delete_message(message.chat.id,message['message_id'])
-				uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз отправить ссылку",reply_markup=types.ReplyKeyboardRemove())
+				uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
 				await OrderClothes.waiting_for_clothes_url.set()
 				async with state.proxy() as data:
 					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
@@ -210,7 +210,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await bot.delete_message(message.chat.id,wait_msg['message_id'])
 				await bot.delete_message(message.chat.id,message['message_id'])
 				
-				uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова отправить ссылку.",reply_markup=types.ReplyKeyboardRemove())
+				uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
 				await OrderClothes.waiting_for_clothes_url.set()
 				async with state.proxy() as data:
 					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
@@ -225,7 +225,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await bot.delete_message(message.chat.id,wait_msg['message_id'])
 				await bot.delete_message(message.chat.id,message['message_id'])
 				
-				uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз отправить ссылку",reply_markup=types.ReplyKeyboardRemove())
+				uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
 				await OrderClothes.waiting_for_clothes_url.set()
 				async with state.proxy() as data:
 					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
@@ -241,9 +241,12 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				#data['login_link'] = login_link
 				data['received_url'] = message.text
 				
-			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+			#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+			keyboard = types.InlineKeyboardMarkup()
 			for color in product_info['color']:
-				keyboard.add(color)
+				keyboard.add(types.InlineKeyboardButton(text=color, callback_data=color))
+				#keyboard.add(color)
+			keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
 				
 			await bot.delete_message(message.chat.id,wait_msg['message_id'])
 			#await bot.delete_message(message.chat.id,message['message_id'])
@@ -260,22 +263,29 @@ async def ignoreMsg_whileScrap(message: types.Message, state: FSMContext):
 	await bot.delete_message(message.chat.id,message['message_id'])
 	
 	
-async def color_chosen(message: types.Message, state: FSMContext):
-
+#async def color_chosen(message: types.Message, state: FSMContext):
+async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 	async with state.proxy() as data:
 		color_buttons_msg_id = data['msgs_id']['color_buttons_msg_id']
 		url_id = data['msgs_id']['url_msg_id']
 		order_data = data
 	#print(order_data)
-	if message.text == '/cancel':
-		await bot.delete_message(message.chat.id,color_buttons_msg_id)
-		await bot.delete_message(message.chat.id,url_id)
-		await bot.delete_message(message.chat.id,message['message_id'])
-		await bot.delete_message(message.chat.id,data['start_msgs_id'])
+	if call.data == '/cancel':
+		#await bot.delete_message(message.chat.id,color_buttons_msg_id)
+		await bot.delete_message(call.message.chat.id,url_id)
+		#await bot.delete_message(message.chat.id,message['message_id'])
+		#await bot.delete_message(message.chat.id,data['start_msgs_id'])
 		#async with state.proxy() as data:
 		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
-		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+		
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		await call.answer()
+		#msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+		
+		
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
@@ -516,7 +526,10 @@ def register_handlers_order(dp: Dispatcher):
 	dp.register_callback_query_handler(order_start, state=OrderClothes.order_start_state)
 	
 	dp.register_message_handler(clothes_chosen, state=OrderClothes.waiting_for_clothes_url)
-	dp.register_message_handler(color_chosen, state=OrderClothes.waiting_for_clothes_color)
+	
+	#dp.register_message_handler(color_chosen, state=OrderClothes.waiting_for_clothes_color)
+	dp.register_callback_query_handler(color_chosen, state=OrderClothes.waiting_for_clothes_color)
+	
 	dp.register_message_handler(size_order, state=OrderClothes.waiting_for_clothes_size)
 	dp.register_message_handler(confirm_order, state=OrderClothes.waiting_for_confirm)
 	dp.register_message_handler(ignoreMsg_whileScrap, state=OrderClothes.ignore_msg)
