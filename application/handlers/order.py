@@ -151,9 +151,13 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 			await bot.delete_message(message.chat.id,message['message_id'])
 			async with state.proxy() as data:
 				await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
-				await bot.delete_message(message.chat.id,data['start_msgs_id'])
+				#await bot.delete_message(message.chat.id,data['start_msgs_id'])
 			await state.finish()
-			msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+			
+			keyboard = types.InlineKeyboardMarkup()
+			keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+			msg = await message.answer('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+			#await call.answer()
 			async with state.proxy() as data:
 				data['post_start_msgs_id'] = msg['message_id']
 			await OrderClothes.start_st.set()
