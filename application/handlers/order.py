@@ -289,7 +289,8 @@ async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
-	else:		
+	else:
+		'''
 		colors_list = [color for color in order_data['productDetail']['color']]
 		if message.text not in colors_list:
 		
@@ -306,20 +307,23 @@ async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 				data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
 				
 			return
+		'''
 			
 		async with state.proxy() as data:
-			data['received_color'] = message.text
-		#await state.update_data(received_color=message.text)
+			data['received_color'] = call.data
 		
-		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-		#print(order_data)
-		for size in order_data['productDetail']['color'][message.text]['size']:
-			keyboard.add(size)
+		#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+		keyboard = types.InlineKeyboardMarkup()
+		for size in order_data['productDetail']['color'][call.data]['size']:
+			keyboard.add(types.InlineKeyboardButton(text=size, callback_data=size))
+		keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
 			
-		await bot.delete_message(message.chat.id,color_buttons_msg_id)
-		await bot.delete_message(message.chat.id,message['message_id'])
+		#await bot.delete_message(message.chat.id,color_buttons_msg_id)
+		#await bot.delete_message(message.chat.id,message['message_id'])
 		
-		size_button_msg = await message.answer("Теперь выберите размер:", reply_markup=keyboard)
+		size_button_msg = await call.message.edit_text("Теперь выберите размер:", reply_markup=keyboard)
+		
+		await call.answer()
 		
 		async with state.proxy() as data:
 			data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
