@@ -113,7 +113,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		#await bot.delete_message(call.message.chat.id,message['message_id'])
 		#keyboard = types.InlineKeyboardMarkup()
 		#keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
-		msg = await call.message.edit_text('Пожалуйста, отправьте ссылку, ведущую на товар. Нажми /cancel если хочешь отменить  заявку.')
+		msg = await call.message.edit_text('Пожалуйста, отправьте ссылку, ведущую на товар. Нажми /cancel если хочешь отменить  действие.')
 		await call.answer()
 		async with state.proxy() as data:
 			data['msgs_id'] = dict()
@@ -361,7 +361,7 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 		
 		color = order_data['received_color']
 		size = order_data['productDetail']['color'][color]['size']
-		
+		'''
 		if message.text not in size:
 		
 			await bot.delete_message(message.chat.id,size_button_msg_id)
@@ -378,7 +378,7 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 				data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
 				
 			return
-			
+		'''
 		async with state.proxy() as data:
 			data['received_size'] = message.text
 			order_data = data
