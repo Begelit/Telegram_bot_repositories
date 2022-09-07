@@ -146,118 +146,118 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
-	async with lock:
-		if message.text == '/cancel':
-			await bot.delete_message(message.chat.id,message['message_id'])
-			async with state.proxy() as data:
-				await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
-				#await bot.delete_message(message.chat.id,data['start_msgs_id'])
-			await state.finish()
-			
-			keyboard = types.InlineKeyboardMarkup()
-			keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
-			msg = await message.answer('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
-			#await call.answer()
-			async with state.proxy() as data:
-				data['post_start_msgs_id'] = msg['message_id']
-			await OrderClothes.start_st.set()
-		else:
-			await OrderClothes.ignore_msg.set()
+	#async with lock:
+	if message.text == '/cancel':
+		await bot.delete_message(message.chat.id,message['message_id'])
+		async with state.proxy() as data:
+			await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
+			#await bot.delete_message(message.chat.id,data['start_msgs_id'])
+		await state.finish()
 		
-			async with state.proxy() as data:
-				send_url_msg_id = data['msgs_id']['send_url_msg_id']
-			#await message.answer("Пожалуйста, подождите.")
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await message.answer('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		#await call.answer()
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	else:
+		await OrderClothes.ignore_msg.set()
+	
+		async with state.proxy() as data:
+			send_url_msg_id = data['msgs_id']['send_url_msg_id']
+		#await message.answer("Пожалуйста, подождите.")
 
-			#url = message.text
+		#url = message.text
 
-			#driver_path = '/home/koza/Reps/drivers/chromedriver'
-			#driver = parser.start_driverSession(driver_path=driver_path)
+		#driver_path = '/home/koza/Reps/drivers/chromedriver'
+		#driver = parser.start_driverSession(driver_path=driver_path)
+	
+	
+		await bot.delete_message(message.chat.id,send_url_msg_id)
 		
+		wait_msg = await message.answer("Пожалуйста, подождите.",reply_markup=types.ReplyKeyboardRemove())
+
+		url = message.text
+
+		driver_path = '/home/koza/Reps/drivers/chromedriver'
+		driver = parser.start_driverSession(driver_path=driver_path)
 		
-			await bot.delete_message(message.chat.id,send_url_msg_id)
-			
-			wait_msg = await message.answer("Пожалуйста, подождите.",reply_markup=types.ReplyKeyboardRemove())
-
-			url = message.text
-
-			driver_path = '/home/koza/Reps/drivers/chromedriver'
-			driver = parser.start_driverSession(driver_path=driver_path)
-			
-			status,driver = parser.get_page_source(driver,url)
-			#await asyncio.sleep(3)
-			
-			if status == False:
-				driver.close()
-				await asyncio.sleep(1)
-				driver.quit()
-				await asyncio.sleep(3)
-				await bot.delete_message(message.chat.id,wait_msg['message_id'])
-				await bot.delete_message(message.chat.id,message['message_id'])
-				uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
-				await OrderClothes.waiting_for_clothes_url.set()
-				async with state.proxy() as data:
-					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
-				return
-				
-			status,product_info = parser.get_product_info(driver)
-			
-			if status == 'have not clothes':
-				driver.close()
-				await asyncio.sleep(1)
-				driver.quit()
-				await asyncio.sleep(3)
-				
-				await bot.delete_message(message.chat.id,wait_msg['message_id'])
-				await bot.delete_message(message.chat.id,message['message_id'])
-				
-				uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен или произошел сбой. Попробуйте снова отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
-				await OrderClothes.waiting_for_clothes_url.set()
-				async with state.proxy() as data:
-					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
-				
-				return
-			elif status == 'False':
-				driver.close()
-				await asyncio.sleep(1)
-				driver.quit()
-				await asyncio.sleep(3)
-				
-				await bot.delete_message(message.chat.id,wait_msg['message_id'])
-				await bot.delete_message(message.chat.id,message['message_id'])
-				
-				uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
-				await OrderClothes.waiting_for_clothes_url.set()
-				async with state.proxy() as data:
-					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
-					
-				return
-				
+		status,driver = parser.get_page_source(driver,url)
+		#await asyncio.sleep(3)
+		
+		if status == False:
 			driver.close()
 			await asyncio.sleep(1)
 			driver.quit()
-			
-			async with state.proxy() as data:
-				data['productDetail'] = product_info
-				#data['login_link'] = login_link
-				data['received_url'] = message.text
-				
-			#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			keyboard = types.InlineKeyboardMarkup()
-			for color in product_info['color']:
-				keyboard.add(types.InlineKeyboardButton(text=color, callback_data=color))
-				#keyboard.add(color)
-			keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
-				
+			await asyncio.sleep(3)
 			await bot.delete_message(message.chat.id,wait_msg['message_id'])
-			#await bot.delete_message(message.chat.id,message['message_id'])
-			
-			color_buttons_msg = await message.answer("Укажите нужный цвет:", reply_markup=keyboard)
-			
+			await bot.delete_message(message.chat.id,message['message_id'])
+			uncorrect_msg = await message.answer("Ссылка некорректна. Попробуйте ещё раз отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
+			await OrderClothes.waiting_for_clothes_url.set()
 			async with state.proxy() as data:
-				data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
-				data['msgs_id']['url_msg_id'] = message['message_id']
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+			return
+			
+		status,product_info = parser.get_product_info(driver)
+		
+		if status == 'have not clothes':
+			driver.close()
+			await asyncio.sleep(1)
+			driver.quit()
+			await asyncio.sleep(3)
+			
+			await bot.delete_message(message.chat.id,wait_msg['message_id'])
+			await bot.delete_message(message.chat.id,message['message_id'])
+			
+			uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен или произошел сбой. Попробуйте снова отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
+			await OrderClothes.waiting_for_clothes_url.set()
+			async with state.proxy() as data:
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+			
+			return
+		elif status == False:
+			driver.close()
+			await asyncio.sleep(1)
+			driver.quit()
+			await asyncio.sleep(3)
+			
+			await bot.delete_message(message.chat.id,wait_msg['message_id'])
+			await bot.delete_message(message.chat.id,message['message_id'])
+			
+			uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
+			await OrderClothes.waiting_for_clothes_url.set()
+			async with state.proxy() as data:
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
 				
-			await OrderClothes.waiting_for_clothes_color.set()
+			return
+			
+		driver.close()
+		await asyncio.sleep(1)
+		driver.quit()
+		
+		async with state.proxy() as data:
+			data['productDetail'] = product_info
+			#data['login_link'] = login_link
+			data['received_url'] = message.text
+			
+		#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+		keyboard = types.InlineKeyboardMarkup()
+		for color in product_info['color']:
+			keyboard.add(types.InlineKeyboardButton(text=color, callback_data=color))
+			#keyboard.add(color)
+		keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
+			
+		await bot.delete_message(message.chat.id,wait_msg['message_id'])
+		#await bot.delete_message(message.chat.id,message['message_id'])
+		
+		color_buttons_msg = await message.answer("Укажите нужный цвет:", reply_markup=keyboard)
+		
+		async with state.proxy() as data:
+			data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
+			data['msgs_id']['url_msg_id'] = message['message_id']
+			
+		await OrderClothes.waiting_for_clothes_color.set()
 	
 async def ignoreMsg_whileScrap(message: types.Message, state: FSMContext):
 	await bot.delete_message(message.chat.id,message['message_id'])

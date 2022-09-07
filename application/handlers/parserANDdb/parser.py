@@ -42,11 +42,13 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 def get_page_source(driver,url):
 	try:
 		driver.get(url)
+		driver.maximize_window()
 		#with open('cookies.pkl','rb') as r:
 		#	cookies = pickle.load(r)
 		#cookies = pickle.load(open('cookies.pkl','rb'))
 		#for cookie in cookies:
 		#	driver.add_cookie(cookie)
+		#time.sleep(600)
 		return True, driver#print(driver.page_source)
 	except Exception as e:
 		print(traceback.format_exc())
@@ -170,18 +172,56 @@ def login_user(driver):
 
 def get_product_info(driver):
 	try:
+		'''
 		try:
+			geolocation_modal = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
+			geolocation_modal_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable(('xpath','//button[@class="button geolocation-modal__button"]')))
+			action = ActionChains(driver)
+			action.move_to_element(geolocation_modal_button).click().perform()
+			#time.sleep(1)
+			geolocation_modal_button.click()
+			#time.sleep(5)
+			driver.execute_script("window.scrollTo(0,-500)")
+		except Exception as e:
+			print("___________________wtf____________________2222222222222222222222")
+			print(traceback.format_exc())
+			pass
 		
+		try:
 			product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
 		except Exception as e:
 			print("___________________wtf____________________")
 			print(traceback.format_exc())
 			return 'have not clothes',driver
+		'''
 		color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
-		product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
 		productInfo_dict = dict()
 		productInfo_dict['color'] = dict()
-		productInfo_dict['name'] = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+		try:
+			product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+			product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
+			productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+			driver.execute_script("window.scrollTo(0,-500)")
+		except:
+			try:
+				geolocation_modal = WebDriverWait(driver, 5).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
+				geolocation_modal_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(('xpath','//button[@class="button geolocation-modal__button"]')))
+				action = ActionChains(driver)
+				action.move_to_element(geolocation_modal_button).click().perform()
+				geolocation_modal_button.click()
+				driver.execute_script("window.scrollTo(0,-500)")
+				product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+				product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
+				productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+			except:
+				print(traceback.format_exc())
+				return 'have not clothes',driver
+		#color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
+		#product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
+		#productInfo_dict = dict()
+		#productInfo_dict['color'] = dict()
+		#productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+		
 		'''
 		try:
 			WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
@@ -208,7 +248,7 @@ def get_product_info(driver):
 				color_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(li.find_element(By.CSS_SELECTOR,'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1)))))
 				color_button.click()
 				
-				driver.implicitly_wait(5)
+				#driver.implicitly_wait(5)
 				#time.sleep(random.randint(2,5))
 				
 				color = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-color-selector__selected-color-name"]')))
@@ -222,7 +262,7 @@ def get_product_info(driver):
 				productInfo_dict['color'][color]['color_button_path']['path'] = 'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1))
 				productInfo_dict['color'][color]['color_button_path']['index'] = i+1
 				
-				productInfo_dict['color'][color]['price'] =  WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
+				productInfo_dict['color'][color]['price'] =  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
 				
 				UL_element_size = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
@@ -254,7 +294,7 @@ def get_product_info(driver):
 				productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
 			#print(productInfo_dict)
 			return True,productInfo_dict
-	except Exception as e:
+	except:
 		print(traceback.format_exc())
 		return False,None
 		#time.sleep(600)
