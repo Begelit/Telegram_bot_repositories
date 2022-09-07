@@ -25,41 +25,58 @@ class OrderClothes(StatesGroup):
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
-	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-	keyboard.add('Начать!')
-	await message.answer('Привет! Добро пожаловать в менеджер заказов предметов одежды. Чтобы приступить к работе введи команду /start_order или нажми в предложенной клавиатуре "Начать!". Для отмены какого либо действия отправь /cancel.',reply_markup=keyboard)
+	#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+	keyboard = types.InlineKeyboardMarkup()
+	#keyboard.add('Начать!')
+	keyboard.add(types.InlineKeyboardButton(text="Начать!", callback_data="/start_order"))
+	#await message.answer('Привет! Добро пожаловать в менеджер заказов предметов одежды. Чтобы приступить к работе введи команду /start_order или нажми в предложенной клавиатуре "Начать!". Для отмены какого либо действия отправь /cancel.',reply_markup=keyboard)
+	await message.answer('Привет! Добро пожаловать в менеджер заказов предметов одежды. Чтобы приступить нажми "Начать!".',reply_markup=keyboard)
 	await OrderClothes.start_st.set()
 	
-async def cmd_start(message: types.Message, state: FSMContext):
-	if message.text == '/start_order' or message.text == 'Начать!':
+#async def cmd_start(message: types.Message, state: FSMContext):
+async def cmd_start(message: types.CallbackQuery, state: FSMContext):
+	#if message.text == '/start_order' or message.text == 'Начать!':
+	if message.data == '/start_order':
 		async with state.proxy() as data:
 			if 'post_start_msgs_id' in data:
 				try:
 				
-					await bot.delete_message(message.chat.id,data['post_start_msgs_id'])
+					await bot.delete_message(message.message.chat.id,data['post_start_msgs_id'])
 				except:
 					pass
 		await state.finish()
+		
+		#<<<<<ReplyKeybord<<<<<
+		'''
 		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 		keyboard.add('Оформить заказ')
 		await bot.delete_message(message.chat.id,message['message_id'])
-		msg = await message.answer('Отправь /order или нажми "Оформить заказ".',reply_markup=keyboard)#+
-					#'\n\n Чтобы отменить действие отправь /cancel.',reply_markup=keyboard)#+
-					#'\n\n Чтобы получить список команд отправь /help.',reply_markup=keyboard)
+		msg = await message.answer('Отправь /order или нажми "Оформить заказ".',reply_markup=keyboard)
+		'''
+		#>>>>>ReplyKeybord>>>>>
+		
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Оформить заказ", callback_data="/order"))
+		#bot.send_message(message.message.chat.id, text='Выбрать действие:', reply_markup=keyboard)
+		msg = await message.message.edit_text('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ".',reply_markup=keyboard)
+		await message.answer()
+
+		#msg = await message.answer('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ".',reply_markup=keyboard)
 		
 		async with state.proxy() as data:
 			#data['msgs_id'] = dict()
 			data['start_msgs_id'] = msg['message_id']
-		
+			
 		await OrderClothes.order_start_state.set()
+	'''
 	else:
 		async with state.proxy() as data:
-			await bot.delete_message(message.chat.id,message['message_id'])
-			await bot.delete_message(message.chat.id,data['start_msgs_id'])
+			#await bot.delete_message(message.chat.id,message['message_id'])
+			await bot.delete_message(message.message.chat.id,data['start_msgs_id'])
 		if 'post_start_msgs_id' in data:
 			try:
 			
-				await bot.delete_message(message.chat.id,data['post_start_msgs_id'])
+				await bot.delete_message(message.message.chat.id,data['post_start_msgs_id'])
 			except:
 				pass
 		await state.finish()
@@ -67,6 +84,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await state.finish()
+	'''
 
 async def order_start(message: types.Message, state: FSMContext):
 	#print(message['message_id'])
@@ -468,7 +486,10 @@ def register_handlers_order(dp: Dispatcher):
 	#dp.register_message_handler(cmd_start, commands="start", state=OrderClothes.start_st)
 	#dp.register_message_handler(cmd_start, commands="start", state='*')
 	dp.register_message_handler(start,commands='start', state='*')
-	dp.register_message_handler(cmd_start, state=OrderClothes.start_st)
+	
+	#dp.register_message_handler(cmd_start, state=OrderClothes.start_st)
+	dp.register_callback_query_handler(cmd_start, state=OrderClothes.start_st)
+	
 	#dp.register_message_handler(order_start, commands="order", state="*")
 	#dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
 	#dp.register_message_handler(order_start, commands="order", state=OrderClothes.order_start_state)
