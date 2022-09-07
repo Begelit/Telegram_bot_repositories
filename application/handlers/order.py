@@ -380,29 +380,32 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 			return
 		'''
 		async with state.proxy() as data:
-			data['received_size'] = message.text
+			data['received_size'] = call.data
 			order_data = data
-		
-		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-		keyboard.add('Подтвердить')
-		keyboard.add('Отменить')
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Подтвердить", callback_data="/confirm"))
+		keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
+		#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+		#keyboard.add('Подтвердить')
+		#keyboard.add('Отменить')
 		
 		#await OrderClothes.waiting_for_confirm.set()
 		
-		await bot.delete_message(message.chat.id,size_button_msg_id)
-		await bot.delete_message(message.chat.id,message['message_id'])
+		#await bot.delete_message(message.chat.id,size_button_msg_id)
+		#await bot.delete_message(message.chat.id,message['message_id'])
 		
-		order_data_msg = await message.answer("Почти готово! Ваш заказ:"
+		order_data_msg = await call.message.edit_text("Почти готово! Ваш заказ:"
 					f"\n\n  {order_data['productDetail']['name']}"
 					f"\n    Цвет: {order_data['received_color']}"
 					f"\n    Размер: {order_data['received_size']}"
-					f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}",reply_markup=types.ReplyKeyboardRemove())
+					f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}",reply_markup=keyboard)
+		await call.answer()
 					
-		confirm_msg = await message.answer('Подтвердить?',reply_markup=keyboard)
+		#confirm_msg = await message.answer('Подтвердить?',reply_markup=keyboard)
 		
 		async with state.proxy() as data:
 			data['msgs_id']['order_data_msg_id'] = order_data_msg['message_id']
-			data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
+			#data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
 			
 		await OrderClothes.waiting_for_confirm.set()
 
@@ -414,9 +417,9 @@ async def confirm_order(message: types.Message, state: FSMContext):
 	if message.text == '/cancel':
 		await bot.delete_message(message.chat.id,order_data_msg_id)
 		await bot.delete_message(message.chat.id,url_msg_id)
-		await bot.delete_message(message.chat.id,message['message_id'])
-		await bot.delete_message(message.chat.id,data['start_msgs_id'])
-		await bot.delete_message(message.chat.id,confirm_msg_id)
+		#await bot.delete_message(message.chat.id,message['message_id'])
+		#await bot.delete_message(message.chat.id,data['start_msgs_id'])
+		#await bot.delete_message(message.chat.id,confirm_msg_id)
 		#async with state.proxy() as data:
 		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()

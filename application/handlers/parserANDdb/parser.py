@@ -172,7 +172,7 @@ def get_product_info(driver):
 	try:
 		try:
 		
-			product_detail_info_elem = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+			product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
 		except Exception as e:
 			print("___________________wtf____________________")
 			print(traceback.format_exc())
