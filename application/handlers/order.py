@@ -210,7 +210,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 				await bot.delete_message(message.chat.id,wait_msg['message_id'])
 				await bot.delete_message(message.chat.id,message['message_id'])
 				
-				uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен. Попробуйте снова отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
+				uncorrect_msg = await message.answer("Товар по этой ссылке не обнаружен или произошел сбой. Попробуйте снова отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
 				await OrderClothes.waiting_for_clothes_url.set()
 				async with state.proxy() as data:
 					data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
@@ -431,6 +431,7 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	else:
+		'''
 			
 		if message.text not in ['Подтвердить','Отменить']:
 			await bot.delete_message(message.chat.id,confirm_msg_id)
@@ -444,9 +445,10 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 			async with state.proxy() as data:
 				data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
 			return
+		'''
 		async with state.proxy() as data:
-			data['confirm_status'] = message.text
-			data['username'] = message.from_user.username
+			data['confirm_status'] = 'Confirm' if call.data == '/confirm' else False
+			data['username'] = call.from_user.username
 			data['datetime'] = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 			#driver_url = data['driver_url']
 			#driver_session_id = data['driver_session_id']
@@ -464,23 +466,30 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 		#new_driver.close()
 		#new_driver.session_id = driver_session_id
 		#await state.update_data(confirm_status=message.text)
-		if message.text == 'Подтвердить':
+		if call.data == '/confirm':
 			print(json_dict)
 			async with lock:
 				index_json = len(os.listdir('./json_data'))
 				json_file = open('./json_data/clothe_data_{}.json'.format(str(index_json)),'w')
 				json.dump(json_dict,json_file,indent=6)
 				json_file.close()
-			await bot.delete_message(message.chat.id,confirm_msg_id)
-			await bot.delete_message(message.chat.id,order_data_msg_id)
-			await bot.delete_message(message.chat.id,url_msg_id)
-			await bot.delete_message(message.chat.id,message['message_id'])
-			await bot.delete_message(message.chat.id,data['start_msgs_id'])
+			#await bot.delete_message(message.chat.id,confirm_msg_id)
+			#await bot.delete_message(message.chat.id,order_data_msg_id)
+			await bot.delete_message(call.message.chat.id,url_msg_id)
+			#await bot.delete_message(message.chat.id,message['message_id'])
+			#await bot.delete_message(message.chat.id,data['start_msgs_id'])
 			
 			await state.finish()
-			msg = await message.answer('Заявка принята! Отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+			
+			keyboard = types.InlineKeyboardMarkup()
+			keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+			msg = await call.message.edit_text('Заявка создана! Нажмите "Меню" для продолжения.',reply_markup=keyboard)
+			await call.answer()
+			#msg = await message.answer('Заявка принята! Отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+			
 			async with state.proxy() as data:
 				data['post_start_msgs_id'] = msg['message_id']
+				
 			await OrderClothes.start_st.set()
 			#url = order_data['received_url']
 			#driver_path = '/home/koza/Reps/drivers/chromedriver'
@@ -514,7 +523,7 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 			#await asyncio.sleep(1)
 			#driver.quit()
 			
-			
+		'''
 		elif message.text == 'Отменить':
 			await bot.delete_message(message.chat.id,confirm_msg_id)
 			await bot.delete_message(message.chat.id,order_data_msg_id)
@@ -526,6 +535,7 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 			async with state.proxy() as data:
 				data['post_start_msgs_id'] = msg['message_id']
 			await OrderClothes.start_st.set()
+		'''
 		
 def register_handlers_order(dp: Dispatcher):
 	#dp.register_message_handler(cmd_start, commands="start", state=OrderClothes.start_st)
