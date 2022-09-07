@@ -330,21 +330,28 @@ async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 			
 		await OrderClothes.waiting_for_clothes_size.set()
 		
-async def size_order(message: types.Message, state: FSMContext):
+async def size_order(call: types.CallbackQuery, state: FSMContext):
 
 	async with state.proxy() as data:
 		order_data = data
 		size_button_msg_id = data['msgs_id']['size_button_msg_id']
 		url_id = data['msgs_id']['url_msg_id']
-	if message.text == '/cancel':
-		await bot.delete_message(message.chat.id,size_button_msg_id)
-		await bot.delete_message(message.chat.id,url_id)
-		await bot.delete_message(message.chat.id,message['message_id'])
-		await bot.delete_message(message.chat.id,data['start_msgs_id'])
+	if call.data == '/cancel':
+		#await bot.delete_message(message.chat.id,size_button_msg_id)
+		await bot.delete_message(call.message.chat.id,url_id)
+		#await bot.delete_message(message.chat.id,message['message_id'])
+		#await bot.delete_message(message.chat.id,data['start_msgs_id'])
 		#async with state.proxy() as data:
 		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
-		msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+		
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		await call.answer()
+		
+		#msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+		
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
@@ -534,6 +541,8 @@ def register_handlers_order(dp: Dispatcher):
 	#dp.register_message_handler(color_chosen, state=OrderClothes.waiting_for_clothes_color)
 	dp.register_callback_query_handler(color_chosen, state=OrderClothes.waiting_for_clothes_color)
 	
-	dp.register_message_handler(size_order, state=OrderClothes.waiting_for_clothes_size)
+	#dp.register_message_handler(size_order, state=OrderClothes.waiting_for_clothes_size)
+	dp.register_callback_query_handler(size_order, state=OrderClothes.waiting_for_clothes_size)
+	
 	dp.register_message_handler(confirm_order, state=OrderClothes.waiting_for_confirm)
 	dp.register_message_handler(ignoreMsg_whileScrap, state=OrderClothes.ignore_msg)
