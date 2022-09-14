@@ -268,7 +268,7 @@ def get_product_info(driver):
 				for symb in list_price:
 					if symb.isalpha() == True:
 						currency += symb
-				price_no_currency = str(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224)
+				price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224,2))
 
 				productInfo_dict['color'][color]['price'] = price_no_currency
 				productInfo_dict['color'][color]['currency'] = currency
@@ -293,10 +293,25 @@ def get_product_info(driver):
 			
 			productInfo_dict['color'][color] = dict()
 			
-			productInfo_dict['color'][color]['price'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price"]//div[@class="money-amount price-formatted__price-amount"]//span[@class="money-amount__main"]'))).text
+			#productInfo_dict['color'][color]['price'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price"]//div[@class="money-amount price-formatted__price-amount"]//span[@class="money-amount__main"]'))).text
+			
+			price =  WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price"]//div[@class="money-amount price-formatted__price-amount"]//span[@class="money-amount__main"]'))).text
+
+			list_price = list(price)
+			currency = ''
+			for symb in list_price:
+				if symb.isalpha() == True:
+					currency += symb
+			
+			price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224,2))
+
+			productInfo_dict['color'][color]['price'] = price_no_currency
+			productInfo_dict['color'][color]['currency'] = currency
+			
 			UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 			LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
 			#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
+
 			productInfo_dict['color'][color]['size'] = dict()
 			for li in LI_elements_size:
 				size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text

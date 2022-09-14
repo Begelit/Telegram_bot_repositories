@@ -1,0 +1,50 @@
+{
+      "msgs_id": {
+            "color_buttons_msg_id": 1912,
+            "order_data_msg_id": 1912,
+            "send_url_msg_id": 1909,
+            "size_button_msg_id": 1912,
+            "url_msg_id": 1910
+      },
+      "productDetail": {
+            "color": {
+                  "BLACK": {
+                        "color_button_path": {
+                              "index": 2,
+                              "path": "li.product-detail-color-selector__color:nth-child(2) > button:nth-child(1)"
+                        },
+                        "currency": "GBP",
+                        "price": "61.19",
+                        "size": {
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-3\"]",
+                              "M": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-2\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-1\"]",
+                              "XL": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-4\"]",
+                              "XS": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-0\"]"
+                        }
+                  },
+                  "KHAKI": {
+                        "color_button_path": {
+                              "index": 1,
+                              "path": "li.product-detail-color-selector__color:nth-child(1) > button:nth-child(1)"
+                        },
+                        "currency": "GBP",
+                        "price": "61.19",
+                        "size": {
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-3\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-1\"]",
+                              "XS": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-0\"]"
+                        }
+                  }
+            },
+            "name": "DOUBLE-BREASTED OVERSIZED BLAZER",
+            "type_choice_color": "multi_color"
+      },
+      "received_color": "BLACK",
+      "received_size": "XL",
+      "received_url": "https://www.zara.com/uk/en/double-breasted-oversized-blazer-p02753032.html?v1=206087228",
+      "start_msgs_id": 1909,
+      "confirm_status": "Confirm",
+      "username": "dimchxn",
+      "datetime": "14/09/2022 20:43:35"
+}

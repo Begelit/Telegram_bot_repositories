@@ -42,6 +42,8 @@ def create_order(data):
 							order_item_color = data['received_color'],
 							order_item_size = data['received_size'],
 							order_item_url = data['received_url'],
+							order_item_price = data['productDetail']['color'][data['received_color']]['price'],
+							order_item_currency = data['productDetail']['color'][data['received_color']]['currency'],
 							order_status = 'handling')
 				s.add(order_add)
 				s.commit()
@@ -53,6 +55,6 @@ def create_order(data):
 #print(s.query(User).filter(User.user_username == 'user_test'))
 
 if __name__ == "__main__":
-	json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_3.json')
+	json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_23.json')
 	order_data = json.load(json_file)
 	create_order(order_data)

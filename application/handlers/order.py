@@ -467,7 +467,7 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 		#new_driver.session_id = driver_session_id
 		#await state.update_data(confirm_status=message.text)
 		if call.data == '/confirm':
-			print(json_dict)
+			#print(json_dict)
 			async with lock:
 				index_json = len(os.listdir('./json_data'))
 				json_file = open('./json_data/clothe_data_{}.json'.format(str(index_json)),'w')

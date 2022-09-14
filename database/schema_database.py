@@ -35,6 +35,8 @@ class Order(Base):
 	order_item_name = Column(String(100), nullable = False)
 	order_item_color = Column(String(50), nullable = False)
 	order_item_size = Column(String(50), nullable = False)
+	order_item_price = Column(String(50), nullable = False)
+	order_item_currency = Column(String(10), nullable = False)
 	order_item_url = Column(String(500), nullable = False)
 	
 	#order_item_id = Column(Integer, ForeignKey('Items.item_id'),nullable=False)
