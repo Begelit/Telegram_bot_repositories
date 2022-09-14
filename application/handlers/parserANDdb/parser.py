@@ -269,11 +269,7 @@ def get_product_info(driver):
 					if symb.isalpha() == True:
 						currency += symb
 				price_no_currency = str(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224)
-				#print(currency)
-				print(price_no_currency)
-				print(currency)
-				#productInfo_dict['color'][color]['currency'] = currency
-				#print(currency)
+
 				productInfo_dict['color'][color]['price'] = price_no_currency
 				productInfo_dict['color'][color]['currency'] = currency
 				
