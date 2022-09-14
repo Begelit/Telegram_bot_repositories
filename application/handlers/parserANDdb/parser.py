@@ -172,31 +172,10 @@ def login_user(driver):
 
 def get_product_info(driver):
 	try:
-		'''
-		try:
-			geolocation_modal = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
-			geolocation_modal_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable(('xpath','//button[@class="button geolocation-modal__button"]')))
-			action = ActionChains(driver)
-			action.move_to_element(geolocation_modal_button).click().perform()
-			#time.sleep(1)
-			geolocation_modal_button.click()
-			#time.sleep(5)
-			driver.execute_script("window.scrollTo(0,-500)")
-		except Exception as e:
-			print("___________________wtf____________________2222222222222222222222")
-			print(traceback.format_exc())
-			pass
-		
-		try:
-			product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
-		except Exception as e:
-			print("___________________wtf____________________")
-			print(traceback.format_exc())
-			return 'have not clothes',driver
-		'''
 		color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
 		productInfo_dict = dict()
 		productInfo_dict['color'] = dict()
+		'''
 		try:
 			product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
 			product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
@@ -214,6 +193,26 @@ def get_product_info(driver):
 				product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
 				productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
 			except:
+				print(traceback.format_exc())
+				return 'have not clothes',driver
+		'''
+		try:
+			geolocation_modal = WebDriverWait(driver, 5).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
+			geolocation_modal_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(('xpath','//button[@class="button geolocation-modal__button"]')))
+			action = ActionChains(driver)
+			action.move_to_element(geolocation_modal_button).click().perform()
+			geolocation_modal_button.click()
+			driver.execute_script("window.scrollTo(0,-500)")
+			product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+			product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
+			productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+		except:
+			try:
+				product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
+				product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
+				productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
+				driver.execute_script("window.scrollTo(0,-500)")
+			except:	
 				print(traceback.format_exc())
 				return 'have not clothes',driver
 		#color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
@@ -262,7 +261,21 @@ def get_product_info(driver):
 				productInfo_dict['color'][color]['color_button_path']['path'] = 'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1))
 				productInfo_dict['color'][color]['color_button_path']['index'] = i+1
 				
-				productInfo_dict['color'][color]['price'] =  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
+				price =  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
+				#currency = re.findall(r'[a-zA-Z]+', price)
+				list_price = list(price)
+				currency = ''
+				for symb in list_price:
+					if symb.isalpha() == True:
+						currency += symb
+				price_no_currency = str(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224)
+				#print(currency)
+				print(price_no_currency)
+				print(currency)
+				#productInfo_dict['color'][color]['currency'] = currency
+				#print(currency)
+				productInfo_dict['color'][color]['price'] = price_no_currency
+				productInfo_dict['color'][color]['currency'] = currency
 				
 				UL_element_size = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')

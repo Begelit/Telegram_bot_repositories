@@ -1,3 +1,6 @@
 application/User/*
 application/handlers/parserANDdb/zara_log.ini
 application/handlers/parserANDdb/create_config.py
+
+database/db_login_data.ini
+

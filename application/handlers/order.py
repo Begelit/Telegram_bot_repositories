@@ -398,7 +398,7 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 					f"\n\n  {order_data['productDetail']['name']}"
 					f"\n    Цвет: {order_data['received_color']}"
 					f"\n    Размер: {order_data['received_size']}"
-					f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}",reply_markup=keyboard)
+					f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}"f" {order_data['productDetail']['color'][order_data['received_color']]['currency']}",reply_markup=keyboard)
 		await call.answer()
 					
 		#confirm_msg = await message.answer('Подтвердить?',reply_markup=keyboard)

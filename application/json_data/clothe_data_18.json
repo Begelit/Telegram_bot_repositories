@@ -1,0 +1,33 @@
+{
+      "msgs_id": {
+            "color_buttons_msg_id": 1811,
+            "order_data_msg_id": 1811,
+            "send_url_msg_id": 1792,
+            "size_button_msg_id": 1811,
+            "url_msg_id": 1809
+      },
+      "productDetail": {
+            "color": {
+                  "\u0421\u0412\u0415\u0422\u041b\u041e-\u0417\u0415\u041b\u0415\u041d\u042b\u0419": {
+                        "price": "24 990,00 KZT",
+                        "size": {
+                              "L": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-202101983-item-3\"]",
+                              "M": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-202101983-item-2\"]",
+                              "S": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-202101983-item-1\"]",
+                              "XL": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-202101983-item-4\"]",
+                              "XS": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-202101983-item-0\"]",
+                              "XXL": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-202101983-item-5\"]"
+                        }
+                  }
+            },
+            "name": "\u041f\u041b\u0410\u0422\u042c\u0415 \u0418\u0417 \u0421\u0422\u0420\u0423\u042f\u0429\u0415\u0419\u0421\u042f \u0413\u041b\u0410\u0414\u041a\u041e\u0419 \u0422\u041a\u0410\u041d\u0418",
+            "type_choice_color": "single_color"
+      },
+      "received_color": "\u0421\u0412\u0415\u0422\u041b\u041e-\u0417\u0415\u041b\u0415\u041d\u042b\u0419",
+      "received_size": "XS",
+      "received_url": "https://www.zara.com/kz/ru/share/-p04661205.html?utm_campaign=productShare&utm_medium=mobile_sharing_iOS&utm_source=red_social_movil&v1=202101983",
+      "start_msgs_id": 1792,
+      "confirm_status": "Confirm",
+      "username": "billvoooo",
+      "datetime": "10/09/2022 13:38:56"
+}
