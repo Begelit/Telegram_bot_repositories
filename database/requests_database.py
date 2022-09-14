@@ -35,8 +35,7 @@ def create_order(data):
 					s.commit()
 					for num, row in enumerate(s.query(User).filter(User.user_username == username)):
 						user_pk_id = row.user_id
-				#else:
-				#	print([row.user_username for row in s.query(User.user_username).filter(User.user_id == user_pk_id)][0])
+				
 				order_add = Order(order_user_id = user_pk_id,
 							order_item_name = data['productDetail']['name'],
 							order_item_color = data['received_color'],
@@ -51,10 +50,54 @@ def create_order(data):
 				print(traceback.format_exc())
 	except:
 		print(traceback.format_exc())
+		
+def get_info_order_user(username):
+	try:
+		config = configparser.ConfigParser()
+		config.read('/home/koza/Reps/shein_bot/database/db_login_data.ini')
+
+		user = config.get('mysql_login_data', 'usr')
+		pswd = config.get('mysql_login_data', 'pswd')
+		host = config.get('mysql_login_data', 'host')
+		database = config.get('mysql_login_data', 'database')
+
+		engine = create_engine('mysql://{0}:{1}@{2}/{3}'.format(user, pswd, host,database))
+
+		session = sessionmaker(bind = engine)
+		
+		order_list = dict()
+		
+		with session() as s:
+			try:
+				for num, row in enumerate(s.query(User).filter(User.user_username == username)):
+					user_pk_id = row.user_id
+				for num, row in enumerate(s.query(Order).filter(Order.order_user_id == user_pk_id)):
+					order_list[str(num)] = dict()
+					order_list[str(num)]['order_id'] = row.order_id
+					order_list[str(num)]['order_user_id'] = row.order_user_id
+					order_list[str(num)]['order_item_name'] = row.order_item_name
+					order_list[str(num)]['order_item_color'] = row.order_item_color
+					order_list[str(num)]['order_item_size'] = row.order_item_size
+					order_list[str(num)]['order_item_price'] = row.order_item_price
+					order_list[str(num)]['order_item_currency'] = row.order_item_currency
+					order_list[str(num)]['order_item_url'] = row.order_item_url
+					order_list[str(num)]['order_status'] = row.order_status
+					order_list[str(num)]['order_creating_date'] = str(row.order_creating_date)
+					#print(order_list[str(num)])
+				return order_list
+			except:
+				print(traceback.format_exc())
+				return False
+	except:
+		print(traceback.format_exc())
+		return False
 
 #print(s.query(User).filter(User.user_username == 'user_test'))
 
 if __name__ == "__main__":
-	json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_23.json')
-	order_data = json.load(json_file)
-	create_order(order_data)
+	#json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_23.json')
+	#order_data = json.load(json_file)
+	#create_order(order_data)
+	get_info_order_user('dimchxn')
+	
+	
