@@ -438,7 +438,7 @@ async def amount_clothes_order(message: types.Message, state: FSMContext):
 		await bot.delete_message(message.chat.id,message['message_id'])
 		async with state.proxy() as data:
 			await bot.delete_message(message.chat.id,data['msgs_id']['send_amount_msg_id'])
-		msg = await call.message.edit_text('Пожалуйста, введите корректное значение, чтобы указать количество товара. Если хотите отменить действие, нажмите /cancel.')
+		msg = await message.answer('Пожалуйста, введите корректное значение, чтобы указать количество товара. Если хотите отменить действие, нажмите /cancel.')
 		async with state.proxy() as data:
 			data['msgs_id']['send_amount_msg_id'] = msg['message_id']
 		return
@@ -446,7 +446,7 @@ async def amount_clothes_order(message: types.Message, state: FSMContext):
 		await bot.delete_message(message.chat.id,message['message_id'])
 		async with state.proxy() as data:
 			await bot.delete_message(message.chat.id,data['msgs_id']['send_amount_msg_id'])
-		msg = await call.message.edit_text('Слишком большое значение, укажите меньшее значение. Если хотите отменить действие, нажмите /cancel.')
+		msg = await message.answer('Слишком большое значение, укажите меньшее значение. Если хотите отменить действие, нажмите /cancel.')
 		async with state.proxy() as data:
 			data['msgs_id']['send_amount_msg_id'] = msg['message_id']
 		return
@@ -460,14 +460,14 @@ async def amount_clothes_order(message: types.Message, state: FSMContext):
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Подтвердить", callback_data="/confirm"))
 		keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
-		order_data_msg = await call.message.edit_text("Почти готово! Ваш заказ:"
+		order_data_msg = await message.answer("Почти готово! Ваш заказ:"
 					f"\n\n  {order_data['productDetail']['name']}"
 					f"\n    Цвет: {order_data['received_color']}"
 					f"\n    Размер: {order_data['received_size']}"
-					f"\n	Количество: {order_data['received_amount']}"
-					f"\n    Цена: {str(int(order_data['productDetail']['color'][order_data['received_color']]['price'])*int(order_data['received_amount']))}"f" {order_data['productDetail']['color'][order_data['received_color']]['currency']}"
+					f"\n    Количество: {order_data['received_amount']}"
+					f"\n    Цена: {str(float(order_data['productDetail']['color'][order_data['received_color']]['price'])*int(order_data['received_amount']))}"f" {order_data['productDetail']['color'][order_data['received_color']]['currency']}"
 					,reply_markup=keyboard)
-		await call.answer()
+		#await call.answer()
 		async with state.proxy() as data:
 			data['msgs_id']['order_data_msg_id'] = order_data_msg['message_id']
 		await OrderClothes.waiting_for_confirm.set()
