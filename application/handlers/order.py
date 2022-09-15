@@ -25,6 +25,7 @@ class OrderClothes(StatesGroup):
 	order_start_state = State()
 	amount_state = State()
 	change_order_list_state = State()
+	delete_order_state = State()
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
@@ -143,14 +144,15 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		keyboard.add(types.InlineKeyboardButton(text="Вернуться назад", callback_data="/cancel"))
 		msg = await call.message.answer('Ваш список заказов:',reply_markup=keyboard)
 		await call.answer()
+		orders_data_dict = requests_database.get_info_order_user(call.from_user.username)
 		async with state.proxy() as data:
 			data['msgs_id'] = dict()
 			data['msgs_id']['order_list'] = dict()
 			data['msgs_id']['order_list']['firstMsg_ordlist_id'] = msg['message_id']
-		orders_data_dict = requests_database.get_info_order_user(call.from_user.username)
+			data['orders_data_dict'] = orders_data_dict
 		for index in range(len(orders_data_dict)):
 			keyboard = types.InlineKeyboardMarkup()
-			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}".format(str(orders_data_dict[str(index)]['order_id']))))
+			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(orders_data_dict[str(index)]['order_id']),str(index))))
 			msg = await call.message.answer(
 				str(orders_data_dict[str(index)]),reply_markup=keyboard,disable_web_page_preview=True
 				)
@@ -171,14 +173,33 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	elif 'delete' in call.data:
-		key = call.data.split('_')[1]
+		del_key = call.data.split('_')[1]
+		index = call.data.split('_')[2]
 		async with state.proxy() as data:
-			await bot.delete_message(call.message.chat.id,data['msgs_id']['order_list'][key])
-			data['msgs_id']['order_list'].pop(key, None)
-		await OrderClothes.change_order_list_state.set()
+			for key in data['msgs_id']['order_list']:
+				if key != del_key:
+					await bot.delete_message(call.message.chat.id,data['msgs_id']['order_list'][key])
+					#data['msgs_id']['order_list'].pop(key, None)
+			
+			keyboard = types.InlineKeyboardMarkup()
+			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(del_key),str(index))))
+			keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel".format(str(del_key))))
+			msg = await call.message.edit_text(str(data['orders_data_dict'][index])+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True)
+		await OrderClothes.delete_order_state.set()
+		#await OrderClothes.change_order_list_state.set()
 		#requests_database.delete_order(key)
 		#print(call.data.split('_')[1])
 		
+async def delete_order(call: types.CallbackQuery, state: FSMContext):
+	if call.data == '/cancel':
+		await state.finish()
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	elif 'delete' in call.data:
 		
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
@@ -648,6 +669,8 @@ def register_handlers_order(dp: Dispatcher):
 	dp.register_callback_query_handler(cmd_start, state=OrderClothes.start_st)
 	
 	dp.register_callback_query_handler(change_order_list, state=OrderClothes.change_order_list_state)
+	
+	dp.register_callback_query_handler(delete_order, state=OrderClothes.delete_order_state)
 	
 	#dp.register_message_handler(order_start, commands="order", state="*")
 	#dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
