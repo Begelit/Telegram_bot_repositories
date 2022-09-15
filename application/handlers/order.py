@@ -182,7 +182,7 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 					#data['msgs_id']['order_list'].pop(key, None)
 			
 			keyboard = types.InlineKeyboardMarkup()
-			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(del_key),str(index))))
+			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}".format(str(del_key))))
 			keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel".format(str(del_key))))
 			msg = await call.message.edit_text(str(data['orders_data_dict'][index])+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True)
 		await OrderClothes.delete_order_state.set()
@@ -200,7 +200,15 @@ async def delete_order(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	elif 'delete' in call.data:
-		
+		await state.finish()
+		del_key = call.data.split('_')[1]
+		requests_database.delete_order(del_key)
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Заказ удалён, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 	#async with lock:
