@@ -1,6 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from handlers.database.schema_database import User, Order
+#from schema_database import User, Order
 import configparser
 import traceback
 import json
@@ -76,19 +77,22 @@ def get_info_order_user(username):
 			try:
 				for num, row in enumerate(s.query(User).filter(User.user_username == username)):
 					user_pk_id = row.user_id
-				for num, row in enumerate(s.query(Order).filter(Order.order_user_id == user_pk_id)):
-					order_list[str(num)] = dict()
-					order_list[str(num)]['order_id'] = row.order_id
-					order_list[str(num)]['order_user_id'] = row.order_user_id
-					order_list[str(num)]['order_item_name'] = row.order_item_name
-					order_list[str(num)]['order_item_color'] = row.order_item_color
-					order_list[str(num)]['order_item_size'] = row.order_item_size
-					order_list[str(num)]['order_item_amount'] = row.order_item_amount
-					order_list[str(num)]['order_total_price'] = row.order_total_price
-					order_list[str(num)]['order_item_currency'] = row.order_item_currency
-					order_list[str(num)]['order_item_url'] = row.order_item_url
-					order_list[str(num)]['order_status'] = row.order_status
-					order_list[str(num)]['order_creating_date'] = str(row.order_creating_date)
+				num = 0
+				for row in s.query(Order).filter(Order.order_user_id == user_pk_id):
+					if row.order_status != 'deleted':
+						order_list[str(num)] = dict()
+						order_list[str(num)]['order_id'] = row.order_id
+						order_list[str(num)]['order_user_id'] = row.order_user_id
+						order_list[str(num)]['order_item_name'] = row.order_item_name
+						order_list[str(num)]['order_item_color'] = row.order_item_color
+						order_list[str(num)]['order_item_size'] = row.order_item_size
+						order_list[str(num)]['order_item_amount'] = row.order_item_amount
+						order_list[str(num)]['order_total_price'] = row.order_total_price
+						order_list[str(num)]['order_item_currency'] = row.order_item_currency
+						order_list[str(num)]['order_item_url'] = row.order_item_url
+						order_list[str(num)]['order_status'] = row.order_status
+						order_list[str(num)]['order_creating_date'] = str(row.order_creating_date)
+						num +=1
 					#print(order_list[str(num)])
 				return order_list
 			except:
@@ -98,12 +102,38 @@ def get_info_order_user(username):
 		print(traceback.format_exc())
 		return False
 
+def delete_order(order_id_):
+	try:
+		
+		config = configparser.ConfigParser()
+		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+
+		user = config.get('mysql_login_data', 'usr')
+		pswd = config.get('mysql_login_data', 'pswd')
+		host = config.get('mysql_login_data', 'host')
+		database = config.get('mysql_login_data', 'database')
+
+		engine = create_engine('mysql://{0}:{1}@{2}/{3}'.format(user, pswd, host,database))
+
+		session = sessionmaker(bind = engine)
+		
+		with session() as s:
+			try:
+				order = s.query(Order).filter(Order.order_id == int(order_id_)).one()
+				order.order_status = 'deleted'
+				s.commit()
+			except:
+				print(traceback.format_exc())
+				return False
+	except:
+		print(traceback.format_exc())
+		return False
 #print(s.query(User).filter(User.user_username == 'user_test'))
 
 if __name__ == "__main__":
-	json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_2.json')
-	order_data = json.load(json_file)
-	create_order(order_data)
+	#json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_2.json')
+	#order_data = json.load(json_file)
+	#create_order(order_data)
 	#get_info_order_user('dimchxn')
-	
+	delete_order('3')
 	
