@@ -150,7 +150,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		orders_data_dict = requests_database.get_info_order_user(call.from_user.username)
 		for index in range(len(orders_data_dict)):
 			keyboard = types.InlineKeyboardMarkup()
-			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{str(orders_data_dict[str(index)]['order_id'])}"))
+			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}".format(str(orders_data_dict[str(index)]['order_id']))))
 			msg = await call.message.answer(
 				str(orders_data_dict[str(index)]),reply_markup=keyboard,disable_web_page_preview=True
 				)
@@ -170,6 +170,16 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
+	elif 'delete' in call.data:
+		key = call.data.split('_')[1]
+		async with state.proxy() as data:
+			await bot.delete_message(call.message.chat.id,data['msgs_id']['order_list'][key])
+			data['msgs_id']['order_list'].pop(key, None)
+		await OrderClothes.change_order_list_state.set()
+		#requests_database.delete_order(key)
+		#print(call.data.split('_')[1])
+		
+		
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 	#async with lock:

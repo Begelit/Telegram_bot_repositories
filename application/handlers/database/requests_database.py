@@ -130,10 +130,9 @@ def delete_order(order_id_):
 		return False
 #print(s.query(User).filter(User.user_username == 'user_test'))
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
 	#json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_2.json')
 	#order_data = json.load(json_file)
 	#create_order(order_data)
 	#get_info_order_user('dimchxn')
-	delete_order('3')
-	
+	#delete_order('3')
