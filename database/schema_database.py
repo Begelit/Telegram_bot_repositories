@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import datetime
@@ -22,7 +22,7 @@ class User(Base):
 	
 	user_id = Column(Integer, primary_key=True)
 	user_username = Column(String(50), nullable=False)
-	
+	user_access = Column(String(50), default = 'default', nullable=False)
 	Order = relationship('Order')
 	
 class Order(Base):
@@ -35,7 +35,8 @@ class Order(Base):
 	order_item_name = Column(String(100), nullable = False)
 	order_item_color = Column(String(50), nullable = False)
 	order_item_size = Column(String(50), nullable = False)
-	order_item_price = Column(String(50), nullable = False)
+	order_item_amount = Column(Integer, nullable = False)
+	order_total_price = Column(Float, nullable = False)
 	order_item_currency = Column(String(10), nullable = False)
 	order_item_url = Column(String(500), nullable = False)
 	

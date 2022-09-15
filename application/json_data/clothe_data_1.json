@@ -1,30 +1,55 @@
 {
+      "currency": "GBP",
       "msgs_id": {
-            "color_buttons_msg_id": 446,
-            "confirm_msg_id": 451,
-            "order_data_msg_id": 450,
-            "send_url_msg_id": 443,
-            "size_button_msg_id": 448,
-            "url_msg_id": 444
+            "color_buttons_msg_id": 2009,
+            "order_data_msg_id": 2011,
+            "send_amount_msg_id": 2009,
+            "send_url_msg_id": 2006,
+            "size_button_msg_id": 2009,
+            "url_msg_id": 2007
       },
       "productDetail": {
             "color": {
-                  "\u0423\u0422\u0418\u041d\u041e-\u0421\u0418\u041d\u0418\u0419": {
-                        "price": "13 990,00 KZT",
+                  "BLACK": {
+                        "color_button_path": {
+                              "index": 2,
+                              "path": "li.product-detail-color-selector__color:nth-child(2) > button:nth-child(1)"
+                        },
+                        "currency": "GBP",
+                        "price": "61.19",
                         "size": {
-                              "L": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-200060808-item-2\"]",
-                              "M": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-200060808-item-1\"]",
-                              "S": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-200060808-item-0\"]"
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-3\"]",
+                              "M": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-2\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-1\"]",
+                              "XL": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-4\"]",
+                              "XS": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-0\"]"
+                        }
+                  },
+                  "KHAKI": {
+                        "color_button_path": {
+                              "index": 1,
+                              "path": "li.product-detail-color-selector__color:nth-child(1) > button:nth-child(1)"
+                        },
+                        "currency": "GBP",
+                        "price": "61.19",
+                        "size": {
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-3\"]",
+                              "M": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-2\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-1\"]",
+                              "XS": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-206087228-item-0\"]"
                         }
                   }
             },
-            "name": "\u0422\u041e\u041f \u0421\u041e \u0412\u0421\u0422\u0410\u0412\u041a\u0410\u041c\u0418 \u0418\u0417 \u041e\u0420\u0413\u0410\u041d\u0417\u042b",
-            "type_choice_color": "single_color"
+            "name": "DOUBLE-BREASTED OVERSIZED BLAZER",
+            "type_choice_color": "multi_color"
       },
-      "received_color": "\u0423\u0422\u0418\u041d\u041e-\u0421\u0418\u041d\u0418\u0419",
-      "received_size": "M",
-      "received_url": "https://www.zara.com/KZ/ru/0-p0.html?v1=200060808&utm_campaign=productShare&utm_medium=mobile_sharing_Android&utm_source=red_social_movil",
-      "confirm_status": "\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c",
+      "received_amount": "4",
+      "received_color": "KHAKI",
+      "received_size": "L",
+      "received_url": "https://www.zara.com/uk/en/double-breasted-oversized-blazer-p02753032.html?v1=206087228",
+      "start_msgs_id": 2006,
+      "total_price": 244.76,
+      "confirm_status": "Confirm",
       "username": "dimchxn",
-      "datetime": "06/09/2022 19:26:44"
+      "datetime": "15/09/2022 15:57:57"
 }

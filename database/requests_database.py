@@ -40,16 +40,21 @@ def create_order(data):
 							order_item_name = data['productDetail']['name'],
 							order_item_color = data['received_color'],
 							order_item_size = data['received_size'],
+							order_item_amount = data['received_amount'],
+							order_total_price = data['total_price'],
+							order_item_currency = data['currency'],
 							order_item_url = data['received_url'],
-							order_item_price = data['productDetail']['color'][data['received_color']]['price'],
-							order_item_currency = data['productDetail']['color'][data['received_color']]['currency'],
 							order_status = 'handling')
 				s.add(order_add)
 				s.commit()
+				
 			except:
 				print(traceback.format_exc())
+				return False
+		return True
 	except:
 		print(traceback.format_exc())
+		return False
 		
 def get_info_order_user(username):
 	try:
@@ -78,7 +83,8 @@ def get_info_order_user(username):
 					order_list[str(num)]['order_item_name'] = row.order_item_name
 					order_list[str(num)]['order_item_color'] = row.order_item_color
 					order_list[str(num)]['order_item_size'] = row.order_item_size
-					order_list[str(num)]['order_item_price'] = row.order_item_price
+					order_list[str(num)]['order_item_amount'] = row.order_item_amount
+					order_list[str(num)]['order_total_price'] = row.order_total_price
 					order_list[str(num)]['order_item_currency'] = row.order_item_currency
 					order_list[str(num)]['order_item_url'] = row.order_item_url
 					order_list[str(num)]['order_status'] = row.order_status
@@ -95,9 +101,9 @@ def get_info_order_user(username):
 #print(s.query(User).filter(User.user_username == 'user_test'))
 
 if __name__ == "__main__":
-	#json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_23.json')
-	#order_data = json.load(json_file)
-	#create_order(order_data)
-	get_info_order_user('dimchxn')
+	json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_2.json')
+	order_data = json.load(json_file)
+	create_order(order_data)
+	#get_info_order_user('dimchxn')
 	
 	

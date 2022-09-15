@@ -470,6 +470,8 @@ async def amount_clothes_order(message: types.Message, state: FSMContext):
 		#await call.answer()
 		async with state.proxy() as data:
 			data['msgs_id']['order_data_msg_id'] = order_data_msg['message_id']
+			data['total_price'] = float(order_data['productDetail']['color'][order_data['received_color']]['price'])*int(order_data['received_amount'])
+			data['currency'] = order_data['productDetail']['color'][order_data['received_color']]['currency']
 		await OrderClothes.waiting_for_confirm.set()
 		
 		
