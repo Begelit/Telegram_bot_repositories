@@ -24,6 +24,7 @@ class OrderClothes(StatesGroup):
 	start_st = State()
 	order_start_state = State()
 	amount_state = State()
+	change_order_list_state = State()
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
@@ -136,9 +137,11 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	elif call.data == '/all_orders':
+		async with state.proxy() as data:
+			await bot.delete_message(call.message.chat.id,data['start_msgs_id'])
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Вернуться назад", callback_data="/cancel"))
-		msg = await call.message.edit_text('Ваш список заказов:',reply_markup=keyboard)
+		msg = await call.message.answer('Ваш список заказов:',reply_markup=keyboard)
 		await call.answer()
 		async with state.proxy() as data:
 			data['msgs_id'] = dict()
@@ -153,22 +156,20 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 				)
 			async with state.proxy() as data:
 				data['msgs_id']['order_list'][str(orders_data_dict[str(index)]['order_id'])] = msg['message_id']
-			#print(index)
-		#await call.message.answer('Список 1')
-		#await call.message.answer(str(requests_database.get_info_order_user(call.from_user.username)))
-		
-	'''
-	else:
+		await OrderClothes.change_order_list_state.set()
+
+async def change_order_list(call: types.CallbackQuery, state: FSMContext):
+	if call.data == '/cancel':
 		async with state.proxy() as data:
-			await bot.delete_message(message.chat.id,message['message_id'])
-			await bot.delete_message(message.chat.id,data['start_msgs_id'])
+			for key in data['msgs_id']['order_list']:
+				await bot.delete_message(call.message.chat.id,data['msgs_id']['order_list'][key])
 		await state.finish()
-		msg = await message.answer('Комманда неккоректна, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.answer('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
-	'''
-
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 	#async with lock:
@@ -635,6 +636,8 @@ def register_handlers_order(dp: Dispatcher):
 	
 	#dp.register_message_handler(cmd_start, state=OrderClothes.start_st)
 	dp.register_callback_query_handler(cmd_start, state=OrderClothes.start_st)
+	
+	dp.register_callback_query_handler(change_order_list, state=OrderClothes.change_order_list_state)
 	
 	#dp.register_message_handler(order_start, commands="order", state="*")
 	#dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
