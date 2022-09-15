@@ -61,9 +61,10 @@ async def cmd_start(call: types.CallbackQuery, state: FSMContext):
 		
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Оформить заказ", callback_data="/order"))
+		keyboard.add(types.InlineKeyboardButton(text="Список заказов", callback_data="/all_orders"))
 		keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
 		#bot.send_message(message.message.chat.id, text='Выбрать действие:', reply_markup=keyboard)
-		msg = await call.message.edit_text('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ".',reply_markup=keyboard)
+		msg = await call.message.edit_text('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ". Чтобы посмотреть все свои заказы нажмите "Список заказов".',reply_markup=keyboard)
 		await call.answer()
 
 		#msg = await message.answer('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ".',reply_markup=keyboard)
@@ -134,6 +135,28 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
+	elif call.data == '/all_orders':
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Вернуться назад", callback_data="/cancel"))
+		msg = await call.message.edit_text('Ваш список заказов:',reply_markup=keyboard)
+		await call.answer()
+		async with state.proxy() as data:
+			data['msgs_id'] = dict()
+			data['msgs_id']['order_list'] = dict()
+			data['msgs_id']['order_list']['firstMsg_ordlist_id'] = msg['message_id']
+		orders_data_dict = requests_database.get_info_order_user(call.from_user.username)
+		for index in range(len(orders_data_dict)):
+			keyboard = types.InlineKeyboardMarkup()
+			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{str(orders_data_dict[str(index)]['order_id'])}"))
+			msg = await call.message.answer(
+				str(orders_data_dict[str(index)]),reply_markup=keyboard,disable_web_page_preview=True
+				)
+			async with state.proxy() as data:
+				data['msgs_id']['order_list'][str(orders_data_dict[str(index)]['order_id'])] = msg['message_id']
+			#print(index)
+		#await call.message.answer('Список 1')
+		#await call.message.answer(str(requests_database.get_info_order_user(call.from_user.username)))
+		
 	'''
 	else:
 		async with state.proxy() as data:
