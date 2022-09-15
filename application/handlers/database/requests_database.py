@@ -8,7 +8,7 @@ import json
 def create_order(data):
 	try:
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/database/db_login_data.ini')
+		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
@@ -59,7 +59,7 @@ def create_order(data):
 def get_info_order_user(username):
 	try:
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/database/db_login_data.ini')
+		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')

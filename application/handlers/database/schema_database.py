@@ -5,7 +5,7 @@ import datetime
 import configparser
 
 config = configparser.ConfigParser()
-config.read('/home/koza/Reps/shein_bot/database/db_login_data.ini')
+config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
 
 user = config.get('mysql_login_data', 'usr')
 pswd = config.get('mysql_login_data', 'pswd')
