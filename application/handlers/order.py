@@ -22,6 +22,7 @@ class OrderClothes(StatesGroup):
 	ignore_msg = State()
 	start_st = State()
 	order_start_state = State()
+	amount_state = State()
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
@@ -356,11 +357,11 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	else:
-			
-		#order_data = await state.get_data()
+		####
+		#color = order_data['received_color']
+		#size = order_data['productDetail']['color'][color]['size']
+		####
 		
-		color = order_data['received_color']
-		size = order_data['productDetail']['color'][color]['size']
 		'''
 		if message.text not in size:
 		
@@ -378,6 +379,8 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 				data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
 				
 			return
+		'''
+		####
 		'''
 		async with state.proxy() as data:
 			data['received_size'] = call.data
@@ -408,7 +411,68 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 			#data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
 			
 		await OrderClothes.waiting_for_confirm.set()
-
+		'''
+		####
+		async with state.proxy() as data:
+			data['received_size'] = call.data
+		msg = await call.message.edit_text('Пожалуйста, укажите необходимое количество товара. Если хотите отменить действие, нажмите /cancel.')
+		async with state.proxy() as data:
+			data['msgs_id']['send_amount_msg_id'] = msg['message_id']
+		await OrderClothes.amount_state.set()
+		
+async def amount_clothes_order(message: types.Message, state: FSMContext):
+	if message.text == '/cancel':
+		await bot.delete_message(message.chat.id,message['message_id'])
+		async with state.proxy() as data:
+			await bot.delete_message(message.chat.id,data['msgs_id']['send_amount_msg_id'])
+			await bot.delete_message(message.chat.id,data['msgs_id']['url_msg_id'])
+		await state.finish()
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await message.answer('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		#await call.answer()
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	elif message.text.isdigit() == False:
+		await bot.delete_message(message.chat.id,message['message_id'])
+		async with state.proxy() as data:
+			await bot.delete_message(message.chat.id,data['msgs_id']['send_amount_msg_id'])
+		msg = await call.message.edit_text('Пожалуйста, введите корректное значение, чтобы указать количество товара. Если хотите отменить действие, нажмите /cancel.')
+		async with state.proxy() as data:
+			data['msgs_id']['send_amount_msg_id'] = msg['message_id']
+		return
+	elif (message.text.isdigit() == True) and (int(message.text) >= 100):
+		await bot.delete_message(message.chat.id,message['message_id'])
+		async with state.proxy() as data:
+			await bot.delete_message(message.chat.id,data['msgs_id']['send_amount_msg_id'])
+		msg = await call.message.edit_text('Слишком большое значение, укажите меньшее значение. Если хотите отменить действие, нажмите /cancel.')
+		async with state.proxy() as data:
+			data['msgs_id']['send_amount_msg_id'] = msg['message_id']
+		return
+	else:
+		await bot.delete_message(message.chat.id,message['message_id'])
+		async with state.proxy() as data:
+			await bot.delete_message(message.chat.id,data['msgs_id']['send_amount_msg_id'])
+		async with state.proxy() as data:
+			data['received_amount'] = message.text
+			order_data = data
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Подтвердить", callback_data="/confirm"))
+		keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
+		order_data_msg = await call.message.edit_text("Почти готово! Ваш заказ:"
+					f"\n\n  {order_data['productDetail']['name']}"
+					f"\n    Цвет: {order_data['received_color']}"
+					f"\n    Размер: {order_data['received_size']}"
+					f"\n	Количество: {order_data['received_amount']}"
+					f"\n    Цена: {str(int(order_data['productDetail']['color'][order_data['received_color']]['price'])*int(order_data['received_amount']))}"f" {order_data['productDetail']['color'][order_data['received_color']]['currency']}"
+					,reply_markup=keyboard)
+		await call.answer()
+		async with state.proxy() as data:
+			data['msgs_id']['order_data_msg_id'] = order_data_msg['message_id']
+		await OrderClothes.waiting_for_confirm.set()
+		
+		
 async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 	async with state.proxy() as data:
 		order_data_msg_id = data['msgs_id']['order_data_msg_id']
@@ -559,6 +623,8 @@ def register_handlers_order(dp: Dispatcher):
 	
 	#dp.register_message_handler(size_order, state=OrderClothes.waiting_for_clothes_size)
 	dp.register_callback_query_handler(size_order, state=OrderClothes.waiting_for_clothes_size)
+	
+	dp.register_message_handler(amount_clothes_order, state=OrderClothes.amount_state)
 	
 	#dp.register_message_handler(confirm_order, state=OrderClothes.waiting_for_confirm)
 	dp.register_callback_query_handler(confirm_order, state=OrderClothes.waiting_for_confirm)
