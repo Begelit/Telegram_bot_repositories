@@ -2,7 +2,8 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
-from handlers.parserANDdb import parser 
+from handlers.parserANDdb import parser
+from handlers.database import requests_database
 import asyncio
 from selenium import webdriver
 import time
@@ -535,6 +536,7 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 		if call.data == '/confirm':
 			#print(json_dict)
 			async with lock:
+				requests_database.create_order(json_dict)
 				index_json = len(os.listdir('./json_data'))
 				json_file = open('./json_data/clothe_data_{}.json'.format(str(index_json)),'w')
 				json.dump(json_dict,json_file,indent=6)

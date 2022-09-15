@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from schema_database import User, Order
+from handlers.database.schema_database import User, Order
 import configparser
 import traceback
 import json
