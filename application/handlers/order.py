@@ -153,11 +153,27 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		for index in range(len(orders_data_dict)):
 			keyboard = types.InlineKeyboardMarkup()
 			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(orders_data_dict[str(index)]['order_id']),str(index))))
+			order_data_dict_index = orders_data_dict[str(index)]
+			######СПИСКИ ЗАКАЗОВ#########
+			#############################
+			answer = f'''{str(index+1)}) {order_data_dict_index["order_item_name"]}
+			    URL:[{order_data_dict_index["order_item_url"]}]
+			    
+			    id заказа: {order_data_dict_index["order_id"]}
+			    
+			    Цвет: {order_data_dict_index["order_item_color"]}
+			    Размер: {order_data_dict_index["order_item_size"]}
+			    Количество: {order_data_dict_index["order_item_amount"]}
+			    Стоимость: {order_data_dict_index["order_total_price"]} {order_data_dict_index["order_item_currency"]}
+			    Дата поступления заявки: {order_data_dict_index["order_creating_date"]}
+			'''
 			msg = await call.message.answer(
-				str(orders_data_dict[str(index)]),reply_markup=keyboard,disable_web_page_preview=True
+				answer,reply_markup=keyboard,disable_web_page_preview=True
 				)
 			async with state.proxy() as data:
 				data['msgs_id']['order_list'][str(orders_data_dict[str(index)]['order_id'])] = msg['message_id']
+			#############################
+			#############################
 		await OrderClothes.change_order_list_state.set()
 
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
@@ -184,7 +200,19 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			keyboard = types.InlineKeyboardMarkup()
 			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}".format(str(del_key))))
 			keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel".format(str(del_key))))
-			msg = await call.message.edit_text(str(data['orders_data_dict'][index])+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True)
+			order_data_dict_index = data['orders_data_dict'][index]
+			answer = f''' {order_data_dict_index["order_item_name"]}
+			    URL:[{order_data_dict_index["order_item_url"]}]
+			    
+			    id заказа: {order_data_dict_index["order_id"]}
+			    
+			    Цвет: {order_data_dict_index["order_item_color"]}
+			    Размер: {order_data_dict_index["order_item_size"]}
+			    Количество: {order_data_dict_index["order_item_amount"]}
+			    Стоимость: {order_data_dict_index["order_total_price"]} {order_data_dict_index["order_item_currency"]}
+			    Дата поступления заявки: {order_data_dict_index["order_creating_date"]}
+			'''
+			msg = await call.message.edit_text(answer+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True)
 		await OrderClothes.delete_order_state.set()
 		#await OrderClothes.change_order_list_state.set()
 		#requests_database.delete_order(key)
@@ -209,6 +237,7 @@ async def delete_order(call: types.CallbackQuery, state: FSMContext):
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
+		
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 	#async with lock:
