@@ -22,7 +22,7 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	options.add_argument('--headless')
+	#options.add_argument('--headless')
 	options.add_argument(f'user-agent={useragent}')
 	#options.add_argument('--allow-profiles-outside-user-dir')
 	#options.add_argument('--enable-profile-shortcut-manager')
@@ -269,17 +269,19 @@ def get_product_info(driver):
 					if symb.isalpha() == True:
 						currency += symb
 				price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224,2))
-
 				productInfo_dict['color'][color]['price'] = price_no_currency
 				productInfo_dict['color'][color]['currency'] = currency
-				
-				UL_element_size = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
-				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
-				#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
-				productInfo_dict['color'][color]['size'] = dict()
-				for li in LI_elements_size:
-					size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text
-					productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
+				try:
+					UL_element_size = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
+					LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
+					#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
+					productInfo_dict['color'][color]['size'] = dict()
+					for li in LI_elements_size:
+						size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text
+						productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
+				except:
+					productInfo_dict['color'][color]['size'] = 'single_size'
+					pass
 				
 			#print(productInfo_dict)
 			return True,productInfo_dict
@@ -307,16 +309,17 @@ def get_product_info(driver):
 
 			productInfo_dict['color'][color]['price'] = price_no_currency
 			productInfo_dict['color'][color]['currency'] = currency
-			
-			UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
-			LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
-			#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
+			try:
+				UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
+				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
+				#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
 
-			productInfo_dict['color'][color]['size'] = dict()
-			for li in LI_elements_size:
-				size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text
-				productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
-			#print(productInfo_dict)
+				productInfo_dict['color'][color]['size'] = dict()
+				for li in LI_elements_size:
+					size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text
+					productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
+			except:
+				productInfo_dict['color'][color]['size'] = 'single_size'
 			return True,productInfo_dict
 	except:
 		print(traceback.format_exc())

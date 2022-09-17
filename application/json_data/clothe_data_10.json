@@ -1,0 +1,63 @@
+{
+      "currency": "KZT",
+      "msgs_id": {
+            "color_buttons_msg_id": 2392,
+            "order_data_msg_id": 2394,
+            "send_amount_msg_id": 2392,
+            "send_url_msg_id": 2389,
+            "size_button_msg_id": 2392,
+            "url_msg_id": 2390
+      },
+      "productDetail": {
+            "color": {
+                  "\u0411\u0415\u041b\u042b\u0419": {
+                        "color_button_path": {
+                              "index": 1,
+                              "path": "li.product-detail-color-selector__color:nth-child(1) > button:nth-child(1)"
+                        },
+                        "currency": "KZT",
+                        "price": "17123.76",
+                        "size": {
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-195913070-item-2\"]",
+                              "M": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-195913070-item-1\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-195913070-item-0\"]"
+                        }
+                  },
+                  "\u041f\u0415\u0421\u041e\u0427\u041d\u042b\u0419": {
+                        "color_button_path": {
+                              "index": 2,
+                              "path": "li.product-detail-color-selector__color:nth-child(2) > button:nth-child(1)"
+                        },
+                        "currency": "KZT",
+                        "price": "17123.76",
+                        "size": {
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-195913070-item-2\"]",
+                              "M": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-195913070-item-1\"]",
+                              "S": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-195913070-item-0\"]"
+                        }
+                  },
+                  "\u0427\u0415\u0420\u041d\u042b\u0419": {
+                        "color_button_path": {
+                              "index": 3,
+                              "path": "li.product-detail-color-selector__color:nth-child(3) > button:nth-child(1)"
+                        },
+                        "currency": "KZT",
+                        "price": "17123.76",
+                        "size": {
+                              "L": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-195913070-item-2\"]"
+                        }
+                  }
+            },
+            "name": "\u0428\u0418\u0420\u041e\u041a\u0418\u0415 \u0411\u0420\u042e\u041a\u0418 \u0412 \u0420\u0423\u0411\u0427\u0418\u041a",
+            "type_choice_color": "multi_color"
+      },
+      "received_amount": "1",
+      "received_color": "\u041f\u0415\u0421\u041e\u0427\u041d\u042b\u0419",
+      "received_size": "S",
+      "received_url": "https://www.zara.com/kz/ru/share/-p03905452.html?utm_campaign=productShare&utm_medium=mobile_sharing_iOS&utm_source=red_social_movil&v1=195913070",
+      "start_msgs_id": 2389,
+      "total_price": 17123.76,
+      "confirm_status": "Confirm",
+      "username": "billvoooo",
+      "datetime": "16/09/2022 15:07:13"
+}

@@ -405,24 +405,33 @@ async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 			
 		async with state.proxy() as data:
 			data['received_color'] = call.data
-		
-		#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-		keyboard = types.InlineKeyboardMarkup()
-		for size in order_data['productDetail']['color'][call.data]['size']:
-			keyboard.add(types.InlineKeyboardButton(text=size, callback_data=size))
-		keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
+		if order_data['productDetail']['color'][call.data]['size'] == 'single_size':
+			#await bot.delete_message(call.message.chat.id,color_buttons_msg_id)
+			async with state.proxy() as data:
+				data['received_size'] = 'Нет размера'
+			msg = await call.message.edit_text('Пожалуйста, укажите необходимое количество товара. Если хотите отменить действие, нажмите /cancel.')
+			async with state.proxy() as data:
+				data['msgs_id']['send_amount_msg_id'] = msg['message_id']
+			await OrderClothes.amount_state.set()
+		else:
 			
-		#await bot.delete_message(message.chat.id,color_buttons_msg_id)
-		#await bot.delete_message(message.chat.id,message['message_id'])
-		
-		size_button_msg = await call.message.edit_text("Теперь выберите размер:", reply_markup=keyboard)
-		
-		await call.answer()
-		
-		async with state.proxy() as data:
-			data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
+			#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+			keyboard = types.InlineKeyboardMarkup()
+			for size in order_data['productDetail']['color'][call.data]['size']:
+				keyboard.add(types.InlineKeyboardButton(text=size, callback_data=size))
+			keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
+				
+			#await bot.delete_message(message.chat.id,color_buttons_msg_id)
+			#await bot.delete_message(message.chat.id,message['message_id'])
 			
-		await OrderClothes.waiting_for_clothes_size.set()
+			size_button_msg = await call.message.edit_text("Теперь выберите размер:", reply_markup=keyboard)
+			
+			await call.answer()
+			
+			async with state.proxy() as data:
+				data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
+				
+			await OrderClothes.waiting_for_clothes_size.set()
 		
 async def size_order(call: types.CallbackQuery, state: FSMContext):
 

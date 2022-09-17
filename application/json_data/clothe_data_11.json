@@ -1,0 +1,61 @@
+{
+      "currency": "KZT",
+      "msgs_id": {
+            "color_buttons_msg_id": 2397,
+            "order_data_msg_id": 2399,
+            "send_amount_msg_id": 2397,
+            "send_url_msg_id": 2394,
+            "size_button_msg_id": 2397,
+            "url_msg_id": 2395
+      },
+      "productDetail": {
+            "color": {
+                  "\u0410\u041d\u0422\u0420\u0410\u0426\u0418\u0422\u041e\u0412\u041e-\u0421\u0415\u0420\u042b\u0419": {
+                        "color_button_path": {
+                              "index": 2,
+                              "path": "li.product-detail-color-selector__color:nth-child(2) > button:nth-child(1)"
+                        },
+                        "currency": "KZT",
+                        "price": "25691.76",
+                        "size": {
+                              "32": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-0\"]",
+                              "34": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-1\"]",
+                              "36": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-2\"]",
+                              "38": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-3\"]",
+                              "40": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-4\"]",
+                              "42": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-5\"]",
+                              "44": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-6\"]",
+                              "46": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-7\"]"
+                        }
+                  },
+                  "\u0421\u0418\u041d\u0418\u0419": {
+                        "color_button_path": {
+                              "index": 1,
+                              "path": "li.product-detail-color-selector__color:nth-child(1) > button:nth-child(1)"
+                        },
+                        "currency": "KZT",
+                        "price": "25691.76",
+                        "size": {
+                              "32": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-0\"]",
+                              "34": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-1\"]",
+                              "36": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-2\"]",
+                              "38": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-3\"]",
+                              "40": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-4\"]",
+                              "44": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-6\"]",
+                              "46": "//div[@id = \"app-root\"]//div[@id = \"theme-app\"]//div[@class = \"product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded\"]//div[@class= \"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class = \"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213637072-item-7\"]"
+                        }
+                  }
+            },
+            "name": "\u0414\u0416\u0418\u041d\u0421\u042b STRAIGHT-FIT TRF",
+            "type_choice_color": "multi_color"
+      },
+      "received_amount": "1",
+      "received_color": "\u0410\u041d\u0422\u0420\u0410\u0426\u0418\u0422\u041e\u0412\u041e-\u0421\u0415\u0420\u042b\u0419",
+      "received_size": "42",
+      "received_url": "https://www.zara.com/kz/ru/share/-p07215238.html?utm_campaign=productShare&utm_medium=mobile_sharing_iOS&utm_source=red_social_movil&v1=213637072",
+      "start_msgs_id": 2394,
+      "total_price": 25691.76,
+      "confirm_status": "Confirm",
+      "username": "billvoooo",
+      "datetime": "16/09/2022 15:09:05"
+}

@@ -1,0 +1,36 @@
+{
+      "currency": "KZT",
+      "msgs_id": {
+            "color_buttons_msg_id": 2355,
+            "order_data_msg_id": 2357,
+            "send_amount_msg_id": 2355,
+            "send_url_msg_id": 2352,
+            "size_button_msg_id": 2355,
+            "url_msg_id": 2353
+      },
+      "productDetail": {
+            "color": {
+                  "\u041a\u0420\u0410\u0421\u041d\u042b\u0419": {
+                        "currency": "KZT",
+                        "price": "80771.76",
+                        "size": {
+                              "36": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213636064-item-0\"]",
+                              "37": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213636064-item-1\"]",
+                              "38": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213636064-item-2\"]",
+                              "39": "//div[@class=\"product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open\"]//ul[@class=\"product-detail-size-selector__size-list\"]//li[@id = \"product-detail-size-selector-product-detail-product-size-selector-213636064-item-3\"]"
+                        }
+                  }
+            },
+            "name": "\u041a\u0420\u041e\u0421\u0421\u041e\u0412\u041a\u0418 GOLA X ZARA",
+            "type_choice_color": "single_color"
+      },
+      "received_amount": "1",
+      "received_color": "\u041a\u0420\u0410\u0421\u041d\u042b\u0419",
+      "received_size": "39",
+      "received_url": "https://www.zara.com/kz/ru/share/-p15828010.html?utm_campaign=productShare&utm_medium=mobile_sharing_iOS&utm_source=red_social_movil&v1=213636064",
+      "start_msgs_id": 2352,
+      "total_price": 80771.76,
+      "confirm_status": "Confirm",
+      "username": "billvoooo",
+      "datetime": "16/09/2022 14:51:59"
+}
