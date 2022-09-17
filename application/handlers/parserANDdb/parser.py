@@ -22,7 +22,7 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	#options.add_argument('--headless')
+	options.add_argument('--headless')
 	options.add_argument(f'user-agent={useragent}')
 	#options.add_argument('--allow-profiles-outside-user-dir')
 	#options.add_argument('--enable-profile-shortcut-manager')
