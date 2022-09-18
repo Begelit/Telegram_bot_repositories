@@ -6,6 +6,7 @@ import configparser
 import traceback
 import json
 import xlsxwriter
+import os
 
 def create_order(data):
 	try:
@@ -158,6 +159,8 @@ def get_username_status(username):
 
 def get_orders_document():
 	try:
+		if os.path.exists('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx') == True:
+			os.remove('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx')
 		config = configparser.ConfigParser()
 		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
 
@@ -172,7 +175,7 @@ def get_orders_document():
 		
 		with session() as s:
 			try:
-				workbook = xlsxwriter.Workbook('orders.xlsx')
+				workbook = xlsxwriter.Workbook('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx')
 				ws = workbook.add_worksheet()
 				ws.write(0,0,'Дата')
 				ws.write(0,1,'Имя пользователя')
