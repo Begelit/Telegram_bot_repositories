@@ -28,6 +28,7 @@ class OrderClothes(StatesGroup):
 	delete_order_state = State()
 	admin_menu_state = State()
 	get_order_info_admin_state = State()
+	change_status_payed_state = State()
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
@@ -117,7 +118,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 				status = 'Заявка оплачена'
 			
 			answer = f'''{str(index+1)}) {order_data_dict_index["order_item_name"]}
-			    [URL товара]({order_data_dict_index["order_item_url"]})
+			    [URL-ссылка товара]({order_data_dict_index["order_item_url"]})
 			    
 			    id заказа: {order_data_dict_index["order_id"]}
 			    
@@ -172,7 +173,7 @@ async def get_order_info_admin(message: types.Message, state: FSMContext):
 		await bot.delete_message(message.chat.id,data['send_order_id_message'])
 	dick_order = requests_database.get_info_order_user_admin(message.text)
 	keyboard = types.InlineKeyboardMarkup()
-	keyboard.add(types.InlineKeyboardButton(text="Отмена", callback_data="/cancel"))
+	keyboard.add(types.InlineKeyboardButton(text="Назад", callback_data="/cancel"))
 	if dick_order['order_status'] == 'handling':
 		status = 'Заявка обрабатывается'
 		keyboard.add(types.InlineKeyboardButton(text="Оплачено", callback_data="/payed"))
@@ -181,7 +182,7 @@ async def get_order_info_admin(message: types.Message, state: FSMContext):
 	elif dick_order['order_status'] == 'payed':
 		status = 'Заявка оплачена'
 	answer_msg = f''' {dick_order["order_item_name"]}
-    [URL товара]({dick_order["order_item_url"]})
+    [URL-ссылка товара]({dick_order["order_item_url"]})
     
     id заказа: {dick_order["order_id"]}
     
@@ -193,7 +194,32 @@ async def get_order_info_admin(message: types.Message, state: FSMContext):
     Статус: {status}
 '''
 	msg = await message.answer(answer_msg,reply_markup=keyboard,disable_web_page_preview=True,parse_mode='Markdown')
+	async with state.proxy() as data:
+		data['order_change_status_admin'] = message.text
+	await OrderClothes.change_status_payed_state.set()
 	
+async def change_status_payed(call: types.CallbackQuery, state: FSMContext):
+	if call.data == '/cancel':
+		await state.finish()
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		await call.answer()
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	elif call.data == '/payed':
+		async with state.proxy() as data:
+			requests_database.change_order_status_payed(data['order_change_status_admin'])
+		await state.finish()
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Заказ помечен как оплаченный! Нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		await call.answer()
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+			
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
 		async with state.proxy() as data:
@@ -219,7 +245,7 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel".format(str(del_key))))
 			order_data_dict_index = data['orders_data_dict'][index]
 			answer = f''' {order_data_dict_index["order_item_name"]}
-			    [URL товара]({order_data_dict_index["order_item_url"]})
+			    [URL-ссылка товара]({order_data_dict_index["order_item_url"]})
 			    
 			    id заказа: {order_data_dict_index["order_id"]}
 			    
@@ -551,11 +577,8 @@ def register_handlers_order(dp: Dispatcher):
 	
 	dp.register_message_handler(get_order_info_admin,state=OrderClothes.get_order_info_admin_state)
 	
-	#dp.register_message_handler(order_start, commands="order", state="*")
-	#dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
-	#dp.register_message_handler(order_start, commands="order", state=OrderClothes.order_start_state)
-	#dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state=OrderClothes.order_start_state)
-	#dp.register_message_handler(order_start, state=OrderClothes.order_start_state)
+	dp.register_callback_query_handler(change_status_payed,state=OrderClothes.change_status_payed_state)
+	
 	dp.register_callback_query_handler(order_start, state=OrderClothes.order_start_state)
 	
 	dp.register_message_handler(clothes_chosen, state=OrderClothes.waiting_for_clothes_url)
