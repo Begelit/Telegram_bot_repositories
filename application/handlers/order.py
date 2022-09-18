@@ -26,6 +26,7 @@ class OrderClothes(StatesGroup):
 	amount_state = State()
 	change_order_list_state = State()
 	delete_order_state = State()
+	admin_menu_state = State()
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
@@ -87,7 +88,6 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	elif call.data == '/all_orders':
-	
 		async with state.proxy() as data:
 			await bot.delete_message(call.message.chat.id,data['start_msgs_id'])
 		keyboard = types.InlineKeyboardMarkup()
@@ -128,8 +128,15 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 
 		await OrderClothes.change_order_list_state.set()
 		
-#	elif call.data == '/admin':
-
+	elif call.data == '/admin':
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Выгрузить таблицу заказов", callback_data="/table"))
+		keyboard.add(types.InlineKeyboardButton(text="Вернуться назад", callback_data="/cancel"))
+		msg = await call.message.edit_text('Добро пожаловать в меня администратора, пожалуйста, выбери необходимое действие.',reply_markup=keyboard)
+		await call.answer()
+		
+async def admin_menu(call: types.CallbackQuery, state: FSMContext):
+		
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
 		async with state.proxy() as data:
@@ -483,6 +490,8 @@ def register_handlers_order(dp: Dispatcher):
 	dp.register_callback_query_handler(change_order_list, state=OrderClothes.change_order_list_state)
 	
 	dp.register_callback_query_handler(delete_order, state=OrderClothes.delete_order_state)
+	
+	dp.register_callback_query_handler(admin_menu,state=admin_menu_state)
 	
 	#dp.register_message_handler(order_start, commands="order", state="*")
 	#dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
