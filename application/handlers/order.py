@@ -117,7 +117,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 				status = 'Заявка оплачена'
 			
 			answer = f'''{str(index+1)}) {order_data_dict_index["order_item_name"]}
-			    URL:[{order_data_dict_index["order_item_url"]}]
+			    [URL:]({order_data_dict_index["order_item_url"]})
 			    
 			    id заказа: {order_data_dict_index["order_id"]}
 			    
@@ -126,9 +126,10 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 			    Количество: {order_data_dict_index["order_item_amount"]}
 			    Стоимость: {order_data_dict_index["order_total_price"]} {order_data_dict_index["order_item_currency"]}
 			    Дата поступления заявки: {order_data_dict_index["order_creating_date"]}
+			    Статус: {status}
 			'''
 			msg = await call.message.answer(
-				answer,reply_markup=keyboard,disable_web_page_preview=True
+				answer,reply_markup=keyboard,disable_web_page_preview=True,parse_mode='Markdown'
 				)
 			async with state.proxy() as data:
 				data['msgs_id']['order_list'][str(orders_data_dict[str(index)]['order_id'])] = msg['message_id']
