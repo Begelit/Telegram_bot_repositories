@@ -27,6 +27,7 @@ class OrderClothes(StatesGroup):
 	change_order_list_state = State()
 	delete_order_state = State()
 	admin_menu_state = State()
+	get_order_info_admin_state = State()
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
@@ -131,6 +132,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 	elif call.data == '/admin':
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Выгрузить таблицу заказов", callback_data="/table"))
+		keyboard.add(types.InlineKeyboardButton(text="Изменить статус заказа", callback_data="/change_status"))
 		keyboard.add(types.InlineKeyboardButton(text="Вернуться назад", callback_data="/cancel"))
 		msg = await call.message.edit_text('Добро пожаловать в меня администратора, пожалуйста, выбери необходимое действие.',reply_markup=keyboard)
 		await call.answer()
@@ -151,7 +153,15 @@ async def admin_menu(call: types.CallbackQuery, state: FSMContext):
 		open_xlsx = open('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx','rb')
 		await bot.send_document(call.from_user.id,open_xlsx)
 		await OrderClothes.admin_menu_state.set()
-	
+	elif call.data == '/change_status':
+		msg = await call.message.edit_text('Отправь номер id заявки.')
+		async with state.proxy() as data:
+			data['send_order_id_message'] = msg['message_id']
+		
+async def get_order_info_admin(message: types.Message, state: FSMContext):
+	await bot.delete_message(message.chat.id,message['message_id'])
+	async with state.proxy() as data:
+		await bot.delete_message(message.chat.id,data['send_order_id_message'])
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
 		async with state.proxy() as data:
@@ -506,6 +516,8 @@ def register_handlers_order(dp: Dispatcher):
 	dp.register_callback_query_handler(delete_order, state=OrderClothes.delete_order_state)
 	
 	dp.register_callback_query_handler(admin_menu,state=OrderClothes.admin_menu_state)
+	
+	dp.register_message_handler(get_order_info_admin,state=OrderClothes.get_order_info_admin_state)
 	
 	#dp.register_message_handler(order_start, commands="order", state="*")
 	#dp.register_message_handler(order_start, Text(equals='Оформить заказ', ignore_case=True), state="*")
