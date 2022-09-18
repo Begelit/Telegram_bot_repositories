@@ -5,6 +5,7 @@ from handlers.database.schema_database import User, Order
 import configparser
 import traceback
 import json
+import xlsxwriter
 
 def create_order(data):
 	try:
@@ -153,11 +154,61 @@ def get_username_status(username):
 				return False
 	except:
 		print(traceback.format_exc())
-		return False	
+		return False
+
+def get_orders_document():
+	try:
+		config = configparser.ConfigParser()
+		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+
+		user = config.get('mysql_login_data', 'usr')
+		pswd = config.get('mysql_login_data', 'pswd')
+		host = config.get('mysql_login_data', 'host')
+		database = config.get('mysql_login_data', 'database')
+
+		engine = create_engine('mysql://{0}:{1}@{2}/{3}'.format(user, pswd, host,database))
+
+		session = sessionmaker(bind = engine)
 		
+		with session() as s:
+			try:
+				workbook = xlsxwriter.Workbook('orders.xlsx')
+				ws = workbook.add_worksheet()
+				ws.write(0,0,'Дата')
+				ws.write(0,1,'Имя пользователя')
+				ws.write(0,2,'id Заявки')
+				ws.write(0,3,'Название товара')
+				ws.write(0,4,'Цвет')
+				ws.write(0,5,'Размер')
+				ws.write(0,6,'Количество')
+				ws.write(0,7,'Стоимость')
+				ws.write(0,8,'Валюта')
+				ws.write(0,9,'Статус')
+				ws.write(0,10,'Ссылка')
+				for num, row in enumerate(s.query(Order).filter(Order.order_status != 'deleted')):
+					ws.write(num+1,0,str(row.order_creating_date))
+					for num_user, row_user in enumerate(s.query(User).filter(User.user_id == row.order_user_id)):
+						ws.write(num+1,1,'@'+row_user.user_username)
+					ws.write(num+1,2,row.order_id)
+					ws.write(num+1,3,row.order_item_name)
+					ws.write(num+1,4,row.order_item_color)
+					ws.write(num+1,5,row.order_item_size)
+					ws.write(num+1,6,row.order_item_amount)
+					ws.write(num+1,7,row.order_total_price)
+					ws.write(num+1,8,row.order_item_currency)
+					ws.write(num+1,9,row.order_status)
+					ws.write(num+1,10,row.order_item_url)
+				workbook.close()
+			except:
+				print(traceback.format_exc())
+				return False
+	except:
+		print(traceback.format_exc())
+		return False	
 #print(s.query(User).filter(User.user_username == 'user_test'))
 
 #if __name__ == "__main__":
+	#get_orders_document()
 	#json_file = open('/home/koza/Reps/shein_bot/application/json_data/clothe_data_2.json')
 	#order_data = json.load(json_file)
 	#create_order(order_data)
