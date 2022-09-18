@@ -164,7 +164,7 @@ async def get_order_info_admin(message: types.Message, state: FSMContext):
 	async with state.proxy() as data:
 		await bot.delete_message(message.chat.id,data['send_order_id_message'])
 	dick_order = requests_database.get_info_order_user(message.text)
-	msg = await message.answer(str(dick_order),reply_markup=keyboard)
+	msg = await message.answer(str(dick_order))
 	
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':

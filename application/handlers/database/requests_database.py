@@ -231,18 +231,18 @@ def get_info_order_user(order_id_):
 				#	user_pk_id = row.user_id
 				#num = 0
 				for row in s.query(Order).filter(Order.order_id == int(order_id_)):
-					order_list = dict()
-					order_list['order_id'] = row.order_id
-					order_list['order_user_id'] = row.order_user_id
-					order_list['order_item_name'] = row.order_item_name
-					order_list['order_item_color'] = row.order_item_color
-					order_list['order_item_size'] = row.order_item_size
-					order_list['order_item_amount'] = row.order_item_amount
-					order_list['order_total_price'] = row.order_total_price
-					order_list['order_item_currency'] = row.order_item_currency
-					order_list['order_item_url'] = row.order_item_url
-					order_list['order_status'] = row.order_status
-					order_list['order_creating_date'] = str(row.order_creating_date)
+					order = dict()
+					order['order_id'] = row.order_id
+					order['order_user_id'] = row.order_user_id
+					order['order_item_name'] = row.order_item_name
+					order['order_item_color'] = row.order_item_color
+					order['order_item_size'] = row.order_item_size
+					order['order_item_amount'] = row.order_item_amount
+					order['order_total_price'] = row.order_total_price
+					order['order_item_currency'] = row.order_item_currency
+					order['order_item_url'] = row.order_item_url
+					order['order_status'] = row.order_status
+					order['order_creating_date'] = str(row.order_creating_date)
 				return order
 			except:
 				print(traceback.format_exc())
