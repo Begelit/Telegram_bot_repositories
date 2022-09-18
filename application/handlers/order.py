@@ -61,9 +61,13 @@ async def cmd_start(call: types.CallbackQuery, state: FSMContext):
 		'''
 		#>>>>>ReplyKeybord>>>>>
 		
+		user_access = requests_database.get_username_status(call.from_user.username)
+		
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Оформить заказ", callback_data="/order"))
 		keyboard.add(types.InlineKeyboardButton(text="Список заказов", callback_data="/all_orders"))
+		if user_access == 'admin':
+			keyboard.add(types.InlineKeyboardButton(text="Меню администратора", callback_data="/admin"))
 		keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
 		#bot.send_message(message.message.chat.id, text='Выбрать действие:', reply_markup=keyboard)
 		msg = await call.message.edit_text('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ". Чтобы посмотреть все свои заказы нажмите "Список заказов".',reply_markup=keyboard)

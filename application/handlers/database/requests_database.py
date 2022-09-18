@@ -128,6 +128,33 @@ def delete_order(order_id_):
 	except:
 		print(traceback.format_exc())
 		return False
+		
+def get_username_status(username):
+	try:
+		config = configparser.ConfigParser()
+		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+
+		user = config.get('mysql_login_data', 'usr')
+		pswd = config.get('mysql_login_data', 'pswd')
+		host = config.get('mysql_login_data', 'host')
+		database = config.get('mysql_login_data', 'database')
+
+		engine = create_engine('mysql://{0}:{1}@{2}/{3}'.format(user, pswd, host,database))
+
+		session = sessionmaker(bind = engine)
+		
+		with session() as s:
+			try:
+				for num, row in enumerate(s.query(User).filter(User.user_username == username)):
+					user_access = row.user_access
+				return user_access
+			except:
+				print(traceback.format_exc())
+				return False
+	except:
+		print(traceback.format_exc())
+		return False	
+		
 #print(s.query(User).filter(User.user_username == 'user_test'))
 
 #if __name__ == "__main__":
