@@ -106,9 +106,15 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		for index in range(len(orders_data_dict)):
 		
 			keyboard = types.InlineKeyboardMarkup()
-			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(orders_data_dict[str(index)]['order_id']),str(index))))
+			#keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(orders_data_dict[str(index)]['order_id']),str(index))))
 			
 			order_data_dict_index = orders_data_dict[str(index)]
+			
+			if order_data_dict_index['order_status'] == 'handling':
+				status = 'Заявка обрабатывается'
+				keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(orders_data_dict[str(index)]['order_id']),str(index))))
+			elif order_data_dict_index['order_status'] == 'payed':
+				status = 'Заявка оплачена'
 			
 			answer = f'''{str(index+1)}) {order_data_dict_index["order_item_name"]}
 			    URL:[{order_data_dict_index["order_item_url"]}]
@@ -163,8 +169,29 @@ async def get_order_info_admin(message: types.Message, state: FSMContext):
 	await bot.delete_message(message.chat.id,message['message_id'])
 	async with state.proxy() as data:
 		await bot.delete_message(message.chat.id,data['send_order_id_message'])
-	dick_order = requests_database.get_info_order_user(message.text)
-	msg = await message.answer(str(dick_order))
+	dick_order = requests_database.get_info_order_user_admin(message.text)
+	keyboard = types.InlineKeyboardMarkup()
+	keyboard.add(types.InlineKeyboardButton(text="Отмена", callback_data="/cancel"))
+	if dick_order['order_status'] == 'handling':
+		status = 'Заявка обрабатывается'
+		keyboard.add(types.InlineKeyboardButton(text="Оплачено", callback_data="/payed"))
+	elif dick_order['order_status'] == 'deleted':
+		status = 'Заявка удалена пользователем'
+	elif dick_order['order_status'] == 'payed':
+		status = 'Заявка оплачена'
+	answer_msg = f''' {dick_order["order_item_name"]}
+    URL:[{dick_order["order_item_url"]}]
+    
+    id заказа: {dick_order["order_id"]}
+    
+    Цвет: {dick_order["order_item_color"]}
+    Размер: {dick_order["order_item_size"]}
+    Количество: {dick_order["order_item_amount"]}
+    Стоимость: {dick_order["order_total_price"]} {dick_order["order_item_currency"]}
+    Дата поступления заявки: {dick_order["order_creating_date"]}
+    Статус: {status}
+'''
+	msg = await message.answer(answer_msg,reply_markup=keyboard,disable_web_page_preview=True)
 	
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':

@@ -209,7 +209,7 @@ def get_orders_document():
 		print(traceback.format_exc())
 		return False
 		
-def get_info_order_user(order_id_):
+def get_info_order_user_admin(order_id_):
 	try:
 		config = configparser.ConfigParser()
 		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
@@ -230,7 +230,7 @@ def get_info_order_user(order_id_):
 				#for num, row in enumerate(s.query(User).filter(User.user_username == username)):
 				#	user_pk_id = row.user_id
 				#num = 0
-				for row in s.query(Order).filter(Order.order_id == int(order_id_)):
+				for row in s.query(Order).filter(Order.order_id == order_id_):
 					order = dict()
 					order['order_id'] = row.order_id
 					order['order_user_id'] = row.order_user_id
