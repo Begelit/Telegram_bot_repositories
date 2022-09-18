@@ -168,35 +168,55 @@ async def admin_menu(call: types.CallbackQuery, state: FSMContext):
 		await OrderClothes.get_order_info_admin_state.set()
 		
 async def get_order_info_admin(message: types.Message, state: FSMContext):
-	await bot.delete_message(message.chat.id,message['message_id'])
-	async with state.proxy() as data:
-		await bot.delete_message(message.chat.id,data['send_order_id_message'])
-	dick_order = requests_database.get_info_order_user_admin(message.text)
-	keyboard = types.InlineKeyboardMarkup()
-	keyboard.add(types.InlineKeyboardButton(text="Назад", callback_data="/cancel"))
-	if dick_order['order_status'] == 'handling':
-		status = 'Заявка обрабатывается'
-		keyboard.add(types.InlineKeyboardButton(text="Оплачено", callback_data="/payed"))
-	elif dick_order['order_status'] == 'deleted':
-		status = 'Заявка удалена пользователем'
-	elif dick_order['order_status'] == 'payed':
-		status = 'Заявка оплачена'
-	answer_msg = f''' {dick_order["order_item_name"]}
-    [URL-ссылка товара]({dick_order["order_item_url"]})
-    
-    id заказа: {dick_order["order_id"]}
-    
-    Цвет: {dick_order["order_item_color"]}
-    Размер: {dick_order["order_item_size"]}
-    Количество: {dick_order["order_item_amount"]}
-    Стоимость: {dick_order["order_total_price"]} {dick_order["order_item_currency"]}
-    Дата поступления заявки: {dick_order["order_creating_date"]}
-    Статус: {status}
-'''
-	msg = await message.answer(answer_msg,reply_markup=keyboard,disable_web_page_preview=True,parse_mode='Markdown')
-	async with state.proxy() as data:
-		data['order_change_status_admin'] = message.text
-	await OrderClothes.change_status_payed_state.set()
+	if message.text == '/cancel':
+		await bot.delete_message(message.chat.id,message['message_id'])
+		async with state.proxy() as data:
+			await bot.delete_message(message.chat.id,data['send_order_id_message'])
+		await state.finish()
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await message.answer('Нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	else:
+		await bot.delete_message(message.chat.id,message['message_id'])
+		async with state.proxy() as data:
+			await bot.delete_message(message.chat.id,data['send_order_id_message'])
+			
+		dick_order = requests_database.get_info_order_user_admin(message.text)
+		
+		if len(dick_order) == 0:
+			msg = await message.answer('Такой заявки нет. Попробуйте ещё раз, либо нажмите /cancel чтобы вернуться в меню.')
+			async with state.proxy() as data:
+				data['send_order_id_message'] = msg['message_id']
+			return
+		#print(dick_order)
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Назад", callback_data="/cancel"))
+		if dick_order['order_status'] == 'handling':
+			status = 'Заявка обрабатывается'
+			keyboard.add(types.InlineKeyboardButton(text="Оплачено", callback_data="/payed"))
+		elif dick_order['order_status'] == 'deleted':
+			status = 'Заявка удалена пользователем'
+		elif dick_order['order_status'] == 'payed':
+			status = 'Заявка оплачена'
+		answer_msg = f''' {dick_order["order_item_name"]}
+	    [URL-ссылка товара]({dick_order["order_item_url"]})
+	    
+	    id заказа: {dick_order["order_id"]}
+	    
+	    Цвет: {dick_order["order_item_color"]}
+	    Размер: {dick_order["order_item_size"]}
+	    Количество: {dick_order["order_item_amount"]}
+	    Стоимость: {dick_order["order_total_price"]} {dick_order["order_item_currency"]}
+	    Дата поступления заявки: {dick_order["order_creating_date"]}
+	    Статус: {status}
+	'''
+		msg = await message.answer(answer_msg,reply_markup=keyboard,disable_web_page_preview=True,parse_mode='Markdown')
+		async with state.proxy() as data:
+			data['order_change_status_admin'] = message.text
+		await OrderClothes.change_status_payed_state.set()
 	
 async def change_status_payed(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
