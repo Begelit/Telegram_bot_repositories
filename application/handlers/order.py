@@ -157,11 +157,15 @@ async def admin_menu(call: types.CallbackQuery, state: FSMContext):
 		msg = await call.message.edit_text('Отправь номер id заявки.')
 		async with state.proxy() as data:
 			data['send_order_id_message'] = msg['message_id']
+		await OrderClothes.get_order_info_admin_state.set()
 		
 async def get_order_info_admin(message: types.Message, state: FSMContext):
 	await bot.delete_message(message.chat.id,message['message_id'])
 	async with state.proxy() as data:
 		await bot.delete_message(message.chat.id,data['send_order_id_message'])
+	dick_order = requests_database.get_info_order_user(message.text)
+	msg = await message.answer(str(dick_order),reply_markup=keyboard)
+	
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
 		async with state.proxy() as data:
