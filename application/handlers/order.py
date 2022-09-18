@@ -117,7 +117,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 				status = 'Заявка оплачена'
 			
 			answer = f'''{str(index+1)}) {order_data_dict_index["order_item_name"]}
-			    [URL:]({order_data_dict_index["order_item_url"]})
+			    [URL товара]({order_data_dict_index["order_item_url"]})
 			    
 			    id заказа: {order_data_dict_index["order_id"]}
 			    
@@ -181,7 +181,7 @@ async def get_order_info_admin(message: types.Message, state: FSMContext):
 	elif dick_order['order_status'] == 'payed':
 		status = 'Заявка оплачена'
 	answer_msg = f''' {dick_order["order_item_name"]}
-    URL:[{dick_order["order_item_url"]}]
+    [URL товара]({dick_order["order_item_url"]})
     
     id заказа: {dick_order["order_id"]}
     
@@ -192,7 +192,7 @@ async def get_order_info_admin(message: types.Message, state: FSMContext):
     Дата поступления заявки: {dick_order["order_creating_date"]}
     Статус: {status}
 '''
-	msg = await message.answer(answer_msg,reply_markup=keyboard,disable_web_page_preview=True)
+	msg = await message.answer(answer_msg,reply_markup=keyboard,disable_web_page_preview=True,parse_mode='Markdown')
 	
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
@@ -219,7 +219,7 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel".format(str(del_key))))
 			order_data_dict_index = data['orders_data_dict'][index]
 			answer = f''' {order_data_dict_index["order_item_name"]}
-			    URL:[{order_data_dict_index["order_item_url"]}]
+			    [URL товара]({order_data_dict_index["order_item_url"]})
 			    
 			    id заказа: {order_data_dict_index["order_id"]}
 			    
@@ -229,7 +229,7 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			    Стоимость: {order_data_dict_index["order_total_price"]} {order_data_dict_index["order_item_currency"]}
 			    Дата поступления заявки: {order_data_dict_index["order_creating_date"]}
 			'''
-			msg = await call.message.edit_text(answer+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True)
+			msg = await call.message.edit_text(answer+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True,parse_mode = 'markdown')
 		await OrderClothes.delete_order_state.set()
 		
 async def delete_order(call: types.CallbackQuery, state: FSMContext):
