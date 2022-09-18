@@ -1,0 +1,43 @@
+{
+      "currency": "KZT",
+      "msgs_id": {
+            "color_buttons_msg_id": 2590,
+            "order_data_msg_id": 2592,
+            "send_amount_msg_id": 2590,
+            "send_url_msg_id": 2582,
+            "url_msg_id": 2588
+      },
+      "productDetail": {
+            "color": {
+                  "\u0420\u041e\u0417\u041e\u0412\u042b\u0419": {
+                        "color_button_path": {
+                              "index": 2,
+                              "path": "li.product-detail-color-selector__color:nth-child(2) > button:nth-child(1)"
+                        },
+                        "currency": "KZT",
+                        "price": "25691.76",
+                        "size": "single_size"
+                  },
+                  "\u0424\u0418\u041e\u041b\u0415\u0422\u041e\u0412\u042b\u0419": {
+                        "color_button_path": {
+                              "index": 1,
+                              "path": "li.product-detail-color-selector__color:nth-child(1) > button:nth-child(1)"
+                        },
+                        "currency": "KZT",
+                        "price": "25691.76",
+                        "size": "single_size"
+                  }
+            },
+            "name": "\u0421\u0423\u041c\u041a\u0410 \u0421 \u0411\u0410\u0425\u0420\u041e\u041c\u041e\u0419 \u0418 \u0411\u0418\u0421\u0415\u0420\u041e\u041c",
+            "type_choice_color": "multi_color"
+      },
+      "received_amount": "1",
+      "received_color": "\u0424\u0418\u041e\u041b\u0415\u0422\u041e\u0412\u042b\u0419",
+      "received_size": "\u041d\u0435\u0442 \u0440\u0430\u0437\u043c\u0435\u0440\u0430",
+      "received_url": "https://www.zara.com/kz/ru/share/-p16517010.html?utm_campaign=productShare&utm_medium=mobile_sharing_iOS&utm_source=red_social_movil&v1=188551074",
+      "start_msgs_id": 2582,
+      "total_price": 25691.76,
+      "confirm_status": "Confirm",
+      "username": "billvoooo",
+      "datetime": "18/09/2022 18:25:13"
+}

@@ -29,15 +29,11 @@ class OrderClothes(StatesGroup):
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
-	#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	keyboard = types.InlineKeyboardMarkup()
-	#keyboard.add('Начать!')
 	keyboard.add(types.InlineKeyboardButton(text="Начать!", callback_data="/start_order"))
-	#await message.answer('Привет! Добро пожаловать в менеджер заказов предметов одежды. Чтобы приступить к работе введи команду /start_order или нажми в предложенной клавиатуре "Начать!". Для отмены какого либо действия отправь /cancel.',reply_markup=keyboard)
 	await message.answer('Привет! Добро пожаловать в менеджер заказов предметов одежды. Чтобы приступить нажми "Начать!".',reply_markup=keyboard)
 	await OrderClothes.start_st.set()
 	
-#async def cmd_start(message: types.Message, state: FSMContext):
 async def cmd_start(call: types.CallbackQuery, state: FSMContext):
 	#if message.text == '/start_order' or message.text == 'Начать!':
 	if call.data == '/start_order':
@@ -52,15 +48,6 @@ async def cmd_start(call: types.CallbackQuery, state: FSMContext):
 		'''
 		await state.finish()
 		
-		#<<<<<ReplyKeybord<<<<<
-		'''
-		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-		keyboard.add('Оформить заказ')
-		await bot.delete_message(message.chat.id,message['message_id'])
-		msg = await message.answer('Отправь /order или нажми "Оформить заказ".',reply_markup=keyboard)
-		'''
-		#>>>>>ReplyKeybord>>>>>
-		
 		user_access = requests_database.get_username_status(call.from_user.username)
 		
 		keyboard = types.InlineKeyboardMarkup()
@@ -69,59 +56,21 @@ async def cmd_start(call: types.CallbackQuery, state: FSMContext):
 		if user_access == 'admin':
 			keyboard.add(types.InlineKeyboardButton(text="Меню администратора", callback_data="/admin"))
 		keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
-		#bot.send_message(message.message.chat.id, text='Выбрать действие:', reply_markup=keyboard)
+
 		msg = await call.message.edit_text('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ". Чтобы посмотреть все свои заказы нажмите "Список заказов".',reply_markup=keyboard)
 		await call.answer()
-
-		#msg = await message.answer('Чтобы оставить заявку, пожалуйста, нажмите "Оформить заказ".',reply_markup=keyboard)
 		
 		async with state.proxy() as data:
 			#data['msgs_id'] = dict()
 			data['start_msgs_id'] = msg['message_id']
 			
 		await OrderClothes.order_start_state.set()
-	'''
-	else:
-		async with state.proxy() as data:
-			#await bot.delete_message(message.chat.id,message['message_id'])
-			await bot.delete_message(message.message.chat.id,data['start_msgs_id'])
-		if 'post_start_msgs_id' in data:
-			try:
-			
-				await bot.delete_message(message.message.chat.id,data['post_start_msgs_id'])
-			except:
-				pass
-		await state.finish()
-		msg = await message.answer('Комманда неккоректна, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
-		async with state.proxy() as data:
-			data['post_start_msgs_id'] = msg['message_id']
-		await state.finish()
-	'''
 
-#async def order_start(message: types.Message, state: FSMContext):
+
 async def order_start(call: types.CallbackQuery, state: FSMContext):
-	#print(message['message_id'])
-	#print(message.chat.id)
-	
-	'''
-	if message.text == '/cancel':
-		await bot.delete_message(message.chat.id,message['message_id'])
-		async with state.proxy() as data:
-			await bot.delete_message(message.chat.id,data['start_msgs_id'])
-		await state.finish()
-		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-		keyboard.add('Оформить заказ')
-		msg = await message.answer('Отправьте /start для продолжения.',reply_markup=keyboard)
-		async with state.proxy() as data:
-			data['post_start_msgs_id'] = msg['message_id']
-		await OrderClothes.start_st.set()
-	else:
-	'''
-	#if message.text == '/order' or message.text == 'Оформить заказ':
+
 	if call.data == '/order':	
-		#await bot.delete_message(call.message.chat.id,message['message_id'])
-		#keyboard = types.InlineKeyboardMarkup()
-		#keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
+
 		msg = await call.message.edit_text('Пожалуйста, отправьте ссылку, ведущую на товар. Нажми /cancel если хочешь отменить  действие.')
 		await call.answer()
 		async with state.proxy() as data:
@@ -129,11 +78,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 			data['msgs_id']['send_url_msg_id'] = msg['message_id']
 		await OrderClothes.waiting_for_clothes_url.set()
 	elif call.data == '/cancel':
-		#async with state.proxy() as data:
-			#await bot.delete_message(message.chat.id,message['message_id'])
-			#await bot.delete_message(call.message.chat.id,data['start_msgs_id'])
 		await state.finish()
-		#msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
 		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
@@ -142,6 +87,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	elif call.data == '/all_orders':
+	
 		async with state.proxy() as data:
 			await bot.delete_message(call.message.chat.id,data['start_msgs_id'])
 		keyboard = types.InlineKeyboardMarkup()
@@ -149,17 +95,20 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		msg = await call.message.answer('Ваш список заказов:',reply_markup=keyboard)
 		await call.answer()
 		orders_data_dict = requests_database.get_info_order_user(call.from_user.username)
+		
 		async with state.proxy() as data:
 			data['msgs_id'] = dict()
 			data['msgs_id']['order_list'] = dict()
 			data['msgs_id']['order_list']['firstMsg_ordlist_id'] = msg['message_id']
 			data['orders_data_dict'] = orders_data_dict
+			
 		for index in range(len(orders_data_dict)):
+		
 			keyboard = types.InlineKeyboardMarkup()
 			keyboard.add(types.InlineKeyboardButton(text="Удалить", callback_data="/delete_{}_{}".format(str(orders_data_dict[str(index)]['order_id']),str(index))))
+			
 			order_data_dict_index = orders_data_dict[str(index)]
-			######СПИСКИ ЗАКАЗОВ#########
-			#############################
+			
 			answer = f'''{str(index+1)}) {order_data_dict_index["order_item_name"]}
 			    URL:[{order_data_dict_index["order_item_url"]}]
 			    
@@ -176,9 +125,10 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 				)
 			async with state.proxy() as data:
 				data['msgs_id']['order_list'][str(orders_data_dict[str(index)]['order_id'])] = msg['message_id']
-			#############################
-			#############################
+
 		await OrderClothes.change_order_list_state.set()
+		
+#	elif call.data == '/admin':
 
 async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
@@ -218,9 +168,6 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			'''
 			msg = await call.message.edit_text(answer+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True)
 		await OrderClothes.delete_order_state.set()
-		#await OrderClothes.change_order_list_state.set()
-		#requests_database.delete_order(key)
-		#print(call.data.split('_')[1])
 		
 async def delete_order(call: types.CallbackQuery, state: FSMContext):
 	if call.data == '/cancel':
@@ -249,7 +196,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 		await bot.delete_message(message.chat.id,message['message_id'])
 		async with state.proxy() as data:
 			await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
-			#await bot.delete_message(message.chat.id,data['start_msgs_id'])
+
 		await state.finish()
 		
 		keyboard = types.InlineKeyboardMarkup()
@@ -264,13 +211,6 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 		async with state.proxy() as data:
 			send_url_msg_id = data['msgs_id']['send_url_msg_id']
-		#await message.answer("Пожалуйста, подождите.")
-
-		#url = message.text
-
-		#driver_path = '/home/koza/Reps/drivers/chromedriver'
-		#driver = parser.start_driverSession(driver_path=driver_path)
-	
 	
 		await bot.delete_message(message.chat.id,send_url_msg_id)
 		
@@ -282,7 +222,6 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 		driver = parser.start_driverSession(driver_path=driver_path)
 		
 		status,driver = parser.get_page_source(driver,url)
-		#await asyncio.sleep(3)
 		
 		if status == False:
 			driver.close()
@@ -339,15 +278,13 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 			#data['login_link'] = login_link
 			data['received_url'] = message.text
 			
-		#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 		keyboard = types.InlineKeyboardMarkup()
 		for color in product_info['color']:
 			keyboard.add(types.InlineKeyboardButton(text=color, callback_data=color))
-			#keyboard.add(color)
+			
 		keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
 			
 		await bot.delete_message(message.chat.id,wait_msg['message_id'])
-		#await bot.delete_message(message.chat.id,message['message_id'])
 		
 		color_buttons_msg = await message.answer("Укажите нужный цвет:", reply_markup=keyboard)
 		
@@ -360,52 +297,26 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 async def ignoreMsg_whileScrap(message: types.Message, state: FSMContext):
 	await bot.delete_message(message.chat.id,message['message_id'])
 	
-	
-#async def color_chosen(message: types.Message, state: FSMContext):
 async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 	async with state.proxy() as data:
 		color_buttons_msg_id = data['msgs_id']['color_buttons_msg_id']
 		url_id = data['msgs_id']['url_msg_id']
 		order_data = data
-	#print(order_data)
+
 	if call.data == '/cancel':
-		#await bot.delete_message(message.chat.id,color_buttons_msg_id)
+
 		await bot.delete_message(call.message.chat.id,url_id)
-		#await bot.delete_message(message.chat.id,message['message_id'])
-		#await bot.delete_message(message.chat.id,data['start_msgs_id'])
-		#async with state.proxy() as data:
-		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
 		
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
 		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
-		await call.answer()
-		#msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
-		
+		await call.answer()	
 		
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	else:
-		'''
-		colors_list = [color for color in order_data['productDetail']['color']]
-		if message.text not in colors_list:
-		
-			await bot.delete_message(message.chat.id,color_buttons_msg_id)
-			await bot.delete_message(message.chat.id,message['message_id'])
-			
-			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			async with state.proxy() as data:
-				for color in data['productDetail']['color']:
-					keyboard.add(color)
-			color_buttons_msg = await message.answer('Пожалуйста, введите нужный цвет, используя клавиатуру ниже:',reply_markup=keyboard)
-			
-			async with state.proxy() as data:
-				data['msgs_id']['color_buttons_msg_id'] = color_buttons_msg['message_id']
-				
-			return
-		'''
 			
 		async with state.proxy() as data:
 			data['received_color'] = call.data
@@ -419,14 +330,10 @@ async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 			await OrderClothes.amount_state.set()
 		else:
 			
-			#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 			keyboard = types.InlineKeyboardMarkup()
 			for size in order_data['productDetail']['color'][call.data]['size']:
 				keyboard.add(types.InlineKeyboardButton(text=size, callback_data=size))
 			keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
-				
-			#await bot.delete_message(message.chat.id,color_buttons_msg_id)
-			#await bot.delete_message(message.chat.id,message['message_id'])
 			
 			size_button_msg = await call.message.edit_text("Теперь выберите размер:", reply_markup=keyboard)
 			
@@ -444,12 +351,7 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 		size_button_msg_id = data['msgs_id']['size_button_msg_id']
 		url_id = data['msgs_id']['url_msg_id']
 	if call.data == '/cancel':
-		#await bot.delete_message(message.chat.id,size_button_msg_id)
 		await bot.delete_message(call.message.chat.id,url_id)
-		#await bot.delete_message(message.chat.id,message['message_id'])
-		#await bot.delete_message(message.chat.id,data['start_msgs_id'])
-		#async with state.proxy() as data:
-		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
 		
 		keyboard = types.InlineKeyboardMarkup()
@@ -457,68 +359,11 @@ async def size_order(call: types.CallbackQuery, state: FSMContext):
 		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
 		await call.answer()
 		
-		#msg = await message.answer('Действие отменено, отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
-		
 		async with state.proxy() as data:
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	else:
-		####
-		#color = order_data['received_color']
-		#size = order_data['productDetail']['color'][color]['size']
-		####
-		
-		'''
-		if message.text not in size:
-		
-			await bot.delete_message(message.chat.id,size_button_msg_id)
-			await bot.delete_message(message.chat.id,message['message_id'])
-			
-			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			async with state.proxy() as data:
-				for size in data['productDetail']['color'][data['received_color']]['size']:
-					keyboard.add(size)
-			
-			size_button_msg = await message.answer('Пожалуйста, введите нужный размер, используя встроенную клавиатуру:',reply_markup=keyboard)
-			
-			async with state.proxy() as data:
-				data['msgs_id']['size_button_msg_id'] = size_button_msg['message_id']
-				
-			return
-		'''
-		####
-		'''
-		async with state.proxy() as data:
-			data['received_size'] = call.data
-			order_data = data
-		keyboard = types.InlineKeyboardMarkup()
-		keyboard.add(types.InlineKeyboardButton(text="Подтвердить", callback_data="/confirm"))
-		keyboard.add(types.InlineKeyboardButton(text="Отменить", callback_data="/cancel"))
-		#keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-		#keyboard.add('Подтвердить')
-		#keyboard.add('Отменить')
-		
-		#await OrderClothes.waiting_for_confirm.set()
-		
-		#await bot.delete_message(message.chat.id,size_button_msg_id)
-		#await bot.delete_message(message.chat.id,message['message_id'])
-		
-		order_data_msg = await call.message.edit_text("Почти готово! Ваш заказ:"
-					f"\n\n  {order_data['productDetail']['name']}"
-					f"\n    Цвет: {order_data['received_color']}"
-					f"\n    Размер: {order_data['received_size']}"
-					f"\n    Цена: {order_data['productDetail']['color'][order_data['received_color']]['price']}"f" {order_data['productDetail']['color'][order_data['received_color']]['currency']}",reply_markup=keyboard)
-		await call.answer()
-					
-		#confirm_msg = await message.answer('Подтвердить?',reply_markup=keyboard)
-		
-		async with state.proxy() as data:
-			data['msgs_id']['order_data_msg_id'] = order_data_msg['message_id']
-			#data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
-			
-		await OrderClothes.waiting_for_confirm.set()
-		'''
-		####
+
 		async with state.proxy() as data:
 			data['received_size'] = call.data
 		msg = await call.message.edit_text('Пожалуйста, укажите необходимое количество товара. Если хотите отменить действие, нажмите /cancel.')
@@ -584,16 +429,9 @@ async def amount_clothes_order(message: types.Message, state: FSMContext):
 async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 	async with state.proxy() as data:
 		order_data_msg_id = data['msgs_id']['order_data_msg_id']
-		#confirm_msg_id = data['msgs_id']['confirm_msg_id']
 		url_msg_id = data['msgs_id']['url_msg_id']
 	if call.data == '/cancel':
-		#await bot.delete_message(call.message.chat.id,order_data_msg_id)
 		await bot.delete_message(call.message.chat.id,url_msg_id)
-		#await bot.delete_message(message.chat.id,message['message_id'])
-		#await bot.delete_message(message.chat.id,data['start_msgs_id'])
-		#await bot.delete_message(message.chat.id,confirm_msg_id)
-		#async with state.proxy() as data:
-		#	await bot.delete_message(message.chat.id,data['msgs_id']['send_url_msg_id'])
 		await state.finish()
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
@@ -603,54 +441,24 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	else:
-		'''
-			
-		if message.text not in ['Подтвердить','Отменить']:
-			await bot.delete_message(message.chat.id,confirm_msg_id)
-			await bot.delete_message(message.chat.id,message['message_id'])
-			
-			keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			keyboard.add('Подтвердить')
-			keyboard.add('Отменить')
-			confirm_msg = await message.answer('Пожалуйста, подтведите или отмените заказ, используя встроенную клавиатуру:',reply_markup=keyboard)
-			
-			async with state.proxy() as data:
-				data['msgs_id']['confirm_msg_id'] = confirm_msg['message_id']
-			return
-		'''
+
 		async with state.proxy() as data:
 			data['confirm_status'] = 'Confirm' if call.data == '/confirm' else False
 			data['username'] = call.from_user.username
 			data['datetime'] = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-			#driver_url = data['driver_url']
-			#driver_session_id = data['driver_session_id']
 			order_data = data
 			json_dict = dict()
 			for key in data:
 				json_dict[key] = data[key]
-			#print(json_dict)
-			#json_file = open('clothe_data.json','w')
-			#json.dump(json_dict,json_file,indent=6)
-			#json_file.close()
 
-		#time.sleep(4)
-		#new_driver = webdriver.Remote(command_executor = driver_url, desired_capabilities={})
-		#new_driver.close()
-		#new_driver.session_id = driver_session_id
-		#await state.update_data(confirm_status=message.text)
 		if call.data == '/confirm':
-			#print(json_dict)
 			async with lock:
 				requests_database.create_order(json_dict)
 				index_json = len(os.listdir('./json_data'))
 				json_file = open('./json_data/clothe_data_{}.json'.format(str(index_json)),'w')
 				json.dump(json_dict,json_file,indent=6)
 				json_file.close()
-			#await bot.delete_message(message.chat.id,confirm_msg_id)
-			#await bot.delete_message(message.chat.id,order_data_msg_id)
 			await bot.delete_message(call.message.chat.id,url_msg_id)
-			#await bot.delete_message(message.chat.id,message['message_id'])
-			#await bot.delete_message(message.chat.id,data['start_msgs_id'])
 			
 			await state.finish()
 			
@@ -658,57 +466,11 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 			keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
 			msg = await call.message.edit_text('Заявка создана! Нажмите "Меню" для продолжения.',reply_markup=keyboard)
 			await call.answer()
-			#msg = await message.answer('Заявка принята! Отправьте /start_order для продолжения.',reply_markup=types.ReplyKeyboardRemove())
 			
 			async with state.proxy() as data:
 				data['post_start_msgs_id'] = msg['message_id']
 				
 			await OrderClothes.start_st.set()
-			#url = order_data['received_url']
-			#driver_path = '/home/koza/Reps/drivers/chromedriver'
-			#driver = parser.start_driverSession(driver_path=driver_path)
-			#login_link = order_data['login_link']
-			#print(order_data)
-			####<<<<ТИПА ФОРМИРУЕМ КОРЗИНУ########################################
-			'''
-			#login_link,driver = parser.get_login_link(driver)
-			print(login_link)
-			if login_link != True:
-				async with lock:
-					driver = parser.get_page_source(driver,login_link)
-					await asyncio.sleep(3)
-				async with lock:
-					driver = parser.login_user(driver)
-					await asyncio.sleep(3)
-				async with lock:
-					driver = parser.get_page_source(driver,url)
-					await asyncio.sleep(3)
-			else:
-				async with lock:
-					driver = parser.get_page_source(driver,url)
-					await asyncio.sleep(3)
-			parser.create_basket(order_data,driver)
-			'''
-			####ТИПА ФОРМИРУЕМ КОРЗИНУ>>>>########################################
-			
-			#print('\nmay be done...')
-			#driver.close()
-			#await asyncio.sleep(1)
-			#driver.quit()
-			
-		'''
-		elif message.text == 'Отменить':
-			await bot.delete_message(message.chat.id,confirm_msg_id)
-			await bot.delete_message(message.chat.id,order_data_msg_id)
-			await bot.delete_message(message.chat.id,url_msg_id)
-			await bot.delete_message(message.chat.id,message['message_id'])
-			await bot.delete_message(message.chat.id,data['start_msgs_id'])
-			await state.finish()
-			msg = await message.answer('Заявка отменена! Отправьте /start_order для продолжения.')
-			async with state.proxy() as data:
-				data['post_start_msgs_id'] = msg['message_id']
-			await OrderClothes.start_st.set()
-		'''
 		
 def register_handlers_order(dp: Dispatcher):
 	#dp.register_message_handler(cmd_start, commands="start", state=OrderClothes.start_st)
