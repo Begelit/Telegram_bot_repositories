@@ -13,7 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 import asyncio 
 import pickle
 import configparser
@@ -31,25 +31,15 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	options.binary_location = '/bin/google-chrome'
 	options.add_argument('--disable-blink-features=AutomationControlled')
 	return webdriver.Chrome(driver_path, chrome_options=options)
-#0 0x55d58c6abcd3 <unknown>
-#1 0x55d58c4b3968 <unknown>
-#2 0x55d58c4eafd7 <unknown>
-#3 0x55d58c4eb1a1 <unknown>
-#4 0x55d58c51e154 <unknown>
-
-
 	
 def get_page_source(driver,url):
 	try:
+		domain = urlparse(url).netloc
+		if domain != 'www.zara.com':
+			return False,driver
 		driver.get(url)
 		driver.maximize_window()
-		#with open('cookies.pkl','rb') as r:
-		#	cookies = pickle.load(r)
-		#cookies = pickle.load(open('cookies.pkl','rb'))
-		#for cookie in cookies:
-		#	driver.add_cookie(cookie)
-		#time.sleep(600)
-		return True, driver#print(driver.page_source)
+		return True, driver
 	except Exception as e:
 		print(traceback.format_exc())
 		return False,driver
