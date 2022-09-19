@@ -144,6 +144,8 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		keyboard.add(types.InlineKeyboardButton(text="Вернуться назад", callback_data="/cancel"))
 		msg = await call.message.edit_text('Добро пожаловать в меня администратора, пожалуйста, выбери необходимое действие.',reply_markup=keyboard)
 		await call.answer()
+		async with state.proxy() as data:
+			data['admin_menu_msg_id'] = msg['message_id']
 		await OrderClothes.admin_menu_state.set()
 		
 async def admin_menu(call: types.CallbackQuery, state: FSMContext):
@@ -157,12 +159,15 @@ async def admin_menu(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 	elif call.data == '/table':
-		requests_database.get_orders_document()
+		async with lock:
+			requests_database.get_orders_document()
 		open_xlsx = open('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx','rb')
 		await bot.send_document(call.from_user.id,open_xlsx)
 		await OrderClothes.admin_menu_state.set()
 	elif call.data == '/change_status':
-		msg = await call.message.edit_text('Отправь номер id заявки.')
+		async with state.proxy() as data:
+			await bot.delete_message(call.message.chat.id,data['admin_menu_msg_id'])
+		msg = await call.message.answer('Отправь номер id заявки. Либо нажми /cancel, чтобы вернуться назад.')
 		async with state.proxy() as data:
 			data['send_order_id_message'] = msg['message_id']
 		await OrderClothes.get_order_info_admin_state.set()
@@ -230,7 +235,8 @@ async def change_status_payed(call: types.CallbackQuery, state: FSMContext):
 		await OrderClothes.start_st.set()
 	elif call.data == '/payed':
 		async with state.proxy() as data:
-			requests_database.change_order_status_payed(data['order_change_status_admin'])
+			async with lock:
+				requests_database.change_order_status_payed(data['order_change_status_admin'])
 		await state.finish()
 		keyboard = types.InlineKeyboardMarkup()
 		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
@@ -275,7 +281,8 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			    Стоимость: {order_data_dict_index["order_total_price"]} {order_data_dict_index["order_item_currency"]}
 			    Дата поступления заявки: {order_data_dict_index["order_creating_date"]}
 			'''
-			msg = await call.message.edit_text(answer+'\n\nВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?',reply_markup=keyboard,disable_web_page_preview=True,parse_mode = 'markdown')
+			anwer2 = 'ВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?'
+			msg = await call.message.edit_text(answer+'\n\n'+'\U0001F6D1'*18+'\n\U0001F6D1'+anwer2+'\U0001F6D1\n'+'\U0001F6D1'*18,reply_markup=keyboard,disable_web_page_preview=True,parse_mode = 'markdown')
 		await OrderClothes.delete_order_state.set()
 		
 async def delete_order(call: types.CallbackQuery, state: FSMContext):
@@ -563,10 +570,10 @@ async def confirm_order(call: types.CallbackQuery, state: FSMContext):
 		if call.data == '/confirm':
 			async with lock:
 				requests_database.create_order(json_dict)
-				index_json = len(os.listdir('./json_data'))
-				json_file = open('./json_data/clothe_data_{}.json'.format(str(index_json)),'w')
-				json.dump(json_dict,json_file,indent=6)
-				json_file.close()
+				#index_json = len(os.listdir('./json_data'))
+				#json_file = open('./json_data/clothe_data_{}.json'.format(str(index_json)),'w')
+				#json.dump(json_dict,json_file,indent=6)
+				#json_file.close()
 			await bot.delete_message(call.message.chat.id,url_msg_id)
 			
 			await state.finish()
