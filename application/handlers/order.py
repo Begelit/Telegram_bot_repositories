@@ -282,7 +282,7 @@ async def change_order_list(call: types.CallbackQuery, state: FSMContext):
 			    Дата поступления заявки: {order_data_dict_index["order_creating_date"]}
 			'''
 			anwer2 = 'ВЫ ТОЧНО СОБИРАЕТЕСЬ УДАЛИТЬ ЗАКАЗ?'
-			msg = await call.message.edit_text(answer+'\n\n'+'\U0001F6D1'*18+'\n\U0001F6D1'+anwer2+'\U0001F6D1\n'+'\U0001F6D1'*18,reply_markup=keyboard,disable_web_page_preview=True,parse_mode = 'markdown')
+			msg = await call.message.edit_text(answer+'\n\n'+'\n'+'\U0001F6D1'*5+'\n'+'\U0001F6D1'*5+'\n'+anwer2+'\n'+'\U0001F6D1'*5+'\n'+'\U0001F6D1'*5,reply_markup=keyboard,disable_web_page_preview=True,parse_mode = 'markdown')
 		await OrderClothes.delete_order_state.set()
 		
 async def delete_order(call: types.CallbackQuery, state: FSMContext):
