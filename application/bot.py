@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import configparser
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
@@ -26,7 +27,9 @@ async def main():
 	)
 	logger.error("Starting bot")
 		
-	bot = Bot(token='5687809554:AAEMnikAnpF5FfHb6dX78Uw-cSshOf1BD0s')
+	config = configparser.ConfigParser()
+	config.read('/home/koza/Reps/shein_bot/application/token.ini')
+	bot = Bot(token=config.get('token', 'bot_token'))
 	
 	dp = Dispatcher(bot, storage=RethinkDBStorage(
 					db='aiogram', 

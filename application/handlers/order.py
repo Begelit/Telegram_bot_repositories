@@ -10,10 +10,13 @@ import time
 import json
 from datetime import datetime
 import os
+import configparser
 
 lock = asyncio.Lock()
 
-bot = Bot(token='5687809554:AAEMnikAnpF5FfHb6dX78Uw-cSshOf1BD0s')
+config = configparser.ConfigParser()
+config.read('/home/koza/Reps/shein_bot/application/token.ini')
+bot = Bot(token=config.get('token', 'bot_token'))
 
 class OrderClothes(StatesGroup):
 	waiting_for_clothes_url = State()

@@ -2,4 +2,6 @@ application/User/*
 application/handlers/parserANDdb/zara_log.ini
 application/handlers/parserANDdb/create_config.py
 application/handlers/database/db_login_data.ini
-
+application/orders.xlsx
+application/token.ini
+application/handlers/parserANDdb/rethinkdb_createAio.py
