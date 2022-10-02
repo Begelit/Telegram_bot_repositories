@@ -11,6 +11,7 @@ import json
 from datetime import datetime
 import os
 import configparser
+import random
 
 lock = asyncio.Lock()
 
@@ -339,8 +340,9 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 
 		driver_path = '/home/koza/Reps/drivers/chromedriver'
 		driver = parser.start_driverSession(driver_path=driver_path)
-		
-		status,driver = parser.get_page_source(driver,url)
+		async with lock:
+			status,driver = parser.get_page_source(driver,url)
+			await asyncio.sleep(random.randint(1,3))
 		
 		if status == False:
 			driver.close()

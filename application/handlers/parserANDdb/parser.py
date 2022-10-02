@@ -44,7 +44,7 @@ def get_page_source(driver,url):
 		print(traceback.format_exc())
 		return False,driver
 		
-	
+'''	
 def get_login_link(driver):
 	layout_header_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class = "layout-header__links"]')))
 	layout_header_elem_innerHTML = layout_header_elem.get_attribute('innerHTML')
@@ -159,6 +159,7 @@ def login_user(driver):
 	
 	#print(driver.page_source)
 	#print(usr,pswd)
+'''
 
 def get_product_info(driver):
 	try:
@@ -197,6 +198,7 @@ def get_product_info(driver):
 			product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
 			productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
 		except:
+			print(traceback.format_exc())
 			try:
 				product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
 				product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
@@ -205,23 +207,7 @@ def get_product_info(driver):
 			except:	
 				print(traceback.format_exc())
 				return 'have not clothes',driver
-		#color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
-		#product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
-		#productInfo_dict = dict()
-		#productInfo_dict['color'] = dict()
-		#productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
-		
-		'''
-		try:
-			WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
-			geo_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.CSS_SELECTOR,'#theme-modal-container > div.modal > div > div > div > div.modal__body > section.geolocation-modal__actions > button:nth-child(1)')))
-			geo_button.click()
-			time.sleep(5)
-			geo_button.click()
-		except Exception as e:
-			print('well........................................./n................................/n................')
-			print(traceback.format_exc())
-		'''
+
 		if color_selector_element_class_name in product_detail_info_elem_innerHTML:
 		
 			productInfo_dict['type_choice_color'] = 'multi_color'
@@ -233,26 +219,21 @@ def get_product_info(driver):
 			LI_elements_color = UL_element_color.find_elements(By.XPATH,'//li[@class="product-detail-color-selector__color"]')
 			
 			for i,li in enumerate(LI_elements_color):
-				#color_button_path
+
 				color_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(li.find_element(By.CSS_SELECTOR,'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1)))))
 				color_button.click()
-				
-				#driver.implicitly_wait(5)
-				#time.sleep(random.randint(2,5))
 				
 				color = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//p[@class="product-detail-selected-color product-detail-color-selector__selected-color-name"]')))
 				color = color.text.split('|')[0].replace(' ','')
 				
 				productInfo_dict['color'][color] = dict()
 				
-				#productInfo_dict[color]['size'] = list()
-				
 				productInfo_dict['color'][color]['color_button_path'] = dict()
-				productInfo_dict['color'][color]['color_button_path']['path'] = 'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1))
+				#productInfo_dict['color'][color]['color_button_path']['path'] = 'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1))
 				productInfo_dict['color'][color]['color_button_path']['index'] = i+1
 				
 				price =  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price-amount price"]//span[@class="money-amount__main"]'))).text
-				#currency = re.findall(r'[a-zA-Z]+', price)
+
 				list_price = list(price)
 				currency = ''
 				for symb in list_price:
@@ -264,16 +245,17 @@ def get_product_info(driver):
 				try:
 					UL_element_size = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 					LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
-					#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
-					productInfo_dict['color'][color]['size'] = dict()
+
+					#productInfo_dict['color'][color]['size'] = dict()
+					productInfo_dict['color'][color]['size'] = list()
 					for li in LI_elements_size:
 						size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text
-						productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
+						#productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
+						productInfo_dict['color'][color]['size'].append(size)
 				except:
 					productInfo_dict['color'][color]['size'] = 'single_size'
 					pass
 				
-			#print(productInfo_dict)
 			return True,productInfo_dict
 		else:	
 			productInfo_dict['type_choice_color'] = 'single_color'
@@ -284,8 +266,7 @@ def get_product_info(driver):
 			color = color.text.split('|')[0].replace(' ','')
 			
 			productInfo_dict['color'][color] = dict()
-			
-			#productInfo_dict['color'][color]['price'] = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price"]//div[@class="money-amount price-formatted__price-amount"]//span[@class="money-amount__main"]'))).text
+
 			
 			price =  WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//div[@class="product-detail-info__price"]//div[@class="money-amount price-formatted__price-amount"]//span[@class="money-amount__main"]'))).text
 
@@ -302,22 +283,21 @@ def get_product_info(driver):
 			try:
 				UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
-				#productInfo_dict['color'][color]['size'] = [driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text for li in LI_elements_size]
 
-				productInfo_dict['color'][color]['size'] = dict()
+				#productInfo_dict['color'][color]['size'] = dict()
+				productInfo_dict['color'][color]['size'] = list()
 				for li in LI_elements_size:
 					size = driver.find_element(By.XPATH,sizes_list_path+'//li[@id = "{id_li}"]//span[@class = "product-detail-size-info__main-label"]'.format(id_li = li.get_attribute('id'))).text
-					productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
+					#productInfo_dict['color'][color]['size'][size] = sizes_list_path+'//li[@id = "{id_li}"]'.format(id_li = li.get_attribute('id'))
+					productInfo_dict['color'][color]['size'].append(size)
 			except:
 				productInfo_dict['color'][color]['size'] = 'single_size'
 			return True,productInfo_dict
 	except:
 		print(traceback.format_exc())
 		return False,None
-		#time.sleep(600)
-		#driver.close()
-		#driver.quit()
 		
+'''
 def create_basket(data,driver):
 
 	productDetail = data['productDetail']
@@ -369,7 +349,7 @@ def create_basket(data,driver):
 					
 					button_docked = 'class="button-docked container-docked container-docked--s container-docked---parent-fixed"'
 					print('\nbutton_docked --->>>>----->>>>',button_docked in theme_modal_container_innerHTML)
-				
+'''				
 				
 				
 				
@@ -399,4 +379,11 @@ if __name__ == "__main__":
 	driver.close()
 	driver.quit()
 '''
+
+if __name__ == "__main__":
+	url = 'https://www.zara.com/ru/ru/%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA-%D0%B8%D0%B7-%D1%81%D1%82%D1%80%D1%83%D1%8F%D1%89%D0%B5%D0%B8%D1%81%D1%8F-%D1%82%D0%BA%D0%B0%D0%BD%D0%B8-p01255709.html?v1=179012832'
+	driver_path = '/home/koza/Reps/drivers/chromedriver'
+	driver = start_driverSession(driver_path=driver_path)
+	bool_res, driver_getSource = get_page_source(driver,url)
+	print(get_product_info(driver_getSource))
 
