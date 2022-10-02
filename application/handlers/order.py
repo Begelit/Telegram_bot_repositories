@@ -2,7 +2,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
-from handlers.parserANDdb import parser
+from handlers.parserANDdb import zara_parser, shein_parser
 from handlers.database import requests_database
 import asyncio
 from selenium import webdriver
@@ -33,6 +33,7 @@ class OrderClothes(StatesGroup):
 	admin_menu_state = State()
 	get_order_info_admin_state = State()
 	change_status_payed_state = State()
+	parse_shop_state = State()
 	
 async def start(message: types.Message, state: FSMContext):
 	await state.finish()
@@ -72,18 +73,44 @@ async def cmd_start(call: types.CallbackQuery, state: FSMContext):
 			data['start_msgs_id'] = msg['message_id']
 			
 		await OrderClothes.order_start_state.set()
-
+	
+'''	
+async def select_shop(call: types.CallbackQuery, state: FSMContext):
+	if call.data == '/cancel':
+		await state.finish()
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		await call.answer()
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	elif call.data == '/order':
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Shein", callback_data="/order_shein"))
+		keyboard.add(types.InlineKeyboardButton(text="Zara", callback_data="/order_zara"))
+		keyboard.add(types.InlineKeyboardButton(text="Отмена", callback_data="/cancel"))
+		await OrderClothes.order_start_state.set()
+'''
 
 async def order_start(call: types.CallbackQuery, state: FSMContext):
 
-	if call.data == '/order':	
-
+	if call.data == '/order':
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Shein", callback_data="/order_shein"))
+		keyboard.add(types.InlineKeyboardButton(text="Zara", callback_data="/order_zara"))
+		keyboard.add(types.InlineKeyboardButton(text="Отмена", callback_data="/cancel"))
+		await call.message.edit_text('Выберите магазин',reply_markup=keyboard)
+		await call.answer()
+		await OrderClothes.parse_shop_state.set()
+		'''
 		msg = await call.message.edit_text('Пожалуйста, отправьте ссылку, ведущую на товар. Нажми /cancel если хочешь отменить  действие.')
 		await call.answer()
 		async with state.proxy() as data:
 			data['msgs_id'] = dict()
 			data['msgs_id']['send_url_msg_id'] = msg['message_id']
 		await OrderClothes.waiting_for_clothes_url.set()
+		'''
 	elif call.data == '/cancel':
 		await state.finish()
 		keyboard = types.InlineKeyboardMarkup()
@@ -309,6 +336,32 @@ async def delete_order(call: types.CallbackQuery, state: FSMContext):
 			data['post_start_msgs_id'] = msg['message_id']
 		await OrderClothes.start_st.set()
 		
+		
+	
+async def parse_shop(call: types.CallbackQuery, state: FSMContext):
+	if call.data == '/cancel':
+		await state.finish()
+		keyboard = types.InlineKeyboardMarkup()
+		keyboard.add(types.InlineKeyboardButton(text="Меню", callback_data="/start_order"))
+		msg = await call.message.edit_text('Действие отменено, нажми на "Меню" для продолжения.',reply_markup=keyboard)
+		await call.answer()
+		async with state.proxy() as data:
+			data['post_start_msgs_id'] = msg['message_id']
+		await OrderClothes.start_st.set()
+	elif call.data.split('_')[0] == '/order':
+		if call.data.split('_')[1] == 'shein':
+			async with state.proxy() as data:
+				data['shop'] = 'shein'
+		elif call.data.split('_')[1] == 'zara':
+			async with state.proxy() as data:
+				data['shop'] = 'zara'
+		msg = await call.message.edit_text('Пожалуйста, отправьте ссылку, ведущую на товар. Нажми /cancel если хочешь отменить  действие.')
+		await call.answer()
+		async with state.proxy() as data:
+			data['msgs_id'] = dict()
+			data['msgs_id']['send_url_msg_id'] = msg['message_id']
+		await OrderClothes.waiting_for_clothes_url.set()
+		
 async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 	#async with lock:
@@ -339,11 +392,18 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 		url = message.text
 
 		driver_path = '/home/koza/Reps/drivers/chromedriver'
-		driver = parser.start_driverSession(driver_path=driver_path)
-		async with lock:
-			status,driver = parser.get_page_source(driver,url)
-			await asyncio.sleep(random.randint(1,3))
 		
+		async with lock:
+			async with state.proxy() as data:
+				if data['shop'] == 'shein':
+					driver = shein_parser.start_driverSession(driver_path=driver_path)
+					status,driver = shein_parser.get_page_source(driver,url)
+					await asyncio.sleep(random.randint(1,3))
+				elif data['shop'] == 'zara':
+					driver = zara_parser.start_driverSession(driver_path=driver_path)
+					status,driver = zara_parser.get_page_source(driver,url)
+					await asyncio.sleep(random.randint(1,3))
+					
 		if status == False:
 			driver.close()
 			await asyncio.sleep(1)
@@ -356,9 +416,13 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 			async with state.proxy() as data:
 				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
 			return
-			
-		status,product_info = parser.get_product_info(driver)
 		
+		async with state.proxy() as data:
+			if data['shop'] == 'shein':
+				status,product_info = shein_parser.get_product_info(driver)
+			elif data['shop'] == 'zara':
+				status,product_info = zara_parser.get_product_info(driver)
+				
 		if status == 'have not clothes':
 			driver.close()
 			await asyncio.sleep(1)
@@ -398,7 +462,7 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 			data['productDetail'] = product_info
 			#data['login_link'] = login_link
 			data['received_url'] = message.text
-			
+		
 		keyboard = types.InlineKeyboardMarkup()
 		for color in product_info['color']:
 			keyboard.add(types.InlineKeyboardButton(text=color, callback_data=color))
@@ -417,7 +481,8 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 	
 async def ignoreMsg_whileScrap(message: types.Message, state: FSMContext):
 	await bot.delete_message(message.chat.id,message['message_id'])
-	
+
+		
 async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 	async with state.proxy() as data:
 		color_buttons_msg_id = data['msgs_id']['color_buttons_msg_id']
@@ -441,7 +506,7 @@ async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 			
 		async with state.proxy() as data:
 			data['received_color'] = call.data
-		if order_data['productDetail']['color'][call.data]['size'] == 'single_size':
+		if order_data['productDetail']['color'][call.data]['size'] == 'single_size' or order_data['productDetail']['color'][call.data]['size'][0] == 'one-size':
 			#await bot.delete_message(call.message.chat.id,color_buttons_msg_id)
 			async with state.proxy() as data:
 				data['received_size'] = 'Нет размера'
@@ -612,6 +677,8 @@ def register_handlers_order(dp: Dispatcher):
 	dp.register_callback_query_handler(change_status_payed,state=OrderClothes.change_status_payed_state)
 	
 	dp.register_callback_query_handler(order_start, state=OrderClothes.order_start_state)
+	
+	dp.register_callback_query_handler(parse_shop, state=OrderClothes.parse_shop_state)
 	
 	dp.register_message_handler(clothes_chosen, state=OrderClothes.waiting_for_clothes_url)
 	

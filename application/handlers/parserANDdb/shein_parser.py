@@ -23,12 +23,14 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	#options.add_argument('--headless')
-	print(useragent)
+	options.add_argument('--headless')
+	#print(useragent)
 	options.add_argument(f'user-agent={useragent}')
 	options.binary_location = '/bin/google-chrome'
 	options.add_argument('--disable-blink-features=AutomationControlled')
-	options.add_experimental_option("excludeSwitches", ['enable-automation']);
+	options.add_experimental_option("excludeSwitches", ['enable-automation'])
+	options.add_argument("--start-maximized")
+	options.add_argument("--window-size=1920,1080")
 	caps = DesiredCapabilities().CHROME
 	#caps["pageLoadStrategy"] = "normal"  #  complete
 	caps["pageLoadStrategy"] = "eager"  #  interactive
@@ -37,12 +39,14 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 def get_page_source(driver,url):
 	try:
 		domain = urlparse(url).netloc
-		if domain != 'www.shein.com':
+		print(domain)
+		if (domain == 'www.shein.com') or (domain == 'api-shein.shein.com'):
+			driver.get(url)
+			driver.maximize_window()
+			#time.sleep(6000)
+			return True, driver
+		else:
 			return False,driver
-		driver.get(url)
-		driver.maximize_window()
-		#time.sleep(6000)
-		return True, driver
 	except Exception as e:
 		print(traceback.format_exc())
 		return False,driver
@@ -108,7 +112,7 @@ def get_product_info(driver):
 					price = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, '//div[@class="product-intro__head-price j-expose__product-intro__head-price"]//div[@class="from"]'))).get_attribute('aria-label')
 					new_price = str()
 					for symb in price:
-						if symb.isdigit() == True or symb == '.':
+						if symb.isdigit() == True:
 							new_price+=symb
 					if color_elem.get_attribute('aria-label') == 'Multicolor':
 						color = color_elem.get_attribute('aria-label')+'-'+str(index)
@@ -116,7 +120,7 @@ def get_product_info(driver):
 						color = color_elem.get_attribute('aria-label')
 					productInfo_dict['color'][color] = dict()
 					productInfo_dict['color'][color]['size'] = list()
-					productInfo_dict['color'][color]['price'] = new_price
+					productInfo_dict['color'][color]['price'] = round(int(new_price)*1.224)
 					productInfo_dict['color'][color]['currency'] = 'RUB'
 					except_soldout_size = 'product-intro__size-radio product-intro__size-radio_soldout'
 					for div_element_size in div_elements_size:
@@ -126,16 +130,16 @@ def get_product_info(driver):
 			return True,productInfo_dict
 		else:
 			productInfo_dict['type_choice_color'] = 'single_color'
-			color = 'One color'
+			color = 'one-color'
 			div_elements_size = driver.find_elements(By.XPATH,'//div[@class="product-intro__size-choose"]//div[@da-event-click = "1-8-6-5"]')
 			price = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, '//div[@class="product-intro__head-price j-expose__product-intro__head-price"]//div[@class="from"]'))).get_attribute('aria-label')
 			new_price = str()
 			for symb in price:
-				if symb.isdigit() == True or symb == '.':
+				if symb.isdigit() == True:
 					new_price+=symb
 			productInfo_dict['color'][color] = dict()
 			productInfo_dict['color'][color]['size'] = list()
-			productInfo_dict['color'][color]['price'] = new_price
+			productInfo_dict['color'][color]['price'] = round(int(new_price)*1.224)
 			productInfo_dict['color'][color]['currency'] = 'RUB'
 			except_soldout_size = 'product-intro__size-radio product-intro__size-radio_soldout'
 			for div_element_size in div_elements_size:
@@ -147,18 +151,18 @@ def get_product_info(driver):
 	except:
 		print(traceback.format_exc())
 		return False,None
-		
+'''
 if __name__ == "__main__":
 	'one-color multi-size'
 	#url = 'https://www.shein.com/SHEIN-4pcs-Solid-Ribbed-Knit-Tee-p-3001519-cat-1738.html?src_identifier=fc%3DWomen%60sc%3DCLOTHING%60tc%3D0%60oc%3D0%60ps%3Dtab01navbar04%60jc%3Dreal_2030&src_module=topcat&src_tab_page_id=page_real_class1664622993186&mallCode=1&scici=navbar_WomenHomePage~~tab01navbar04~~4~~real_2030~~~~0'
 	'multi-color multi-size'
 	#url = 'https://www.shein.com/High-Waisted-Ripped-Wide-Leg-Jeans-p-6912142-cat-1934.html?src_identifier=fc%3DWomen%60sc%3DCLOTHING%60tc%3D0%60oc%3D0%60ps%3Dtab01navbar04%60jc%3Dreal_2030&src_module=topcat&src_tab_page_id=page_home1664620692438&scici=navbar_WomenHomePage~~tab01navbar04~~4~~real_2030~~~~0&main_attr=27_1000124&mallCode=1'
 	'one-color one-size'
-	url = 'https://www.shein.com/4pcs-Double-O-ring-Buckle-Belt-p-2693336-cat-1875.html?src_identifier=fc%3DWomen%60sc%3DSHOES%20%26%20ACCESSORIES%60tc%3D0%60oc%3D0%60ps%3Dtab01navbar08%60jc%3Durl_https%253A%252F%252Fwww.shein.com%252Fcategory%252FShoes-Bags-Accs-sc-00828516.html&src_module=topcat&src_tab_page_id=page_home1664638389479&mallCode=1&scici=navbar_WomenHomePage~~tab01navbar08~~8~~webLink~~~~0'
+	#url = 'https://www.shein.com/4pcs-Double-O-ring-Buckle-Belt-p-2693336-cat-1875.html?src_identifier=fc%3DWomen%60sc%3DSHOES%20%26%20ACCESSORIES%60tc%3D0%60oc%3D0%60ps%3Dtab01navbar08%60jc%3Durl_https%253A%252F%252Fwww.shein.com%252Fcategory%252FShoes-Bags-Accs-sc-00828516.html&src_module=topcat&src_tab_page_id=page_home1664638389479&mallCode=1&scici=navbar_WomenHomePage~~tab01navbar08~~8~~webLink~~~~0'
 	'multi-color one-size'
 	#url = 'https://www.shein.com/3pcs-Round-Buckle-Belt-p-2894425-cat-1875.html?src_identifier=fc%3DWomen%60sc%3DSHOES%20%26%20ACCESSORIES%60tc%3DACCESSORIES%60oc%3DWomen%20Belts%60ps%3Dtab01navbar08menu06dir01%60jc%3Dreal_3868&src_module=topcat&src_tab_page_id=page_home1664701980999&mallCode=1&scici=navbar_WomenHomePage~~tab01navbar08menu06dir01~~8_6_1~~real_3868~~~~0'
 	driver_path = '/home/koza/Reps/drivers/chromedriver'
 	driver = start_driverSession(driver_path=driver_path)
 	bool_res, driver_getSource = get_page_source(driver,url)
 	get_product_info(driver_getSource)
-		
+'''
