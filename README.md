@@ -1,5 +1,5 @@
 # Telegram bot repositories
-## @MyClothes_bot (disables)
+## @MyClothes_bot (disabled)
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/1.jpeg)
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/2.jpeg)
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/3.jpeg)
