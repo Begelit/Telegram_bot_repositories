@@ -11,7 +11,7 @@ import os
 def create_order(data):
 	try:
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
@@ -62,7 +62,7 @@ def create_order(data):
 def get_info_order_user(username):
 	try:
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
@@ -108,7 +108,7 @@ def delete_order(order_id_):
 	try:
 		
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
@@ -134,7 +134,7 @@ def delete_order(order_id_):
 def get_username_status(username):
 	try:
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
@@ -159,10 +159,10 @@ def get_username_status(username):
 
 def get_orders_document():
 	try:
-		if os.path.exists('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx') == True:
-			os.remove('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx')
+		if os.path.exists('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx') == True:
+			os.remove('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx')
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
@@ -175,7 +175,7 @@ def get_orders_document():
 		
 		with session() as s:
 			try:
-				workbook = xlsxwriter.Workbook('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx')
+				workbook = xlsxwriter.Workbook('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx')
 				ws = workbook.add_worksheet()
 				ws.write(0,0,'Дата')
 				ws.write(0,1,'Имя пользователя')
@@ -213,7 +213,7 @@ def get_info_order_user_admin(order_id_):
 	try:
 
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
@@ -255,7 +255,7 @@ def get_info_order_user_admin(order_id_):
 def change_order_status_payed(order_id_):
 	try:
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/shein_bot/application/handlers/database/db_login_data.ini')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')

@@ -16,7 +16,7 @@ import random
 lock = asyncio.Lock()
 
 config = configparser.ConfigParser()
-config.read('/home/koza/Reps/shein_bot/application/token.ini')
+config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/token.ini')
 bot = Bot(token=config.get('token', 'bot_token'))
 
 class OrderClothes(StatesGroup):

@@ -28,7 +28,7 @@ async def main():
 	logger.error("Starting bot")
 		
 	config = configparser.ConfigParser()
-	config.read('/home/koza/Reps/shein_bot/application/token.ini')
+	config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/token.ini')
 	bot = Bot(token=config.get('token', 'bot_token'))
 	
 	dp = Dispatcher(bot, storage=RethinkDBStorage(
