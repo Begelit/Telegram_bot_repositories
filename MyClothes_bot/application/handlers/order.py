@@ -173,7 +173,7 @@ async def order_start(call: types.CallbackQuery, state: FSMContext):
 		keyboard.add(types.InlineKeyboardButton(text="Выгрузить таблицу заказов", callback_data="/table"))
 		keyboard.add(types.InlineKeyboardButton(text="Изменить статус заказа", callback_data="/change_status"))
 		keyboard.add(types.InlineKeyboardButton(text="Вернуться назад", callback_data="/cancel"))
-		msg = await call.message.edit_text('Добро пожаловать в меня администратора, пожалуйста, выбери необходимое действие.',reply_markup=keyboard)
+		msg = await call.message.edit_text('Добро пожаловать в меню администратора, пожалуйста, выбери необходимое действие.',reply_markup=keyboard)
 		await call.answer()
 		async with state.proxy() as data:
 			data['admin_menu_msg_id'] = msg['message_id']
