@@ -450,13 +450,24 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 			uncorrect_msg = await message.answer("Что-то пошло не так... Попробуйте ещё раз отправить ссылку. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
 			await OrderClothes.waiting_for_clothes_url.set()
 			async with state.proxy() as data:
-				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
-				
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']	
 			return
 			
 		driver.close()
 		await asyncio.sleep(1)
 		driver.quit()
+		
+		sum_color = 0
+		for color in product_info['color']:
+			sum_color+=len(product_info['color'][color]['size'])
+		if sum_color == 0:
+			await bot.delete_message(message.chat.id,wait_msg['message_id'])
+			await bot.delete_message(message.chat.id,message['message_id'])
+			uncorrect_msg = await message.answer("Товара нет в наличии. Попробуйте отправить ссылку с другим товаром. Либо отмените действие нажав на /cancel",reply_markup=types.ReplyKeyboardRemove())
+			await OrderClothes.waiting_for_clothes_url.set()
+			async with state.proxy() as data:
+				data['msgs_id']['send_url_msg_id'] = uncorrect_msg['message_id']
+			return
 		
 		async with state.proxy() as data:
 			data['productDetail'] = product_info
@@ -465,7 +476,8 @@ async def clothes_chosen(message: types.Message, state: FSMContext):
 		
 		keyboard = types.InlineKeyboardMarkup()
 		for color in product_info['color']:
-			keyboard.add(types.InlineKeyboardButton(text=color, callback_data=color))
+			if len(product_info['color'][color]['size']) > 0:
+				keyboard.add(types.InlineKeyboardButton(text=color, callback_data=color))
 			
 		keyboard.add(types.InlineKeyboardButton(text='Отменить', callback_data='/cancel'))
 			
@@ -506,6 +518,7 @@ async def color_chosen(call: types.CallbackQuery, state: FSMContext):
 			
 		async with state.proxy() as data:
 			data['received_color'] = call.data
+		#print(order_data)
 		if order_data['productDetail']['color'][call.data]['size'] == 'single_size' or order_data['productDetail']['color'][call.data]['size'][0] == 'one-size':
 			#await bot.delete_message(call.message.chat.id,color_buttons_msg_id)
 			async with state.proxy() as data:

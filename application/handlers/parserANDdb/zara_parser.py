@@ -44,149 +44,13 @@ def get_page_source(driver,url):
 		print(traceback.format_exc())
 		return False,driver
 		
-'''	
-def get_login_link(driver):
-	layout_header_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class = "layout-header__links"]')))
-	layout_header_elem_innerHTML = layout_header_elem.get_attribute('innerHTML')
-	loggined_user_attrib = 'class="layout-header-link layout-header-links__desktop-link layout-header-links__user-name link"'
-	if loggined_user_attrib in layout_header_elem_innerHTML:
-		return True, driver
-	else:
-		elem_with_a_href = layout_header_elem.find_elements(By.XPATH,'//a[@class="layout-header-link layout-header-links__desktop-link link"]')
-		for elem in elem_with_a_href:
-			if 'logon' in elem.get_attribute('href'):
-				return elem.get_attribute('href'), driver
-			#print(elem.get_attribute('href'))
-			
-def login_user(driver):
-	driver.maximize_window()
-	#print(driver.page_source)
-	config = configparser.ConfigParser()
-	config.read('/home/koza/Reps/HEIN_FROMgit/shein_bot/zara/application/handlers/parserANDdb/zara_log.ini')#, encoding = 'utf-8-sig')
-	
-	usr = config.get('zaraUsr', 'usr')
-	pswd = config.get('zaraUsr', 'pswd')
-	
-	input_usr = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-text__input"]')))
-	input_usr.send_keys(usr)
-	input_pswd = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-password__input"]')))
-	input_pswd.send_keys(pswd)
-	#time.sleep(600)
-	
-	#print(driver.page_source)
-	
-	action = ActionChains(driver)
-	
-	try:
-		session_button = WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
-		#session_button.click()
-		action.move_to_element(session_button).click().perform()
-		#time.sleep(5)
-	except: #selenium.common.exceptions.TimeoutException:
-		cookies_close_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="onetrust-close-btn-handler banner-close-button ot-close-icon"]')))
-		action.move_to_element(cookies_close_button).click().perform()
-
-		#cookies_close_button.click()
-		
-		session_button = WebDriverWait(driver,10).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
-		action.move_to_element(session_button).click().perform()
-		
-		#cookies = driver.get_cookies()
-		#with open('cookies.pkl','wb') as w:
-		#	pickle.dump(cookies,w)	
-		#print(cookies)
-			
-
-		#session_button.click()
-
-	while True:
-		time.sleep(3)
-		#print(driver.page_source)
-		try:
-			img_title_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="media-image__wrapper"]')))
-			#cookies = driver.get_cookies()
-			#with open('cookies.pkl','wb') as w:
-			#	pickle.dump(cookies,w)	
-			#print(cookies)
-			#print(driver.page_source)
-			#pickle.dump(drivers.get_cookies(), open('cookies.pkl','wb'))
-		
-			return driver
-		#except Exception as e:
-		except: #selenium.common.exceptions.TimeoutException:
-			session_elem = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//div[@class="layout-error__button-wrapper"]//a[@class="button"]')))
-			action.move_to_element(session_elem).click().perform()
-			#session_elem.click()
-			time.sleep(3)
-			
-			input_usr = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-text__input"]')))
-			input_usr.send_keys(usr)
-			input_pswd = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//input[@class="form-input-label__input form-input-password__input"]')))
-			input_pswd.send_keys(pswd)
-			
-			try:
-				session_button = WebDriverWait(driver,30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
-				action.move_to_element(session_button).click().perform()
-				#session_button.click()
-				time.sleep(3)
-				#try:
-				#	img_title_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="media-image__wrapper"]')))
-				#	return driver
-				#except Exception as e:
-				#	print(driver.page_source)
-				#	print(traceback.format_exc())
-			except: 
-				#selenium.common.exceptions.TimeoutException:
-				cookies_close_button =  WebDriverWait(driver,30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="onetrust-close-btn-handler banner-close-button ot-close-icon"]')))
-				action.move_to_element(cookies_close_button).click().perform()
-				#cookies_close_button.click()
-				
-				session_button = WebDriverWait(driver,30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH, '//button[@class="button closed-for-sale-logon-view__form-button"]')))
-				action.move_to_element(session_button).click().perform()
-				#session_button.click()
-				time.sleep(3)
-				
-				#try:
-				#	img_title_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="media-image__wrapper"]')))
-				#	#print(driver.page_source)
-				#	return driver
-				#except Exception as e:
-				#	print(traceback.format_exc())
-
-		
-	
-	#print(img_title_elem)
-	
-	#print(driver.page_source)
-	#print(usr,pswd)
-'''
 
 def get_product_info(driver):
 	try:
 		color_selector_element_class_name = 'product-detail-color-selector product-detail-info__color-selector'
 		productInfo_dict = dict()
 		productInfo_dict['color'] = dict()
-		'''
-		try:
-			product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
-			product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
-			productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
-			driver.execute_script("window.scrollTo(0,-500)")
-		except:
-			try:
-				geolocation_modal = WebDriverWait(driver, 5).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
-				geolocation_modal_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(('xpath','//button[@class="button geolocation-modal__button"]')))
-				action = ActionChains(driver)
-				action.move_to_element(geolocation_modal_button).click().perform()
-				geolocation_modal_button.click()
-				driver.execute_script("window.scrollTo(0,-500)")
-				product_detail_info_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
-				product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
-				productInfo_dict['name'] = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class = "product-detail-view__side-bar"]//div[@class="product-detail-info__header"]//h1[@class="product-detail-info__header-name"]'))).text
-			except:
-				print(traceback.format_exc())
-				return 'have not clothes',driver
-		'''
+
 		try:
 			geolocation_modal = WebDriverWait(driver, 5).until(EC.presence_of_element_located(('xpath', '//div[@class="modal__container geolocation-modal"]')))
 			geolocation_modal_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(('xpath','//button[@class="button geolocation-modal__button"]')))
@@ -239,9 +103,14 @@ def get_product_info(driver):
 				for symb in list_price:
 					if symb.isalpha() == True:
 						currency += symb
-				price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224,2))
-				productInfo_dict['color'][color]['price'] = price_no_currency
-				productInfo_dict['color'][color]['currency'] = currency
+				if currency == 'KZT':
+					price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224/7,2))
+					productInfo_dict['color'][color]['price'] = price_no_currency
+					productInfo_dict['color'][color]['currency'] = 'RUB'#currency
+				else:
+					price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224,2))
+					productInfo_dict['color'][color]['price'] = price_no_currency
+					productInfo_dict['color'][color]['currency'] = currency
 				try:
 					UL_element_size = WebDriverWait(driver, 10).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 					LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
@@ -275,11 +144,20 @@ def get_product_info(driver):
 			for symb in list_price:
 				if symb.isalpha() == True:
 					currency += symb
-			
+			'''
 			price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224,2))
 
 			productInfo_dict['color'][color]['price'] = price_no_currency
 			productInfo_dict['color'][color]['currency'] = currency
+			'''
+			if currency == 'KZT':
+				price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224/7,2))
+				productInfo_dict['color'][color]['price'] = price_no_currency
+				productInfo_dict['color'][color]['currency'] = 'RUB'#currency
+			else:
+				price_no_currency = str(round(float(price.split(currency)[0].replace(',','.').replace(' ',''))*1.224,2))
+				productInfo_dict['color'][color]['price'] = price_no_currency
+				productInfo_dict['color'][color]['currency'] = currency
 			try:
 				UL_element_size = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', sizes_list_path)))
 				LI_elements_size = UL_element_size.find_elements(By.XPATH,'//li[@class = "product-detail-size-selector__size-list-item"]')
@@ -296,61 +174,6 @@ def get_product_info(driver):
 	except:
 		print(traceback.format_exc())
 		return False,None
-		
-'''
-def create_basket(data,driver):
-
-	productDetail = data['productDetail']
-	
-	color = data['received_color']
-	
-	if  productDetail['type_choice_color'] == 'multi_color':
-	
-		colors_list_path = '//div[@id = "app-root"]//div[@class="product-detail-color-selector__color-selector-container"]//ul[@class = "product-detail-color-selector__colors"]'
-		sizes_list_path = '//div[@id = "app-root"]//div[@id = "theme-app"]//div[@class = "product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--is-open product-detail-size-selector--expanded"]//div[@class= "product-detail-size-selector__size-list-wrapper product-detail-size-selector__size-list-wrapper--open"]//ul[@class = "product-detail-size-selector__size-list"]'
-		
-		UL_element_color = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', colors_list_path)))
-		LI_elements_color = UL_element_color.find_elements(By.XPATH,'//li[@class="product-detail-color-selector__color"]')
-		
-		for i,li in enumerate(LI_elements_color):
-		
-			if int(productDetail['color'][color]['color_button_path']['index']) == i+1:
-			
-				color_button = WebDriverWait(driver,30).until(EC.element_to_be_clickable(li.find_element(By.CSS_SELECTOR,'li.product-detail-color-selector__color:nth-child({index}) > button:nth-child(1)'.format(index = str(i+1)))))
-				color_button.click()
-				
-				li_size_xpath = productDetail['color'][color]['size'][data['received_size']]
-				
-				li_size = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH,li_size_xpath)))
-				li_size.click()
-				
-				driver.implicitly_wait(5)
-				
-				product_detail_info_elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="product-detail-info"]')))
-				
-				product_detail_info_elem_innerHTML = product_detail_info_elem.get_attribute('innerHTML')
-				
-				size_selector_div = 'class="product-detail-size-selector product-detail-info__size-selector product-detail-size-selector--expanded"'
-				
-				#print('\n@@@@@@@@2',size_selector_div in product_detail_info_elem_innerHTML)
-				if size_selector_div in product_detail_info_elem_innerHTML:
-				
-					basket_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(driver.find_element(By.XPATH,'//button[@class="button product-cart-buttons__button product-cart-buttons__add-to-cart"]')))
-					basket_button.click()
-					
-					#driver.implicitly_wait(10)
-					
-					drawer_conteiner = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@id="theme-modal-container"]//div[@class = "drawer__container"]')))
-					theme_modal_container = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@id="theme-modal-container"]')))
-					
-					#time.sleep(5)
-					theme_modal_container_innerHTML = theme_modal_container.get_attribute('innerHTML')
-					print(theme_modal_container_innerHTML)
-					
-					button_docked = 'class="button-docked container-docked container-docked--s container-docked---parent-fixed"'
-					print('\nbutton_docked --->>>>----->>>>',button_docked in theme_modal_container_innerHTML)
-'''				
-				
 				
 				
 '''
@@ -379,11 +202,12 @@ if __name__ == "__main__":
 	driver.close()
 	driver.quit()
 '''
-
+'''
 if __name__ == "__main__":
 	url = 'https://www.zara.com/ru/ru/%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA-%D0%B8%D0%B7-%D1%81%D1%82%D1%80%D1%83%D1%8F%D1%89%D0%B5%D0%B8%D1%81%D1%8F-%D1%82%D0%BA%D0%B0%D0%BD%D0%B8-p01255709.html?v1=179012832'
 	driver_path = '/home/koza/Reps/drivers/chromedriver'
 	driver = start_driverSession(driver_path=driver_path)
 	bool_res, driver_getSource = get_page_source(driver,url)
 	print(get_product_info(driver_getSource))
+'''
 
