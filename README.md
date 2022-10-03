@@ -1,4 +1,6 @@
 # Telegram bot repositories
+## @totalAmountOrder_bot
+
 ## @MyClothes_bot
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/1.jpeg)
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/2.jpeg)
