@@ -23,7 +23,7 @@ def start_driverSession(binary_path = '/bin/google-chrome',driver_path=str()):
 	ua = UserAgent()
 	useragent = ua.random
 	options = Options()
-	options.add_argument('--headless')
+	#options.add_argument('--headless')
 	#print(useragent)
 	options.add_argument(f'user-agent={useragent}')
 	options.binary_location = '/bin/google-chrome'
@@ -59,12 +59,22 @@ def get_product_info(driver):
 		productInfo_dict['color'] = dict()
 		
 		try:
+			dialog_window = WebDriverWait(driver, 30).until(EC.visibility_of_element_located(('xpath', '//div[@class="c-vue-coupon"]//div[@class="S-dialog coupon-dialog fEXHJM S-animation__dialog_W480"]//div[@class="S-dialog__wrapper S-dialog__W480"]')))
+			dialog_window_close_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(('xpath','//div[@class="c-vue-coupon"]//div[@class="S-dialog coupon-dialog fEXHJM S-animation__dialog_W480"]//div[@class="S-dialog__wrapper S-dialog__W480"]//i[@class="S-dialog__closebtn iconfont-s icons-Close_12px"]')))
+			action = ActionChains(driver)
+			action.move_to_element(dialog_window_close_button).click().perform()
+			#dialog_window_close_button.click()
+		except:
+			#print(traceback.format_exc())
+			pass
+		
+		try:
 			quick_register_window = WebDriverWait(driver, 30).until(EC.presence_of_element_located(('xpath', '//div[@class="c-quick-register j-quick-register"]')))
 			quick_register_hide_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(('xpath','//i[@class="svgicon svgicon-arrow-left"]')))
 			action = ActionChains(driver)
 			action.move_to_element(quick_register_hide_button).click().perform()
 		except:
-			print(traceback.format_exc())
+			#print(traceback.format_exc())
 			pass
 		driver.execute_script("window.scrollTo(0,-500)")
 		try:
@@ -160,9 +170,10 @@ if __name__ == "__main__":
 	'one-color one-size'
 	#url = 'https://www.shein.com/4pcs-Double-O-ring-Buckle-Belt-p-2693336-cat-1875.html?src_identifier=fc%3DWomen%60sc%3DSHOES%20%26%20ACCESSORIES%60tc%3D0%60oc%3D0%60ps%3Dtab01navbar08%60jc%3Durl_https%253A%252F%252Fwww.shein.com%252Fcategory%252FShoes-Bags-Accs-sc-00828516.html&src_module=topcat&src_tab_page_id=page_home1664638389479&mallCode=1&scici=navbar_WomenHomePage~~tab01navbar08~~8~~webLink~~~~0'
 	'multi-color one-size'
-	#url = 'https://www.shein.com/3pcs-Round-Buckle-Belt-p-2894425-cat-1875.html?src_identifier=fc%3DWomen%60sc%3DSHOES%20%26%20ACCESSORIES%60tc%3DACCESSORIES%60oc%3DWomen%20Belts%60ps%3Dtab01navbar08menu06dir01%60jc%3Dreal_3868&src_module=topcat&src_tab_page_id=page_home1664701980999&mallCode=1&scici=navbar_WomenHomePage~~tab01navbar08menu06dir01~~8_6_1~~real_3868~~~~0'
+	url = 'https://www.shein.com/3pcs-Round-Buckle-Belt-p-2894425-cat-1875.html?src_identifier=fc%3DWomen%60sc%3DSHOES%20%26%20ACCESSORIES%60tc%3DACCESSORIES%60oc%3DWomen%20Belts%60ps%3Dtab01navbar08menu06dir01%60jc%3Dreal_3868&src_module=topcat&src_tab_page_id=page_home1664701980999&mallCode=1&scici=navbar_WomenHomePage~~tab01navbar08menu06dir01~~8_6_1~~real_3868~~~~0'
 	driver_path = '/home/koza/Reps/drivers/chromedriver'
 	driver = start_driverSession(driver_path=driver_path)
 	bool_res, driver_getSource = get_page_source(driver,url)
 	get_product_info(driver_getSource)
 '''
+
