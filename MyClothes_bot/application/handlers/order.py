@@ -192,7 +192,7 @@ async def admin_menu(call: types.CallbackQuery, state: FSMContext):
 	elif call.data == '/table':
 		async with lock:
 			requests_database.get_orders_document()
-		open_xlsx = open('/home/koza/Reps/shein_bot/application/handlers/database/orders.xlsx','rb')
+		open_xlsx = open('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx','rb')
 		await bot.send_document(call.from_user.id,open_xlsx)
 		await OrderClothes.admin_menu_state.set()
 	elif call.data == '/change_status':

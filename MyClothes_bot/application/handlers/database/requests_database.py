@@ -162,7 +162,7 @@ def get_orders_document():
 		if os.path.exists('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx') == True:
 			os.remove('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx')
 		config = configparser.ConfigParser()
-		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/orders.xlsx')
+		config.read('/home/koza/Reps/Telegram_bot_repositories/MyClothes_bot/application/handlers/database/db_login_data.ini')
 
 		user = config.get('mysql_login_data', 'usr')
 		pswd = config.get('mysql_login_data', 'pswd')
