@@ -7,4 +7,3 @@ MyClothes_bot/application/token.ini
 MyClothes_bot/application/handlers/parserANDdb/rethinkdb_createAio.py
 totalAmountOrder_bot/application/token.ini
 totalAmountOrder_bot/application/rethinkDB/rethinkdb_create_db.py
-
