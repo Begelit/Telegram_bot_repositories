@@ -17,3 +17,10 @@
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/15.jpeg)
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/16.jpeg)
 ![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/MyClothes_bot/images/17.jpeg)
+
+## @totalAmountOrder_bot (operate)
+![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/totalAmountOrder_bot/images/1.jpeg)
+![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/totalAmountOrder_bot/images/2.jpeg)
+![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/totalAmountOrder_bot/images/3.jpeg)
+![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/totalAmountOrder_bot/images/4.jpeg)
+![](https://github.com/Begelit/Telegram_bot_repositories/blob/zara/totalAmountOrder_bot/images/5.jpeg)
